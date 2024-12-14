@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="../css/all.css">
+    <link rel="stylesheet" href="../css/Login.css">
+    <link rel="stylesheet" href="../css/customalert.css">
+    <script src="../Scripts/jquery-3.7.0.min.js"></script>
+    <script src="../js/Common_URL.js"></script>
+    <script src="../js/Login.js"></script>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="login_box">
+            <div class="login-header">
+                <span>Login</span>
+            </div>
+
+            <div class="input_box">
+                <input type="text" id="txtUserName" class="input-field" onkeyup="keyup(this);"  required>
+                <label for="user" id="lblUserName" class="label">Username</label>
+                <i class="bx bx-user icon"></i>
+            </div>
+
+            <div class="input_box">
+                <input type="password" id="txtPassword" class="input-field" onkeyup="keyup(this);" onkeydown="checkEnter(event);" required>
+                <label for="pass" id="lblPassword" class="label">Password</label>
+                <i class="bx bx-lock-alt icon"></i>
+            </div>
+
+            <!--<div class="remember-forgot">
+                <div class="remember-me">
+                    <input type="checkbox" id="remember">
+                    <label for="remember">Remember me</label>
+                </div>
+
+                <div class="forgot">
+                    <a href="#">Forgot password?</a>
+                </div>
+            </div>-->
+
+            <div class="input_box">
+                <input type="submit" class="input-submit" value="Login" onclick="loginclick();">
+            </div>
+        </div>
+        <div class="alert hide">
+            <span class="bi bi-exclamation-circle"></span>
+            <span id="alertMessage" class="msg"></span>
+            <div class="close-btn" onclick="closeAlert();">
+                <span class="bi bi-x"></span>
+            </div>
+        </div>
+    </div>
+<!-- partial -->
+  
+</body>
+</html>

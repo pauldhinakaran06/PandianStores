@@ -1,0 +1,401 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Biilling</title>
+    <script src="LoadJs.js"></script>
+    <link rel="stylesheet" href="../css/all.css">
+    <link rel="stylesheet" href="../css/jqgrid.css">
+    <script src="../Scripts/jquery-3.6.0.min.js"></script>
+    <script src="../Scripts/dialog.js"></script>
+    <script src="../Scripts/jquery.jqgrid.min.js"></script>
+    <script src="../Scripts/html2pdf.js"></script>
+    <link rel="stylesheet" href="../css/DashBoard.css">
+    <link rel="stylesheet" href="../css/customalert.css">
+    <script src="../js/Common_URL.js"></script>
+    <script src="../js/common.js"></script>
+    <script src="../js/Billing.js"></script>
+    <style>
+        #gbox_grid, #gview_grid {
+            /*background-image: url('../images/Groceryshopping.svg');*/
+            background-color: whitesmoke;
+            background-size: 112%;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .ui-jqgrid tr.jqgroup, .ui-jqgrid tr.jqgrow {
+            background-color: transparent !important;
+        }
+
+        .ui-jqgrid-btable tr.jqgrow:hover {
+            background-color: #e0e0e0 !important;
+        }
+
+        .edit-cell {
+            background-color: transparent !important;
+        }
+
+        #info_dialog {
+            position: fixed;
+            top: 30% !important;
+            left: 40% !important;
+        }
+
+        input[name="ItemQuantity"] {
+            width: 100%;
+            border: 0px;
+            background-color: transparent !important;
+        }
+
+        .ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr > td {
+            text-align: center;
+        }
+
+        .ui-icon-triangle-1-e, .ui-icon-triangle-1-s {
+            display: none;
+        }
+
+        p {
+            font-size: smaller;
+        }
+
+        nav {
+            height: auto;
+            width: 14%;
+            border-right: 0px;
+        }
+
+        .dash-content .title {
+            position: relative;
+            left: 14%;
+            width: 86%;
+        }
+
+        #gbox_grid td {
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .form-input {
+            width: 50%;
+            padding: 8px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .form-label {
+            width: 50%;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-group {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .bill-header, .bill-footer {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+            .bill-header h2 {
+                margin: 0;
+            }
+
+        .bill-table, .bill-summary {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+            .bill-table th, .bill-table td {
+                border-bottom: 1px solid #ddd;
+                padding: 5px;
+                text-align: left;
+            }
+
+            .bill-summary td {
+                padding: 5px;
+                text-align: right;
+            }
+
+            .bill-summary .total {
+                font-weight: bold;
+            }
+
+        .footer-message {
+            font-size: 12px;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .autocomplete-active {
+            background-color: grey;
+        }
+
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /*background: rgba(0, 0, 0, 0.5);*/
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        /* Popup container */
+        .popup-container {
+            background: white;
+            padding: 20px 20px 0px 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 500px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            overflow-y: auto;
+            height: 64%;
+            max-height: 80%;
+            bottom: 0px;
+            right: 0px;
+            position: absolute;
+        }
+
+        #productsgrid .ui-state-hover {
+            background-color: #dcdcdc !important; /* Light gray background */
+            cursor: pointer;
+        }
+
+        #gbox_grid .ui-jqgrid-caption {
+            background: aquamarine; /* Your desired color */
+        }
+
+        .ui-jqgrid-titlebar-close {
+            display: none;
+        }
+
+        .billclose-btn {
+            position: absolute;
+            right: 25px;
+            top: 25px;
+            background: transparent;
+            border: outset;
+            width: 25px;
+        }
+
+        .modal.finalpopup-container .popup-container .billclose-btn:hover {
+            border: ridge;
+        }
+
+        .finalpopup-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            overflow-y: auto;
+            max-height: 80%;
+            position: absolute;
+        }
+
+        #pager {
+            background-color: aquamarine;
+        }
+
+        .ui-jqgrid-htable th {
+            background-color: #e0e0e0 !important;
+            font-size: 13px;
+        }
+
+        .ui-jqgrid-htable, #grid {
+            width: 100% !important;
+        }
+            /* Optional: Change hover color on the column headers */
+            .ui-jqgrid-htable th:hover {
+                background-color: #45a049; /* Lighter shade when hovered */
+            }
+    </style>
+</head>
+<body>
+    <nav id="Master" style="display:none">
+    </nav>
+
+    <section id="section" class="">
+        <nav>
+            <div class="logo-name">
+                <div class="logo-image">
+                    <img src="../images/logo.png" alt="">
+                </div>
+                <!--<i class="uil uil-bars sidebar-toggle"></i>-->
+                <p>Pandian Departmental Stores</p>
+            </div>
+        </nav>
+        <div class="overview dash-content">
+
+            <div class="title">
+                <span class="text">Billing</span>
+                <marquee width="40%" direction="left" height="50px" style="width: 31%;padding: 14px;position: relative;left: 11px;">
+                    This is a sample scrolling text that has scrolls in the upper direction.
+                </marquee>
+            </div>
+            <div class="container" style=" position: fixed; top: 0px; right: 0px; padding: 10px;">
+                <div id="Datetime" style="display: flex; justify-content: end;"></div>
+                <div style="display: flex;">
+                    <h1>Total : ₹&nbsp; </h1><h1 id="totaldiv"></h1>
+                </div>
+            </div>
+            <!--<div class="search-box" style="left: 1%; position: relative; width: 50%; display:flex;">
+                <i class="uil uil-search"></i>
+                <input id="txtItem" style="width:40%" type="text" placeholder="Search here..." autocomplete="off">
+                <div id="Item-list" class="itemlist autocomplete-items" style="width: 20%; height: 25%; top:16%; "></div>
+                <div class="container" style="display: flex; left: 130%; position: relative; " id="totaldiv">
+                </div>
+            </div>-->
+
+            <table id="grid"></table>
+            <div id="pager"></div>
+            <!--<div class="Confirm padding" id="finaldiv" style="pointer-events:none;">
+                <input type="button" class="custom-button" id="confirm" onclick="btnconfirm();" value="Confirm" />
+                <input type="button" class="custom-button" id="Clear" onclick="btnClear();" value="Clear" />
+                <input type="button" class="custom-button" id="confirm" onclick="btncancel();" value="Cancel" />
+
+            </div>-->
+
+        </div>
+    </section>
+    <div id="myModal" class="modal">
+        <!--<div class="F-container">
+            <div class="F-header">
+                <h2 style=" position: relative; left: 35%;">Invoice</h2>
+                <span class="close" style="left: 67%;position: relative;">&times;</span>
+            </div>
+            <div class="F-details">
+                <div>
+                    <label for="customerName">Customer Name:</label>
+                    <input type="text" id="customerName" name="customerName">
+                </div>
+                <div>
+                    <label for="phoneNumber">Phone Number:</label>
+                    <input type="text" id="phoneNumber" name="phoneNumber">
+                </div>
+                <div>
+                    <label for="saleType">Sale Type:</label>
+                    <select id="saleType" name="saleType" style="width: 49%;">
+                        <option value="cash">Cash</option>
+                        <option value="gpay">GPay</option>
+                        <option value="debitCard">Debit Card</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="totalAmount">Total Amount(₹):</label>
+                    <span id="totalAmount"></span>
+                </div>
+                <button type="button" id="printBtn" onclick="BillingProcess();">Print</button>
+            </div>
+
+        </div>-->
+        <div class="finalpopup-container" id="finalpopup">
+            <button class="billclose-btn" style=" top: 22px;" onclick="closeHeader('finalpopup')">X</button>
+            <h3 style="background-color: aquamarine; display: flex; justify-content: center; margin-bottom: 10px; ">Customer Information</h3>
+            <div class="form-group">
+                <label class="form-label" for="customerName">Customer Name:</label>
+                <input type="text" id="customerName" class="form-input">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="phoneNumber">Phone Number:</label>
+                <input type="text" id="phoneNumber" class="form-input">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="saleType">Sale Type:</label>
+                <select id="saleType" class="form-input">
+                    <option value="cash">Cash</option>
+                    <option value="gpay">GPay</option>
+                    <option value="debitCard">Debit Card</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="totalAmount">Total Amount (₹):</label>
+                <span id="totalAmount"></span>
+            </div>
+            <button style=" background-color: aquamarine; border: none; display: flex; justify-self: center; position: relative; top: 5px; " onclick="BillingProcess();">Print</button>
+        </div>
+        <div style="display:none;">
+            <div id="printableArea">
+                <div class="bill-header">
+                    <h2>Pandian Stores</h2>
+                    <p>Address Line 1, City, Zip Code</p>
+                    <p>Phone: (123) 456-7890</p>
+                    <p>Date: <span id="date"></span></p>
+                    <p>Bill No: <span id="bill-number"></span></p>
+                </div>
+
+                <table class="bill-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Qty</th>
+                            <th>Unit Price</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bill-items">
+                        <!-- Item rows will be added here -->
+                    </tbody>
+                </table>
+
+                <table class="bill-summary">
+                    <tbody>
+                        <tr>
+                            <td>Subtotal:</td>
+                            <td id="subtotal">0.00</td>
+                        </tr>
+                        <tr>
+                            <td>Discount (10%):</td>
+                            <td id="discount">0.00</td>
+                        </tr>
+                        <tr>
+                            <td>Tax (10%):</td>
+                            <td id="tax">0.00</td>
+                        </tr>
+                        <tr class="total">
+                            <td>Total:</td>
+                            <td id="total">0.00</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="bill-footer">
+                    <p class="footer-message">Thank you for shopping with us!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="popup" class="popup-overlay">
+        <div class="popup-container">
+            <h2 style="text-align: center; background: aquamarine;">
+                Product Details
+                <button class="billclose-btn" onclick="closeHeader('productlist')">X</button>
+            </h2>
+            <label for="Productsearch">Search :  </label>
+            <input type="text" id="Productsearch" style=" width: 55%; text-align: center;" placeholder="Search by Product Name" />
+            <table id="productsgrid"></table>
+            <div id="productspager"></div>
+        </div>
+    </div>
+
+    <div class="alert hide">
+        <span class="bi bi-exclamation-circle"></span>
+        <span id="alertMessage" class="msg"></span>
+        <div class="close-btn" onclick="closeAlert();">
+            <span class="bi bi-x"></span>
+        </div>
+    </div>
+</body>
+</html>

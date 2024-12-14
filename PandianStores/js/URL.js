@@ -1,0 +1,1 @@
+﻿var serviceURL = 'http://localhost:56622/PandianStoreService.svc/';

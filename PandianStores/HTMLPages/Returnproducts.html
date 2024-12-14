@@ -1,0 +1,275 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!----===== Iconscout CSS ===== -->
+    <!--<link rel="stylesheet" href="../css/bootstrap.min.css">-->
+    <link rel="stylesheet" href="../css/customalert.css">
+    <!--<script src="../Scripts/bootstrap.min.js"></script>-->
+    <link rel="stylesheet" href="../Icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../css/jqgrid.css">
+    <script src="../Scripts/jquery-3.6.0.min.js"></script>
+    <script src="../Scripts/dialog.js"></script>
+    <script src="../Scripts/jquery.jqgrid.min.js"></script>
+    <link rel="stylesheet" href="../css/DashBoard.css">
+    <script src="../js/Common_URL.js"></script>
+    <script src="../js/common.js"></script>
+    <script src="../js/returnproduct.js"></script>
+    <title>Return</title>
+    <style>
+        .dash-content .boxes {
+            justify-content: start !important;
+            margin-top: 5%;
+        }
+
+        .padding {
+            padding: 0px 30px 15px 0px;
+        }
+
+        .Mode {
+            position: relative;
+            width: 70%;
+            left: 70%;
+        }
+
+        .Confirm {
+            position: absolute;
+            bottom: 15px;
+            right: 0px;
+        }
+
+        .activity dash-content table {
+            position: relative;
+            left: 3%;
+            width: 25%
+        }
+
+        .activity {
+            display: flex;
+            justify-content: space-evenly;
+            padding: 3%;
+        }
+
+        #gbox_grid, #gview_grid {
+            /*background-image: url('../images/Groceryshopping.svg');*/
+            background-color: whitesmoke;
+            background-size: 112%;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .ui-jqgrid tr.jqgroup, .ui-jqgrid tr.jqgrow {
+            background-color: transparent !important;
+        }
+
+        .ui-jqgrid-btable tr.jqgrow:hover {
+            background-color: #e0e0e0 !important;
+        }
+
+        .edit-cell {
+            background-color: transparent !important;
+        }
+
+        #info_dialog {
+            position: fixed;
+            top: 30% !important;
+            left: 40% !important;
+        }
+
+        input[name="ItemQuantity"] {
+            width: 100%;
+            border: 0px;
+            background-color: transparent !important;
+        }
+
+        .ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr > td {
+            text-align: center;
+        }
+
+        .ui-icon-triangle-1-e, .ui-icon-triangle-1-s {
+            display: none;
+        }
+
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /*background: rgba(0, 0, 0, 0.5);*/
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        /* Popup container */
+        .popup-container {
+            background: white;
+            padding: 20px 20px 0px 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 550px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            overflow-y: auto;
+            height: 46%;
+            max-height: 80%;
+            /*bottom: 0px;
+        right: 0px;*/
+            position: absolute;
+        }
+
+        #returnbillgrid .ui-state-hover {
+            background-color: #dcdcdc !important; /* Light gray background */
+            cursor: pointer;
+        }
+
+        #returnproductgrid .ui-state-hover {
+            background-color: #dcdcdc !important; /* Light gray background */
+            cursor: pointer;
+        }
+
+        #gbox_grid .ui-jqgrid-caption {
+            background: aquamarine; /* Your desired color */
+        }
+
+        .ui-jqgrid-titlebar-close {
+            display: none;
+        }
+
+        .ui-jqgrid-htable th {
+            background-color: #e0e0e0 !important;
+            font-size: 13px;
+        }
+
+        .ui-jqgrid-htable, #returnbillgrid {
+            width: 100% !important;
+        }
+
+        .ui-jqgrid-htable, #returnproductgrid {
+            width: 100% !important;
+        }
+            /* Optional: Change hover color on the column headers */
+            .ui-jqgrid-htable th:hover {
+                background-color: #45a049; /* Lighter shade when hovered */
+            }
+
+        #gbox_returnbillgrid td {
+            font-weight: bold;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        #gbox_returnproductgrid td {
+            font-weight: bold;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        .billclose-btn {
+            position: absolute;
+            right: 24px;
+            top: 21px;
+            background: transparent;
+            border: outset;
+            width: 28px;
+            line-height: 15px;
+        }
+
+        .popup-container .billclose-btn:hover {
+            border: ridge;
+        }
+
+        .editproductconfirm-btn {
+            position: absolute;
+            right: -17px;
+            top: 10px;
+            background: aquamarine;
+            border: outset;
+            width: 77px;
+            line-height: 15px;
+            font-weight: bold;
+        }
+
+        .popup-container .editproductconfirm-btn:hover {
+            border: ridge;
+        }
+
+        .modal.returnproductpopup .popup-container .billclose-btn:hover {
+            border: ridge;
+        }
+
+        .returnproductpopup {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            overflow-y: auto;
+            max-height: 80%;
+            position: absolute;
+        }
+
+        .decrement {
+            display: block;
+            width: 20px;
+            background-color: aquamarine;
+            border: 0px;
+        }
+    </style>
+</head>
+<body>
+    <nav id="Master">
+    </nav>
+    <section id="section" class="dashboard">
+        <div class="overview dash-content">
+            <div class="title">
+                <i class="bi bi-cart-x"></i>
+                <span class="text">Return Products</span>
+            </div>
+            <div id="returnbill" style=" width:100%;">
+
+                <label for="returnBillsearch" style="margin-left: 14px;">Invoice No.:  </label>
+                <input type="text" id="returnBillsearch" style=" width: 20%; text-align: center;" placeholder="Search by Invoice No." />
+                <table id="returnbillgrid"></table>
+                <div id="returnbillpager"></div>
+            </div>
+            <div id="myModal" class="modal">
+                <div class="returnproductpopup" id="returnproductpopup">
+                    <button class="billclose-btn" style=" top: 22px;" onclick="closeHeader('finalpopup')">X</button>
+                    <h3 style="background-color: aquamarine; display: flex; justify-content: center; margin-bottom: 10px; ">Product Details</h3>
+                    <div id="returnproduct" style=" width:100%;">
+                        <div>
+                            <label for="returnproductsearch" style="margin-left: 14px;">Invoice No.:  </label>
+                            <input type="text" id="returnproductsearch" style=" width: 20%; text-align: center;" placeholder="Search by Invoice No." />
+                            <div style="display: flex;right: 46px;top: 120px;position: fixed;">
+                                <h3>Total : </h3><h4 style="margin-top: 23px;">&nbsp;₹&nbsp;</h4><h4 style="margin-top: 23px;" id="totaldiv"></h4><h6 style="margin-top: 26px;">&nbsp;by&nbsp;</h6><h4 style="margin-top: 23px;" id="paymentterms"></h4>
+                            </div>
+                        </div>
+
+                        <table id="returnproductgrid"></table>
+                        <div id="returnproductpager"></div>
+                        <!--<div style="display: flex;">
+                            <h3>Total : </h3><h4 style="margin-top: 23px;">&nbsp;₹&nbsp;</h4><h4 style="margin-top: 23px;" id="totaldiv"></h4><h6 style="margin-top: 26px;">&nbsp;by&nbsp;</h6><h4 style="margin-top: 23px;" id="paymentterms"></h4>
+                        </div>-->
+                        <h1 id="itemInvoice_Pk_Id" style="display:none"></h1>
+                    </div>
+                    <button style=" background-color: aquamarine; border: none; display: flex; justify-self: center; position: relative; top: 5px; " onclick="returnconfirm();">Check Out</button>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="alert hide">
+        <span class="bi bi-exclamation-circle"></span>
+        <span id="alertMessage" class="msg"></span>
+        <div class="close-btn" onclick="closeAlert();">
+            <span class="bi bi-x"></span>
+        </div>
+    </div>
+ 
+</body>
+</html>
