@@ -7,17 +7,7 @@
 
     <!----===== Iconscout CSS ===== -->
     <!--<link rel="stylesheet" href="../css/bootstrap.min.css">-->
-    <link rel="stylesheet" href="../css/customalert.css">
-    <!--<script src="../Scripts/bootstrap.min.js"></script>-->
-    <link rel="stylesheet" href="../Icons/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="../css/jqgrid.css">
-    <script src="../Scripts/jquery-3.6.0.min.js"></script>
-    <script src="../Scripts/dialog.js"></script>
-    <script src="../Scripts/jquery.jqgrid.min.js"></script>
-    <link rel="stylesheet" href="../css/DashBoard.css">
-    <script src="../js/Common_URL.js"></script>
-    <script src="../js/common.js"></script>
-    <script src="../js/returnproduct.js"></script>
+    
     <title>Return</title>
     <style>
         .dash-content .boxes {
@@ -142,7 +132,7 @@
 
         .ui-jqgrid-htable th {
             background-color: #e0e0e0 !important;
-            font-size: 13px;
+            font-size: 1.1vw;
         }
 
         .ui-jqgrid-htable, #returnbillgrid {
@@ -158,14 +148,12 @@
             }
 
         #gbox_returnbillgrid td {
-            font-weight: bold;
-            font-size: 11px;
+            font-size: 1.1vw;
             text-align: center;
         }
 
         #gbox_returnproductgrid td {
-            font-weight: bold;
-            font-size: 11px;
+            font-size: 1.1vw;
             text-align: center;
         }
 
@@ -218,6 +206,16 @@
             background-color: aquamarine;
             border: 0px;
         }
+        .ui-jqgrid-empty {
+            font-size: 1.1vw;
+            color: #FF0000;
+            text-align: center;
+            padding: 20px;
+        }
+        .disable {
+            pointer-events: none;
+            color: darkgray;
+        }
     </style>
 </head>
 <body>
@@ -233,6 +231,8 @@
 
                 <label for="returnBillsearch" style="margin-left: 14px;">Invoice No.:  </label>
                 <input type="text" id="returnBillsearch" style=" width: 20%; text-align: center;" placeholder="Search by Invoice No." />
+                <label for="returnBillsearchDate" style="margin-left: 14px;">Date:  </label>
+                <input type="date" id="returnBillsearchDate" style=" width: 20%; text-align: center;" placeholder="Search by Date." />
                 <table id="returnbillgrid"></table>
                 <div id="returnbillpager"></div>
             </div>
@@ -245,19 +245,68 @@
                             <label for="returnproductsearch" style="margin-left: 14px;">Invoice No.:  </label>
                             <input type="text" id="returnproductsearch" style=" width: 20%; text-align: center;" placeholder="Search by Invoice No." />
                             <div style="display: flex;right: 46px;top: 120px;position: fixed;">
-                                <h3>Total : </h3><h4 style="margin-top: 23px;">&nbsp;₹&nbsp;</h4><h4 style="margin-top: 23px;" id="totaldiv"></h4><h6 style="margin-top: 26px;">&nbsp;by&nbsp;</h6><h4 style="margin-top: 23px;" id="paymentterms"></h4>
+                                <h3>Total : </h3><h4>&nbsp;₹&nbsp;</h4><h4 id="totaldiv"></h4><h6>&nbsp;by&nbsp;</h6><h4 id="paymentterms"></h4>
                             </div>
                         </div>
 
                         <table id="returnproductgrid"></table>
                         <div id="returnproductpager"></div>
                         <!--<div style="display: flex;">
-                            <h3>Total : </h3><h4 style="margin-top: 23px;">&nbsp;₹&nbsp;</h4><h4 style="margin-top: 23px;" id="totaldiv"></h4><h6 style="margin-top: 26px;">&nbsp;by&nbsp;</h6><h4 style="margin-top: 23px;" id="paymentterms"></h4>
-                        </div>-->
+            <h3>Total : </h3><h4 style="margin-top: 23px;">&nbsp;₹&nbsp;</h4><h4 style="margin-top: 23px;" id="totaldiv"></h4><h6 style="margin-top: 26px;">&nbsp;by&nbsp;</h6><h4 style="margin-top: 23px;" id="paymentterms"></h4>
+        </div>-->
                         <h1 id="itemInvoice_Pk_Id" style="display:none"></h1>
                     </div>
-                    <button style=" background-color: aquamarine; border: none; display: flex; justify-self: center; position: relative; top: 5px; " onclick="returnconfirm();">Check Out</button>
+                    <button style=" background-color: aquamarine; border: none; display: flex; justify-self: center; position: relative; top: 5px;cursor:pointer; " onclick="returnconfirm();">Check Out</button>
+                    <div style="display:none;">
+                        <div id="printableArea">
+                            <div class="bill-header">
+                                <h2>Pandian Stores</h2>
+                                <p>Address Line 1, City, Zip Code</p>
+                                <p>Phone: (123) 456-7890</p>
+                                <p>Date: <span id="date"></span></p>
+                                <p>Bill No: <span id="bill-number"></span></p>
+                            </div>
 
+                            <table class="bill-table">
+                                <thead>
+                                    <tr>
+                                        <th>Item</th>
+                                        <th>Qty</th>
+                                        <th>Unit Price</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bill-items">
+                                    <!-- Item rows will be added here -->
+                                </tbody>
+                            </table>
+
+                            <table class="bill-summary">
+                                <tbody>
+                                    <tr>
+                                        <td>Subtotal:</td>
+                                        <td id="subtotal">0.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Discount (10%):</td>
+                                        <td id="discount">0.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Tax (10%):</td>
+                                        <td id="tax">0.00</td>
+                                    </tr>
+                                    <tr class="total">
+                                        <td>Total:</td>
+                                        <td id="total">0.00</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="bill-footer">
+                                <p class="footer-message">Thank you for shopping with us!</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -270,6 +319,17 @@
             <span class="bi bi-x"></span>
         </div>
     </div>
- 
+    <link rel="stylesheet" href="../css/customalert.css">
+    <!--<script src="../Scripts/bootstrap.min.js"></script>-->
+    <link rel="stylesheet" href="../Icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../css/jqgrid.css">
+    <script src="../Scripts/jquery-3.6.0.min.js"></script>
+    <!--<script src="../Scripts/dialog.js"></script>-->
+    <script src="../Scripts/jquery.jqgrid.min.js"></script>
+    <script src="../Scripts/html2pdf.js"></script>
+    <link rel="stylesheet" href="../css/DashBoard.css">
+    <script src="../js/Common_URL.js"></script>
+    <script src="../js/common.js"></script>
+    <script src="../js/returnproduct.js"></script>
 </body>
 </html>

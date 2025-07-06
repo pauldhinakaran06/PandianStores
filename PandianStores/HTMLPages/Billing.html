@@ -4,10 +4,11 @@
     <meta charset="utf-8" />
     <title>Biilling</title>
     <script src="LoadJs.js"></script>
+    <!--<script src="https://cdn.socket.io/4.1.3/socket.io.min.js"></script>-->
     <link rel="stylesheet" href="../css/all.css">
     <link rel="stylesheet" href="../css/jqgrid.css">
     <script src="../Scripts/jquery-3.6.0.min.js"></script>
-    <script src="../Scripts/dialog.js"></script>
+    <!--<script src="../Scripts/dialog.js"></script>-->
     <script src="../Scripts/jquery.jqgrid.min.js"></script>
     <script src="../Scripts/html2pdf.js"></script>
     <link rel="stylesheet" href="../css/DashBoard.css">
@@ -16,6 +17,17 @@
     <script src="../js/common.js"></script>
     <script src="../js/Billing.js"></script>
     <style>
+        .hiddenTextbox {
+            position: absolute !important;
+            left: -9999px !important;
+            top: -9999px !important;
+            width: 1px !important;
+            height: 1px !important;
+            background-color: transparent !important;
+            border: none !important;
+            padding: 0 !important;
+            opacity: 0 !important;
+        }
         #gbox_grid, #gview_grid {
             /*background-image: url('../images/Groceryshopping.svg');*/
             background-color: whitesmoke;
@@ -57,7 +69,7 @@
         }
 
         p {
-            font-size: smaller;
+            font-size: 1.1vw;
         }
 
         nav {
@@ -74,7 +86,7 @@
 
         #gbox_grid td {
             font-weight: bold;
-            font-size: 15px;
+            font-size: 1.1vw;
         }
 
         body {
@@ -131,7 +143,7 @@
             }
 
         .footer-message {
-            font-size: 12px;
+            font-size: 1.1vw;
             margin-top: 10px;
             text-align: center;
         }
@@ -211,7 +223,7 @@
 
         .ui-jqgrid-htable th {
             background-color: #e0e0e0 !important;
-            font-size: 13px;
+            font-size: 1.1vw;
         }
 
         .ui-jqgrid-htable, #grid {
@@ -221,13 +233,17 @@
             .ui-jqgrid-htable th:hover {
                 background-color: #45a049; /* Lighter shade when hovered */
             }
+
+        h1 {
+            font-size: 2vw;
+        }
     </style>
 </head>
 <body>
     <nav id="Master" style="display:none">
     </nav>
 
-    <section id="section" class="">
+    <section id="section" class="" style="width:auto;height:auto;">
         <nav>
             <div class="logo-name">
                 <div class="logo-image">
@@ -240,13 +256,14 @@
         <div class="overview dash-content">
 
             <div class="title">
+                <i class="bi bi-credit-card" style="background-color: #ffffff; color: black;"></i>
                 <span class="text">Billing</span>
                 <marquee width="40%" direction="left" height="50px" style="width: 31%;padding: 14px;position: relative;left: 11px;">
                     This is a sample scrolling text that has scrolls in the upper direction.
                 </marquee>
             </div>
             <div class="container" style=" position: fixed; top: 0px; right: 0px; padding: 10px;">
-                <div id="Datetime" style="display: flex; justify-content: end;"></div>
+                <div id="Datetime" style="display: flex; justify-content: end; font-size: 1.4vw;"></div>
                 <div style="display: flex;">
                     <h1>Total : ₹&nbsp; </h1><h1 id="totaldiv"></h1>
                 </div>
@@ -397,5 +414,7 @@
             <span class="bi bi-x"></span>
         </div>
     </div>
+    <label class="form-label hiddenTextbox" for="barcodeinput">barcodeinput:</label>
+    <input type="text" class="hiddenTextbox" id="barcodeinput">
 </body>
 </html>

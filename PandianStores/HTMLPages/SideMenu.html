@@ -2,6 +2,9 @@
     .close{
         opacity:1 !important;
     }
+    .menu-item.active {
+        color: var(--primary-color);
+    }
 </style>
 <div class="logo-name">
     <div class="logo-image">
@@ -13,33 +16,33 @@
 <div class="menu-items">
     <ul class="nav-links" style="overflow-y: scroll; overflow-x: hidden;">
         <li>
-            <a href="DashBoard.html" id="dashboard">
+            <a href="DashBoard.html" id="dashboard" class="menu-item">
                 <i class="bi bi-grid"></i>
                 <span class="link-name">Dahsboard</span>
             </a>
         </li>
         <li>
-            <a href="MasterData.html" id="MasterData">
+            <a href="MasterData.html" id="MasterData" class="menu-item">
                 <i class="bi bi-database"></i>
-                <span class="link-name">Master Data</span>
+                <span class="link-name">Inventory</span>
             </a>
         </li>
         <li>
-            <a href="#" id="BillingPage">
+            <a href="#" id="BillingPage" class="menu-item">
                 <i class="bi bi-credit-card"></i>
                 <span class="link-name">Billing</span>
             </a>
         </li>
         <li>
-            <a href="Returnproducts.html">
+            <a href="Returnproducts.html" class="menu-item">
                 <i class="bi bi-cart-x" id="returnpage"></i>
                 <span class="link-name">Return</span>
             </a>
         </li>
         <li>
-            <a href="#">
-                <i class="uil uil-comments"></i>
-                <span class="link-name">Comment</span>
+            <a href="BillingNew.html">
+                <i class="bi bi-credit-card"></i>
+                <span class="link-name">BillingNew</span>
             </a>
         </li>
         <li>

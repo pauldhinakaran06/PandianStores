@@ -2,95 +2,95 @@
 /*@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600&display=swap');
 */
 /* latin-ext */
-@font-face {
+/*@font-face {
     font-family: 'Poppins';
     font-style: normal;
     font-weight: 200;
     font-display: swap;
     src: url(https://fonts.gstatic.com/s/poppins/v21/pxiByp8kv8JHgFVrLFj_Z1JlFc-K.woff2) format('woff2');
     unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
+}*/
 /* latin */
-@font-face {
+/*@font-face {
     font-family: 'Poppins';
     font-style: normal;
     font-weight: 200;
     font-display: swap;
     src: url(https://fonts.gstatic.com/s/poppins/v21/pxiByp8kv8JHgFVrLFj_Z1xlFQ.woff2) format('woff2');
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
+}*/
 /* latin-ext */
-@font-face {
+/*@font-face {
     font-family: 'Poppins';
     font-style: normal;
     font-weight: 300;
     font-display: swap;
     src: url(https://fonts.gstatic.com/s/poppins/v21/pxiByp8kv8JHgFVrLDz8Z1JlFc-K.woff2) format('woff2');
     unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
+}*/
 /* latin */
-@font-face {
+/*@font-face {
     font-family: 'Poppins';
     font-style: normal;
     font-weight: 300;
     font-display: swap;
     src: url(https://fonts.gstatic.com/s/poppins/v21/pxiByp8kv8JHgFVrLDz8Z1xlFQ.woff2) format('woff2');
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
+}*/
 /* latin-ext */
-@font-face {
+/*@font-face {
     font-family: 'Poppins';
     font-style: normal;
     font-weight: 400;
     font-display: swap;
     src: url(https://fonts.gstatic.com/s/poppins/v21/pxiEyp8kv8JHgFVrJJnecmNE.woff2) format('woff2');
     unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
+}*/
 /* latin */
-@font-face {
+/*@font-face {
     font-family: 'Poppins';
     font-style: normal;
     font-weight: 400;
     font-display: swap;
     src: url(https://fonts.gstatic.com/s/poppins/v21/pxiEyp8kv8JHgFVrJJfecg.woff2) format('woff2');
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
+}*/
 /* latin-ext */
-@font-face {
+/*@font-face {
     font-family: 'Poppins';
     font-style: normal;
     font-weight: 500;
     font-display: swap;
     src: url(https://fonts.gstatic.com/s/poppins/v21/pxiByp8kv8JHgFVrLGT9Z1JlFc-K.woff2) format('woff2');
     unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
+}*/
 /* latin */
-@font-face {
+/*@font-face {
     font-family: 'Poppins';
     font-style: normal;
     font-weight: 500;
     font-display: swap;
     src: url(https://fonts.gstatic.com/s/poppins/v21/pxiByp8kv8JHgFVrLGT9Z1xlFQ.woff2) format('woff2');
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
+}*/
 /* latin-ext */
-@font-face {
+/*@font-face {
     font-family: 'Poppins';
     font-style: normal;
     font-weight: 600;
     font-display: swap;
     src: url(https://fonts.gstatic.com/s/poppins/v21/pxiByp8kv8JHgFVrLEj6Z1JlFc-K.woff2) format('woff2');
     unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
+}*/
 /* latin */
-@font-face {
+/*@font-face {
     font-family: 'Poppins';
     font-style: normal;
     font-weight: 600;
     font-display: swap;
     src: url(https://fonts.gstatic.com/s/poppins/v21/pxiByp8kv8JHgFVrLEj6Z1xlFQ.woff2) format('woff2');
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
+}*/
 
 
 * {
@@ -98,6 +98,8 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
+    width: auto;
+    height: auto;
 }
 
 :root {
@@ -214,7 +216,7 @@ nav {
         }
 
     nav .logo-name .logo_name {
-        font-size: 22px;
+        font-size: 1.5vw;
         font-weight: 600;
         color: var(--text-color);
         margin-left: 14px;
@@ -261,7 +263,7 @@ body.dark li a:hover:before {
 }
 
 .menu-items li a i {
-    font-size: 24px;
+    font-size: 1.5vw;
     min-width: 45px;
     height: 100%;
     display: flex;
@@ -271,7 +273,7 @@ body.dark li a:hover:before {
 }
 
 .menu-items li a .link-name {
-    font-size: 18px;
+    font-size: 1.5vw;
     font-weight: 400;
     color: var(--black-light-color);
     transition: var(--tran-05);
@@ -375,7 +377,7 @@ nav.close ~ .dashboard .top {
 }
 
 .dashboard .top .sidebar-toggle {
-    font-size: 26px;
+    font-size: 1.5vw;
     color: var(--text-color);
     cursor: pointer;
 }
@@ -394,7 +396,7 @@ nav.close ~ .dashboard .top {
     height: 100%;
     width: 150%;
     color: var(--text-color);
-    font-size: 15px;
+    font-size: 1.5vw;
     font-weight: 400;
     outline: none;
 }
@@ -402,7 +404,7 @@ nav.close ~ .dashboard .top {
 .dash-content .title .search-box i {
     position: absolute;
     left: 9px;
-    font-size: 22px;
+    font-size: 1.5vw;
     /*z-index: 10;*/
     top: 62%;
     transform: translateY(-50%);
@@ -435,11 +437,11 @@ nav.close ~ .dashboard .top {
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 24px;
+        font-size: 1.5vw;
     }
 
     .dash-content .title .text {
-        font-size: 24px;
+        font-size: 1.5vw;
         font-weight: 500;
         color: var(--text-color);
         margin-left: 10px;
@@ -464,19 +466,19 @@ nav.close ~ .dashboard .top {
     }
 
 .boxes .box i {
-    font-size: 35px;
+    font-size: 1.5vw;
     color: var(--text-color);
 }
 
 .boxes .box .text {
     white-space: nowrap;
-    font-size: 18px;
+    font-size: 1.5vw;
     font-weight: 500;
     color: var(--text-color);
 }
 
 .boxes .box .number {
-    font-size: 40px;
+    font-size: 1.5vw;
     font-weight: 500;
     color: var(--text-color);
 }
@@ -507,13 +509,13 @@ nav.close ~ .dashboard .top {
 }
 
 .activity-data .data-title {
-    font-size: 20px;
+    font-size: 1.5vw;
     font-weight: 500;
     color: var(--text-color);
 }
 
 .activity-data .data .data-list {
-    font-size: 18px;
+    font-size: 1.5vw;
     font-weight: 400;
     margin-top: 20px;
     white-space: nowrap;
@@ -875,7 +877,7 @@ input[type="text"], select, textarea {
 .close {
     color: #aaa;
     float: right;
-    font-size: 28px;
+    font-size: 1.5vw;
     font-weight: bold;
 }
 
@@ -910,7 +912,7 @@ input[type="text"], select, textarea {
 .close {
     color: #aaa;
     float: right;
-    font-size: 28px;
+    font-size: 1.5vw;
     font-weight: bold;
 }
 
@@ -930,11 +932,10 @@ input[type="text"], select, textarea {
     width: 550px;
     margin: 0 auto;
     padding: 30px;
-    /*border: 1px solid #000;*/
-    font-size: 10px; /* Adjust font size for printing if needed */
-    line-height: 1.4; /* Optional: adjust line height for print */
-    margin: 0; /* Optional: remove margins for printing */
-    padding: 0; /* Optional: remove padding for printing */
+    font-size: 1.5vw;
+    line-height: 1.4; 
+    margin: 0; 
+    padding: 0;
     page-break-inside: avoid;
 }
 

@@ -15,7 +15,9 @@ xhr.onreadystatechange = function () {
 };
 xhr.send();
 
-
+document.querySelectorAll('input').forEach(function (input) {
+    input.setAttribute('autocomplete', 'off');
+});
 function sidemenu() {
     const body = document.querySelector("body"),
         modeToggle = body.querySelector(".mode-toggle");
@@ -68,7 +70,18 @@ function sidemenu() {
         channel.close();
     });
 }
+$(document).ready(function () {
+    // When a menu item is clicked
+    $(".nav-links li a").click(function (e) {
+        e.preventDefault(); // Prevent default action (e.g., navigating to the link)
 
+        // Remove 'active' class from all items
+        $(".menu-item").removeClass("active");
+
+        // Add 'active' class to the clicked item
+        $(this).addClass("active");
+    });
+});
 function alert(data,type) {
     $('#alertMessage').text(data);
     $('.alert').addClass(type);

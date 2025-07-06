@@ -27,6 +27,7 @@ function getproduct(data) {
                 { name: 'Customer_Name', label: 'Customer Name', width: 18 },
                 { name: 'Customer_Mobile_Number', label: 'Mobile Number', width: 10, editable: false },
                 { name: 'Invoice_No', label: 'Invoice No', width: 18, editable: false },
+                { name: 'Date', label: 'Invoice Date', width: 18, editable: false },
                 { name: 'Total_Amount', label: 'Total Amount', width: 14, editable: false },
                 { name: 'Payment_terms', label: 'Payment terms', width: 14, editable: false },
                 {
@@ -35,30 +36,46 @@ function getproduct(data) {
                     width: 14,
                     sortable: false,
                     formatter: function (cellValue, options, rowObject) {
-                            return `<a href="javascript:void(0);" class="bi bi-pencil-square edit-icon" data-id="${rowObject.id}" title="Edit"></a>`;
+                        var disable=''
+                        if (rowObject["Actionenable"] == 'N') {
+                            disable = "disable";
+                        }
+                        return `<a href="javascript:void(0);" class="bi bi-pencil-square edit-icon ` + disable +`" data-id="${rowObject.id}" title="Edit"></a>`;
                     }
                 }
             ],
             datatype: 'local',
             data: products,
-            height: 495,
+            height: 465,
             width: 1185,
             treeGrid: false,
             viewrecords: true,
+            emptyrecords: "No records found",
+            loadonce: false,
+            pager: "#returnbillpager",
+            rowNum: 20,
+            //gridComplete: function () {
 
-            loadonce: false
+            //    var rows = $("#returnbillgrid").jqGrid('getRowData');
+            //    if (rows.length === 0) {
+            //        $(".ui-jqgrid-bdiv").html('<div style="text-align:center; padding:20px; font-size:16px; color:red;">No data available</div>');
+            //    }
+
+            //},
 
         });
     
         const returnBillsearchtxt = document.getElementById('returnBillsearch');
-        returnBillsearchtxt.addEventListener('input', function () {
+    returnBillsearchtxt.addEventListener('input', function () {
+        
             $("#returnbillgrid").jqGrid('setGridParam', {
+                data: products,
                 postData: {
                     filters: JSON.stringify({
                         groupOp: "AND",
                         rules: [
                             {
-                                field: "Customer_Mobile_Number",
+                                field: "Invoice_No",
                                 op: "cn",
                                 data: returnBillsearchtxt.value
                             }
@@ -67,7 +84,46 @@ function getproduct(data) {
                 },
                 search: true,
             }).trigger("reloadGrid");
-        });     
+        
+        });   
+        const returnBillsearchDatetxt = document.getElementById('returnBillsearchDate');
+    returnBillsearchDatetxt.addEventListener('input', function () {
+        if (returnBillsearchDatetxt.value) {
+            $("#returnbillgrid").jqGrid('setGridParam', {
+                postData: {
+                    filters: JSON.stringify({
+                        groupOp: "AND",
+                        rules: [
+                            {
+                                field: "Date",
+                                op: "cn",
+                                data: formatDate(returnBillsearchDatetxt.value)
+                            }
+                        ]
+                    })
+                },
+                search: true,
+            }).trigger("reloadGrid");
+        }
+        else {
+            $("#returnbillgrid").jqGrid('setGridParam', {
+                data: products,
+                postData: {
+                    filters: JSON.stringify({
+                        groupOp: "AND",
+                        rules: [
+                            {
+                                field: "Invoice_No",
+                                op: "cn",
+                                data: returnBillsearchtxt.value
+                            }
+                        ]
+                    })
+                },
+                search: true,
+            }).trigger("reloadGrid");
+        }
+    });     
     $(document).off('click', '.edit-icon').on('click', '.edit-icon', function () {
         var rowId = $(this).data('id');
         const popup = document.getElementById("myModal");
@@ -109,7 +165,11 @@ function getproduct(data) {
     });
     
 }
-
+function formatDate(dateStr) {
+    var datetimeParts = dateStr.split(' ');  // Split by space (for datetime)
+    var dateParts = datetimeParts[0].split('-');  // Split by '/'
+    return dateParts[2] + '/' + dateParts[1] + '/' + dateParts[0];  // Return in yyyy-mm-dd format
+}
 function getBilledproducts(data) {
     billedproducts = JSON.parse(data.PostServiceCallResult).Table;
     initialbilleddetails = JSON.parse(data.PostServiceCallResult).Table;
@@ -162,6 +222,8 @@ function getBilledproducts(data) {
         viewrecords: true,
         multiselect: true,
         loadonce: false,
+        pager: "#returnproductpager",
+        rowNum: 10,
         gridComplete: function () {
 
             $('#returnproductgrid td[aria-describedby="returnproductgrid_Qty"]').removeAttr('title');
@@ -179,7 +241,9 @@ function getBilledproducts(data) {
                     $(this).find('.qty-display').text('0'); // Update the display to 0
                 }
             });
-        }
+           
+        },
+        emptyrecords: "No data available"
     });
     
     const returnproductsearchtxt = document.getElementById('returnproductsearch');
@@ -261,7 +325,7 @@ function returnconfirm() {
     var gridData = $("#returnproductgrid").jqGrid('getGridParam', 'data');
     var status = [];
     $.each(gridData, function (index, row) {
-        if (row.return == '0') {
+        if (row.return == '0' || row.return == undefined) {
             status.push('N')
         }
         else {
@@ -279,11 +343,11 @@ function returnconfirm() {
         var jsonArray = [];
 
         $.each(gridData, function (index, row) {
-                if (!(row.Billed_Items_Pk_ID == initialbilleddetails[index].Billed_Items_Pk_ID && (row.Qty - row.return) == initialbilleddetails[index].Qty)) {
+            if (!(row.return == '0' || row.return == undefined)) {
                     var jsonObject = {
                         ItemSNo: row.Billed_Items_Pk_ID,
                         ItemName: row.Item_Name,
-                        Qty: row.Qty,
+                        Qty: row.return,
                         ItemValue: row.Item_Total_Amount
                     };
                     jsonArray.push(jsonObject);
@@ -300,41 +364,75 @@ function returnconfirm() {
     }
 }
 function generatePDF(data) {
-    var gridData = $("#returnproductgrid").jqGrid('getRowData');
+    //var gridData = $("#returnproductgrid").jqGrid('getRowData');
 
-    var htmlContent = '<table border="1" style="width: 100%; border-collapse: collapse;">';
-    htmlContent += '<thead><tr>';
-    htmlContent += '<th>Item ID</th><th>Item Name</th><th>MRP Rate</th><th>Sell Price</th><th>Quantity</th><th>Item Total</th>';
-    htmlContent += '</tr></thead><tbody>';
+    //var htmlContent = '<table border="1" style="width: 100%; border-collapse: collapse;">';
+    //htmlContent += '<thead><tr>';
+    //htmlContent += '<th>Item ID</th><th>Item Name</th><th>MRP Rate</th><th>Sell Price</th><th>Quantity</th><th>Item Total</th>';
+    //htmlContent += '</tr></thead><tbody>';
 
-    // Loop through the jqGrid data and add each row to the table
-    gridData.forEach(function (row) {
-        htmlContent += '<tr>';
-        htmlContent += '<td>' + row.Billed_Items_Pk_ID + '</td>';
-        htmlContent += '<td>' + row.Item_Name + '</td>';
-        htmlContent += '<td>' + row.MRP_Rate + '</td>';
-        htmlContent += '<td>' + row.SellPrice + '</td>';
-        htmlContent += '<td>' + row.Qty + '</td>';
-        htmlContent += '<td>' + row.Item_Total_Amount + '</td>';
-        htmlContent += '</tr>';
-    });
+    //// Loop through the jqGrid data and add each row to the table
+    //gridData.forEach(function (row) {
+    //    htmlContent += '<tr>';
+    //    htmlContent += '<td>' + row.Billed_Items_Pk_ID + '</td>';
+    //    htmlContent += '<td>' + row.Item_Name + '</td>';
+    //    htmlContent += '<td>' + row.MRP_Rate + '</td>';
+    //    htmlContent += '<td>' + row.SellPrice + '</td>';
+    //    htmlContent += '<td>' + row.Qty + '</td>';
+    //    htmlContent += '<td>' + row.Item_Total_Amount + '</td>';
+    //    htmlContent += '</tr>';
+    //});
 
-    htmlContent += '</tbody></table>';
+    //htmlContent += '</tbody></table>';
 
-    // Insert the table into the content div
-    document.getElementById('content').innerHTML = htmlContent;
+    //// Insert the table into the content div
+    //document.getElementById('content').innerHTML = htmlContent;
 
-    // Now, use jsPDF to generate the PDF from the content div
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
+    //// Now, use jsPDF to generate the PDF from the content div
+    //const { jsPDF } = window.jspdf;
+    //const doc = new jsPDF();
 
-    // Get the content of the div
-    doc.html(document.getElementById('content'), {
-        callback: function (doc) {
-            doc.save('jqgrid-data.pdf'); // Save the PDF
-        },
-        margin: 10,
-        x: 10,
-        y: 10
-    });
+    //// Get the content of the div
+    //doc.html(document.getElementById('content'), {
+    //    callback: function (doc) {
+    //        doc.save('jqgrid-data.pdf'); // Save the PDF
+    //    },
+    //    margin: 10,
+    //    x: 10,
+    //    y: 10
+    //});
+    console.log(data.PostServiceCallResult);
+    var data = JSON.parse(data.PostServiceCallResult)
+
+    var tabledata = ''
+    if (data.Table.length > 0) {
+
+        for (var i = 0; i < data.Table.length; i++) {
+            tabledata += '<tr><td>' + data.Table[i].Sno + '</td>'
+                + '<td>' + data.Table[i].Item_Name + '</td>'
+                + '<td>' + data.Table[i].Qty + '</td>'
+                + '<td>' + data.Table[i].SellPrice + '</td>'
+                + '<td>' + data.Table[i].Item_Total_Amount + '</td>'
+                + '</tr>'
+        }
+    }
+
+
+    $('#bill-items').append(tabledata);
+    const content = document.getElementById('printableArea').innerHTML;
+
+    var options = {
+        margin: [0, 0], // No margins for thermal printer
+        filename: 'document.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'mm', format: [80, 297] } // Width 80mm, height can be adjusted
+    };
+
+    html2pdf().from(content).set(options).save();
+    $("#myModal").css('display', 'none');
+    //finalpopupclear();
+    getItemList();
+    location.reload();
+    
 }

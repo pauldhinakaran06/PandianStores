@@ -158,6 +158,7 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="HTMLPages\Billing.html" />
+    <Content Include="HTMLPages\BillingNew.html" />
     <Content Include="HTMLPages\DashBoard.html" />
     <Content Include="HTMLPages\Login.html" />
     <Content Include="HTMLPages\SideMenu.html" />
@@ -2237,6 +2238,7 @@
     <Content Include="images\snacks.png" />
     <Content Include="images\Staples-and-pulse.png" />
     <Content Include="js\Billing.js" />
+    <Content Include="js\BillingNew.js" />
     <Content Include="js\common.js" />
     <Content Include="js\Common_URL.js" />
     <Content Include="js\DashBoard.js" />
@@ -2307,6 +2309,7 @@
     <Content Include="css\pxiEyp8kv8JHgFVrJJfecg.woff2" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
     <Content Include="Scripts\dialog.js" />
+    <Content Include="Scripts\grid.locale-en.js" />
     <Content Include="Scripts\html2pdf.js" />
     <Content Include="Scripts\jquery-3.6.0.min.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />

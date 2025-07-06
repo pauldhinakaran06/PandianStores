@@ -5,7 +5,7 @@
 
 .alert button {
     padding: 8px 16px;
-    font-size: 25px;
+    font-size: 1.5vw;
     font-weight: 500;
     border-radius: 4px;
     border: none;
@@ -113,12 +113,12 @@
     top: 50%;
     transform: translateY(-50%);
     /*color: #ce8500;*/
-    font-size: 30px;
+    font-size: 1.5vw;
 }
 
 .alert .msg {
     padding: 0 20px;
-    font-size: 18px;
+    font-size: 1.5vw;
     /*color: #ce8500;*/
 }
 
@@ -138,7 +138,7 @@
 
     .alert .close-btn .bi {
         /*color: #ce8500;*/
-        font-size: 22px;
+        font-size: 1.5vw;
         line-height: 40px;
     }
 
