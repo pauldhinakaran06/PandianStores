@@ -139,7 +139,8 @@
     }
 /* === Custom Scroll Bar CSS === */
 ::-webkit-scrollbar {
-    width: 2px;
+    width: 0px;
+    height: 0px;
 }
 
 ::-webkit-scrollbar-track {
@@ -963,3 +964,252 @@ input[type="text"], select, textarea {
     font-weight: bold;
 }
 
+.hiddenTextbox {
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
+    width: 1px !important;
+    height: 1px !important;
+    background-color: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    opacity: 0 !important;
+}
+
+#gbox_grid, #gview_grid {
+    /*background-image: url('../images/Groceryshopping.svg');*/
+    background-color: whitesmoke;
+    background-size: 112%;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.ui-jqgrid tr.jqgroup, .ui-jqgrid tr.jqgrow {
+    background-color: transparent !important;
+}
+
+#gbox_grid td:hover {
+    background-color: #e0e0e0 !important;
+}
+
+.edit-cell {
+    background-color: transparent !important;
+}
+
+#info_dialog {
+    position: fixed;
+    top: 30% !important;
+    left: 40% !important;
+}
+
+input[name="ItemQuantity"] {
+    width: 100%;
+    border: 0px;
+    background-color: transparent !important;
+}
+
+.ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr > td {
+    text-align: center;
+}
+
+.ui-icon-triangle-1-e, .ui-icon-triangle-1-s {
+    display: none;
+}
+
+p {
+    font-size: 1.1vw;
+}
+
+nav {
+    height: auto;
+    width: 14%;
+    border-right: 0px;
+}
+
+.dash-content .title {
+    position: relative;
+    left: 14%;
+    width: 86%;
+}
+
+#gbox_grid td {
+    font-weight: lighter;
+    font-size: 1.1vw;
+}
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+.form-input {
+    width: 50%;
+    padding: 8px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.form-label {
+    width: 50%;
+    display: flex;
+    align-items: center;
+}
+
+.form-group {
+    display: flex;
+    justify-content: space-between;
+}
+
+.bill-header, .bill-footer {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+    .bill-header h2 {
+        margin: 0;
+    }
+
+.bill-table, .bill-summary {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+    .bill-table th, .bill-table td {
+        border-bottom: 1px solid #ddd;
+        padding: 5px;
+        text-align: left;
+    }
+
+    .bill-summary td {
+        padding: 5px;
+        text-align: right;
+    }
+
+    .bill-summary .total {
+        font-weight: bold;
+    }
+
+.footer-message {
+    font-size: 1.1vw;
+    margin-top: 10px;
+    text-align: center;
+}
+
+.autocomplete-active {
+    background-color: grey;
+}
+
+.popup-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /*background: rgba(0, 0, 0, 0.5);*/
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+/* Popup container */
+.popup-container {
+    background: white;
+    padding: 20px 20px 0px 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 500px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+    height: 64%;
+    max-height: 80%;
+    bottom: 0px;
+    right: 0px;
+    position: absolute;
+}
+
+#productsgrid .ui-state-hover {
+    background-color: #dcdcdc !important; /* Light gray background */
+    cursor: pointer;
+}
+
+#gbox_grid .ui-jqgrid-caption {
+    background: aquamarine; /* Your desired color */
+}
+
+.ui-jqgrid-titlebar-close {
+    display: none;
+}
+
+.billclose-btn {
+    position: absolute;
+    right: 25px;
+    top: 25px;
+    background: transparent;
+    border: outset;
+    width: 25px;
+}
+    .billclose-btn:hover {
+        border: ridge;
+    }
+
+.modal.finalpopup-container .popup-container .billclose-btn:hover {
+    border: ridge;
+}
+
+.finalpopup-container {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+    max-height: 85%;
+    position: absolute;
+}
+.finalprintbtn {
+    background-color: aquamarine;
+    border: none;
+    display: flex;
+    justify-self: center;
+    position: relative;
+    top: 6px;
+    width: 30%;
+    padding: 1%;
+    justify-content: center;
+    font-weight: bold;
+}
+
+#pager {
+    background-color: aquamarine;
+}
+
+.ui-jqgrid-htable th {
+    background-color: #e0e0e0 !important;
+    font-size: 1.1vw;
+}
+
+.ui-jqgrid-htable, #grid {
+    width: 100% !important;
+}
+    /* Optional: Change hover color on the column headers */
+    .ui-jqgrid-htable th:hover {
+        background-color: #45a049; /* Lighter shade when hovered */
+    }
+
+h1 {
+    font-size: 2vw;
+}
+
+.refreshbtn {
+    background: aquamarine;
+    width: 6%;
+    border: outset;
+}
+    .refreshbtn:hover {
+        border: ridge;
+    }
+
+#bill-items #gst-summary table tbody {
+    border: 0;
+}

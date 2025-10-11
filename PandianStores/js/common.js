@@ -9,7 +9,9 @@ var xhr = new XMLHttpRequest();
 xhr.open('GET', "SideMenu.html", true);
 xhr.onreadystatechange = function () {
     if (xhr.readyState === 4 && xhr.status === 200) {
-        document.getElementById('Master').innerHTML = xhr.responseText;
+        if (document.getElementById('Master') != null) {
+            document.getElementById('Master').innerHTML = xhr.responseText;
+        }
         sidemenu();
     }
 };
@@ -73,7 +75,7 @@ function sidemenu() {
 $(document).ready(function () {
     // When a menu item is clicked
     $(".nav-links li a").click(function (e) {
-        e.preventDefault(); // Prevent default action (e.g., navigating to the link)
+        //e.preventDefault(); // Prevent default action (e.g., navigating to the link)
 
         // Remove 'active' class from all items
         $(".menu-item").removeClass("active");

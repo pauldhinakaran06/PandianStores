@@ -1,0 +1,271 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Billing Page</title>
+    <link rel="stylesheet" href="../Icons/font/bootstrap-icons.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #d0e3ff;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 6px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+            .header h2 {
+                margin: 0;
+                color: darkblue;
+            }
+
+        .form-section {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .form-group {
+            margin: 10px;
+        }
+
+        label {
+            font-size: 14px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        input, select {
+            padding: 5px;
+            width: 160px;
+        }
+
+        .item-form {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+            .item-form input, .item-form select {
+                width: 120px;
+            }
+
+        .item-buttons {
+            margin-top: 10px;
+        }
+
+            .item-buttons button {
+                margin-right: 10px;
+                padding: 6px 14px;
+                font-weight: bold;
+            }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #aaa;
+            padding: 6px;
+            text-align: center;
+        }
+
+        .summary {
+            float: right;
+            width: 300px;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e3f0ff;
+            border: 1px solid #ccc;
+        }
+
+            .summary h4 {
+                margin-top: 0;
+            }
+
+            .summary p {
+                margin: 5px 0;
+                display: flex;
+                justify-content: space-between;
+            }
+
+        .actions {
+            margin-top: 40px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+            .actions button {
+                padding: 10px 20px;
+                font-weight: bold;
+                border: none;
+                cursor: pointer;
+                color: white;
+                border-radius: 4px;
+            }
+
+        .print:hover {
+            background-color: #e3f0ff;
+        }
+
+        .calc:hover {
+            background-color: #e3f0ff;
+        }
+
+        .save:hover {
+            background-color: #e3f0ff;
+        }
+
+        .cancel:hover {
+            background-color: #e3f0ff;
+        }
+
+        .refresh:hover {
+            background-color: #e3f0ff;
+        }
+
+        .stock:hover {
+            background-color: #e3f0ff;
+        }
+
+        .exit-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            padding: 8px 12px;
+            background: red;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <button class="exit-btn">EXIT</button>
+
+        <div class="header">
+            <h2>Pandian Department Store</h2>
+            <p style="float:inline-start">
+                Date: <input type="date" value="2018-10-08" />
+                Time: <input type="time" value="11:43" />
+                <strong style="margin-left: 20px; font-size: 18px;">BILL</strong>
+            </p>
+        </div><br />
+
+              <div class="form-section" style="float:inline-start">
+                  <div class="form-group">
+                      <label>Bill Number</label>
+                      <input type="text" value="6" readonly />
+                  </div>
+                  <div class="form-group">
+                      <label>Customer</label>
+                      <input type="text" value="Cash" />
+                  </div>
+                  <div class="form-group">
+                      <label>Mobile</label>
+                      <input type="text" />
+                  </div>
+                  <div class="form-group">
+                      <label>GST Type</label>
+                      <select>
+                          <option>CGST</option>
+                          <option>SGST</option>
+                      </select>
+                  </div>
+                  <div class="form-group">
+                      <i class="bi bi-search"></i>
+                  </div>
+              </div><br />
+
+        <!-- Item Input Section -->
+        <div class="item-form" style="float:inline-start">
+            
+        </div>
+        <br />
+
+        <!-- Item Table -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Item Code</th>
+                    <th>Item Name</th>
+                    <th>HSN</th>
+                    <th>Qty</th>
+                    <th>Unit</th>
+                    <th>Rate</th>
+                    <th>Amount</th>
+                    <th>Tax</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>0000001</td>
+                    <td>PULPMIX 800...</td>
+                    <td>---</td>
+                    <td>1</td>
+                    <td>ltr</td>
+                    <td>3289.83</td>
+                    <td>3289.83</td>
+                    <td>610.17</td>
+                    <td>3900</td>
+                </tr>
+                <tr>
+                    <td>0000002</td>
+                    <td>Cream 260 MV</td>
+                    <td>---</td>
+                    <td>1</td>
+                    <td>ltr</td>
+                    <td>425</td>
+                    <td>425</td>
+                    <td>0</td>
+                    <td>425</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Summary Section -->
+        <div class="summary">
+            <h4>Your Shopping</h4>
+            <p><span>Sub Total:</span> <span>3814.83</span></p>
+            <p><span>Total Tax:</span> <span>610.17</span></p>
+            <p><span>Total Amount:</span> <strong>4425</strong></p>
+            <p><span>Discount:</span> <span>0</span></p>
+            <p><span>Net Amount:</span> <strong>4425</strong></p>
+            <p><span>Received Amount:</span> <span>4500</span></p>
+            <p><span>Return Amount:</span> <strong>75</strong></p>
+        </div>
+
+        <!-- Actions -->
+        <div class="actions">
+            <button class="print" onclick="window.print()">Print Bill</button>
+            <button class="calc">Calculator</button>
+            <button class="save">Save</button>
+            <button class="cancel">Cancel</button>
+            <button class="refresh">REFRESH</button>
+            <button class="stock">STOCK MANAGER</button>
+        </div>
+    </div>
+
+</body>
+</html>

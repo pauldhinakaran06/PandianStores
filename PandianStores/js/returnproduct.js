@@ -23,13 +23,14 @@ function getproduct(data) {
         $('#returnBillsearch').focus();
         $("#returnbillgrid").jqGrid({
             colModel: [
-                { name: 'Invoice_Pk_Id', label: 'Id', width: 10, editable: false },
-                { name: 'Customer_Name', label: 'Customer Name', width: 18 },
-                { name: 'Customer_Mobile_Number', label: 'Mobile Number', width: 10, editable: false },
-                { name: 'Invoice_No', label: 'Invoice No', width: 18, editable: false },
-                { name: 'Date', label: 'Invoice Date', width: 18, editable: false },
-                { name: 'Total_Amount', label: 'Total Amount', width: 14, editable: false },
-                { name: 'Payment_terms', label: 'Payment terms', width: 14, editable: false },
+                { name: 'Id', label: 'Id', width: 10, editable: false },
+                { name: 'CustName', label: 'Customer Name', width: 20 },
+                { name: 'CustMobNo', label: 'Mobile Number', width: 20, editable: false },
+                { name: 'InvNo', label: 'Invoice No', width: 25, editable: false },
+                { name: 'BilledDate', label: 'Invoice Date', width: 30, editable: false },
+                { name: 'Total', label: 'Total Amount', width: 20, editable: false },
+                { name: 'Payterms', label: 'Payment terms', width: 20, editable: false },
+                { name: 'Billedby', label: 'Billed By', width: 14, editable: false },
                 {
                     name: 'Action', 
                     index: 'Action',
@@ -46,8 +47,8 @@ function getproduct(data) {
             ],
             datatype: 'local',
             data: products,
-            height: 465,
-            width: 1185,
+            height: 440,
+            width: 1380,
             treeGrid: false,
             viewrecords: true,
             emptyrecords: "No records found",
@@ -75,7 +76,7 @@ function getproduct(data) {
                         groupOp: "AND",
                         rules: [
                             {
-                                field: "Invoice_No",
+                                field: "InvNo",
                                 op: "cn",
                                 data: returnBillsearchtxt.value
                             }
@@ -95,7 +96,7 @@ function getproduct(data) {
                         groupOp: "AND",
                         rules: [
                             {
-                                field: "Date",
+                                field: "BilledDate",
                                 op: "cn",
                                 data: formatDate(returnBillsearchDatetxt.value)
                             }
@@ -113,7 +114,7 @@ function getproduct(data) {
                         groupOp: "AND",
                         rules: [
                             {
-                                field: "Invoice_No",
+                                field: "InvNo",
                                 op: "cn",
                                 data: returnBillsearchtxt.value
                             }
@@ -138,7 +139,7 @@ function getproduct(data) {
         var rowData = $("#returnbillgrid").jqGrid('getRowData', rowId);
         var jdata = {
             str_PageName: 'ReturnData',
-            str_param: 'GetBillDetails^' + rowData.Invoice_Pk_Id +'^' + sessionStorage.getItem('UserID') +'^'
+            str_param: 'GetBillDetails^' + rowData.Id +'^' + sessionStorage.getItem('UserID') +'^'
         }
 
         PostServiceCall(jdata, getBilledproducts);
@@ -176,7 +177,7 @@ function getBilledproducts(data) {
     billedproducts[0].Total_Amount
     $('#totaldiv').html(billedproducts[0].Total_Amount.toFixed(2));
     $('#itemInvoice_Pk_Id').html(billedproducts[0].Invoice_Pk_Id);
-    $('#paymentterms').html(billedproducts[0].Payment_terms);
+    $('#paymentterms').html(billedproducts[0].Payment_Terms);
 
     $("#returnproductgrid").jqGrid('setGridParam', {
         data: billedproducts
@@ -185,8 +186,7 @@ function getBilledproducts(data) {
         colModel: [
             { name: 'Billed_Items_Pk_ID', label: 'item ID', width: 14, editable: false },
             { name: 'Item_Name', label: 'Item Name', width: 18 },
-            { name: 'MRP_Rate', label: 'MRP Rate', width: 10, editable: false },
-            { name: 'SellPrice', label: 'Sell Price', width: 18, editable: false },
+            { name: 'SellPrice', label: 'Item Price', width: 10, editable: false },
             { name: 'Qty', label: 'Quantity', width: 10, editable: true,},
             { name: 'Item_Total_Amount', label: 'Item Total', width: 18, editable: false },
             {
@@ -213,6 +213,7 @@ function getBilledproducts(data) {
                     return $(rowObject).find('.qty-display').text();
                 }
             },
+            { name: 'Return_Total_Amount', label: 'Return Total', width: 18,defaultValue:0 ,editable: false },
         ],
         datatype: 'local',
         data: billedproducts,
@@ -297,7 +298,12 @@ function decrement(e) {
     }
 };
 function updateQuantity(rowId, newQty, itemQty) {
+    var rowData = $("#returnproductgrid").jqGrid('getRowData', rowId);
+
+    var returntotal = rowData.SellPrice * newQty
+
     $("#returnproductgrid").jqGrid('setCell', rowId, 'return', newQty);
+    $("#returnproductgrid").jqGrid('setCell', rowId, 'Return_Total_Amount', returntotal);
     var selectedRowIds = $("#returnproductgrid").jqGrid('getGridParam', 'selarrrow');
     if (!selectedRowIds.includes(rowId)) {
         $("#returnproductgrid").jqGrid('setSelection', rowId);
@@ -348,7 +354,8 @@ function returnconfirm() {
                         ItemSNo: row.Billed_Items_Pk_ID,
                         ItemName: row.Item_Name,
                         Qty: row.return,
-                        ItemValue: row.Item_Total_Amount
+                        SellPrice: row.SellPrice,
+                        ReturnValue: row.Return_Total_Amount
                     };
                     jsonArray.push(jsonObject);
                 }

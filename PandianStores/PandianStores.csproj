@@ -161,6 +161,7 @@
     <Content Include="HTMLPages\BillingNew.html" />
     <Content Include="HTMLPages\DashBoard.html" />
     <Content Include="HTMLPages\Login.html" />
+    <Content Include="HTMLPages\print-template.html" />
     <Content Include="HTMLPages\SideMenu.html" />
     <Content Include="HTMLPages\MasterData.html" />
     <Content Include="HTMLPages\Returnproducts.html" />
