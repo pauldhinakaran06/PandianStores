@@ -1,10 +1,10 @@
 ﻿
-var products = [], editreload = 'N', billedproducts = [], initialbilleddetails=[];
+var products = [], editreload = 'N', billedproducts = [], initialbilleddetails = [];
 getItemList();
 function getItemList() {
     var jdata = {
         str_PageName: 'ReturnData',
-        str_param: 'GetReturnInvoiceDetails^^'+ sessionStorage.getItem('UserID') +'^'
+        str_param: 'GetReturnInvoiceDetails^^' + sessionStorage.getItem('UserID') + '^'
     }
 
     PostServiceCall(jdata, getproduct);
@@ -19,75 +19,78 @@ function getproduct(data) {
         }).trigger("reloadGrid");
         return false;
     }
-        var selectedRow = null;
-        $('#returnBillsearch').focus();
-        $("#returnbillgrid").jqGrid({
-            colModel: [
-                { name: 'Id', label: 'Id', width: 10, editable: false },
-                { name: 'CustName', label: 'Customer Name', width: 20 },
-                { name: 'CustMobNo', label: 'Mobile Number', width: 20, editable: false },
-                { name: 'InvNo', label: 'Invoice No', width: 25, editable: false },
-                { name: 'BilledDate', label: 'Invoice Date', width: 30, editable: false },
-                { name: 'Total', label: 'Total Amount', width: 20, editable: false },
-                { name: 'Payterms', label: 'Payment terms', width: 20, editable: false },
-                { name: 'Billedby', label: 'Billed By', width: 14, editable: false },
-                {
-                    name: 'Action', 
-                    index: 'Action',
-                    width: 14,
-                    sortable: false,
-                    formatter: function (cellValue, options, rowObject) {
-                        var disable=''
-                        if (rowObject["Actionenable"] == 'N') {
-                            disable = "disable";
-                        }
-                        return `<a href="javascript:void(0);" class="bi bi-pencil-square edit-icon ` + disable +`" data-id="${rowObject.id}" title="Edit"></a>`;
+    var selectedRow = null;
+    $('#returnBillsearch').focus();
+    $("#returnbillgrid").jqGrid({
+        colModel: [
+            { name: 'Id', label: 'Id', width: 10, editable: false },
+            { name: 'CustName', label: 'Customer Name', width: 20 },
+            { name: 'CustMobNo', label: 'Mobile Number', width: 20, editable: false },
+            { name: 'InvNo', label: 'Invoice No', width: 25, editable: false },
+            { name: 'BilledDate', label: 'Invoice Date', width: 30, editable: false },
+            { name: 'Total', label: 'Total Amount', width: 20, editable: false },
+            { name: 'Payterms', label: 'Payment terms', width: 20, editable: false },
+            { name: 'Billedby', label: 'Billed By', width: 14, editable: false },
+            {
+                name: 'Action',
+                index: 'Action',
+                width: 14,
+                sortable: false,
+                formatter: function (cellValue, options, rowObject) {
+                    var disable = ''
+                    if (rowObject["Actionenable"] == 'N') {
+                        disable = "disable";
                     }
+                    return `<a href="javascript:void(0);" class="bi bi-pencil-square edit-icon ` + disable + `" data-id="${rowObject.id}" title="Edit"></a>&nbsp&nbsp|&nbsp&nbsp<a href="javascript:void(0);" class="bi bi-printer Print-icon" data-id="${rowObject.id}" title="Print Bill"></a>`;
                 }
-            ],
-            datatype: 'local',
-            data: products,
-            height: 440,
-            width: 1380,
-            treeGrid: false,
-            viewrecords: true,
-            emptyrecords: "No records found",
-            loadonce: false,
-            pager: "#returnbillpager",
-            rowNum: 20,
-            //gridComplete: function () {
+            }
+        ],
+        datatype: 'local',
+        data: products,
+        height: 580,
+        width: 1380,
+        treeGrid: false,
+        viewrecords: true,
+        emptyrecords: "No records found",
+        loadonce: false,
+        pager: "#returnbillpager",
+        rowNum: 20,
+        gridComplete: function () {
+            var $grid = $("#returnbillgrid");
+            var records = $grid.jqGrid("getGridParam", "reccount");
+            $("#noDataImage").remove();
 
-            //    var rows = $("#returnbillgrid").jqGrid('getRowData');
-            //    if (rows.length === 0) {
-            //        $(".ui-jqgrid-bdiv").html('<div style="text-align:center; padding:20px; font-size:16px; color:red;">No data available</div>');
-            //    }
+            if (records === 0 || records == null) {
+                var emptyHtml = `<div id="noDataImage" style="text-align:center; padding:40px;"><img src="images/no-product-found.png" alt="No Records" style="max-width:50%;position: relative;top: 30px;" /></div>`;
 
-            //},
+                $grid.closest(".ui-jqgrid-bdiv").append(emptyHtml);
+            }
+        }
 
-        });
-    
-        const returnBillsearchtxt = document.getElementById('returnBillsearch');
+    });
+
+    const returnBillsearchtxt = document.getElementById('returnBillsearch');
     returnBillsearchtxt.addEventListener('input', function () {
-        
-            $("#returnbillgrid").jqGrid('setGridParam', {
-                data: products,
-                postData: {
-                    filters: JSON.stringify({
-                        groupOp: "AND",
-                        rules: [
-                            {
-                                field: "InvNo",
-                                op: "cn",
-                                data: returnBillsearchtxt.value
-                            }
-                        ]
-                    })
-                },
-                search: true,
-            }).trigger("reloadGrid");
-        
-        });   
-        const returnBillsearchDatetxt = document.getElementById('returnBillsearchDate');
+
+        $("#returnbillgrid").jqGrid('setGridParam', {
+            data: products,
+            postData: {
+                filters: JSON.stringify({
+                    groupOp: "AND",
+                    rules: [
+                        {
+                            field: "InvNo",
+                            op: "cn",
+                            data: returnBillsearchtxt.value
+                        }
+                    ]
+                })
+            },
+            search: true,
+        }).trigger("reloadGrid");
+
+    });
+    const returnBillsearchDatetxt = document.getElementById('returnBillsearchDate');
     returnBillsearchDatetxt.addEventListener('input', function () {
         if (returnBillsearchDatetxt.value) {
             $("#returnbillgrid").jqGrid('setGridParam', {
@@ -124,7 +127,7 @@ function getproduct(data) {
                 search: true,
             }).trigger("reloadGrid");
         }
-    });     
+    });
     $(document).off('click', '.edit-icon').on('click', '.edit-icon', function () {
         var rowId = $(this).data('id');
         const popup = document.getElementById("myModal");
@@ -139,32 +142,32 @@ function getproduct(data) {
         var rowData = $("#returnbillgrid").jqGrid('getRowData', rowId);
         var jdata = {
             str_PageName: 'ReturnData',
-            str_param: 'GetBillDetails^' + rowData.Id +'^' + sessionStorage.getItem('UserID') +'^'
+            str_param: 'GetBillDetails^' + rowData.Id + '^' + sessionStorage.getItem('UserID') + '^'
         }
 
         PostServiceCall(jdata, getBilledproducts);
 
-            //$.each(products, function (index, row) {
-            //    if (row.Invoice_No == rowData.Invoice_No) {
-
-                    
+        //$.each(products, function (index, row) {
+        //    if (row.Invoice_No == rowData.Invoice_No) {
 
 
 
-            //        return false;
-            //    }
 
-            //});
-       
+
+        //        return false;
+        //    }
+
+        //});
+
     });
-    
+
     $(document).off('click', '.delete-icon').on('click', '.delete-icon', function () {
         var rowId = $(this).data('id');
         if (confirm('Are you sure you want to delete this record?')) {
             alert('Delete clicked for row with ID: ' + rowId);
         }
     });
-    
+
 }
 function formatDate(dateStr) {
     var datetimeParts = dateStr.split(' ');  // Split by space (for datetime)
@@ -178,42 +181,51 @@ function getBilledproducts(data) {
     $('#totaldiv').html(billedproducts[0].Total_Amount.toFixed(2));
     $('#itemInvoice_Pk_Id').html(billedproducts[0].Invoice_Pk_Id);
     $('#paymentterms').html(billedproducts[0].Payment_Terms);
-
+    $("#returnproductgrid").jqGrid('clearGridData');
     $("#returnproductgrid").jqGrid('setGridParam', {
         data: billedproducts
     }).trigger("reloadGrid");
     $("#returnproductgrid").jqGrid({
         colModel: [
-            { name: 'Billed_Items_Pk_ID', label: 'item ID', width: 14, editable: false },
-            { name: 'Item_Name', label: 'Item Name', width: 18 },
-            { name: 'SellPrice', label: 'Item Price', width: 10, editable: false },
-            { name: 'Qty', label: 'Quantity', width: 10, editable: true,},
-            { name: 'Item_Total_Amount', label: 'Item Total', width: 18, editable: false },
+            {
+                name: 'ItemSNo', label: 'item ID', width: 14, sortable: false, editable: false
+            },
+            { name: 'Item_Name', label: 'Item Name', width: 18, sortable: false, editable: false },
+            { name: 'SellPrice', label: 'Item Price', width: 10, sortable: false, editable: false },
+            //{ name: 'Qty', label: 'Quantity', width: 10, editable: true,},
+            { name: 'Item_Total_Amount', label: 'Item Total', width: 18, sortable: false, editable: false },
             {
                 name: 'Qty',
                 label: 'Quantity',
-                width: 10,
-                editable: false
+                width: 10, sortable: false,
+                editable: false,
+                sorttype: function (cell) {
+                    return cell == 0 ? 9999999 : parseInt(cell, 10);
+                }
             },
             {
                 name: 'return',
                 label: 'ReturnQuantity',
-                width: 10,
+                width: 15,
                 editable: true,
                 title: '',
+                sortable: false,
                 editoptions: {
                     defaultValue: '0' // Set default value to 0
                 },
                 formatter: function (cellValue, options, rowObject) {
-                    return `<div style="display:flex;justify-content: space-between;"><button class="decrement" onclick="decrement(this);" data-id="${options.rowId}">-</button>
+                    return `<div style="display:flex;justify-content: space-between;cursor: default;"><button style="cursor: pointer;" class="decrement" onclick="decrement(this);" data-id="${options.rowId}">-</button>
                         <span class="qty-display">0</span>
-                        <button class="decrement" onclick="Increment(this);" data-id="${options.rowId}">+</button></div>`;
+                        <button class="decrement" style="cursor: pointer;" onclick="Increment(this);" data-id="${options.rowId}">+</button></div>`;
                 },
                 unformat: function (cellValue, options, rowObject) {
                     return $(rowObject).find('.qty-display').text();
                 }
             },
-            { name: 'Return_Total_Amount', label: 'Return Total', width: 18,defaultValue:0 ,editable: false },
+            { name: 'Return_Total_Amount', label: 'Return Total', width: 18, defaultValue: 0, sortable: false, editable: false },
+            { name: 'Invoice_No', label: 'Invoice_No', width: 18, defaultValue: 0, hidden: true, sortable: false, editable: false },
+            { name: 'Product_Barcode', label: 'Product_Barcode', width: 18, defaultValue: 0, hidden: true, sortable: false, editable: false }
+
         ],
         datatype: 'local',
         data: billedproducts,
@@ -222,13 +234,18 @@ function getBilledproducts(data) {
         treeGrid: false,
         viewrecords: true,
         multiselect: true,
+        multiSort: true,
         loadonce: false,
+        sortname: "ItemSNo",
+        sortorder: "asc",
         pager: "#returnproductpager",
         rowNum: 10,
+
         gridComplete: function () {
 
             $('#returnproductgrid td[aria-describedby="returnproductgrid_Qty"]').removeAttr('title');
-
+            $('#custName').text(billedproducts[0].Customer_Name == "" ? "NA" : billedproducts[0].Customer_Name);
+            $('#custph').text(billedproducts[0].Customer_Mobile_Number == "" ? "NA" : billedproducts[0].Customer_Mobile_Number);
             $(this).find("tr.jqgrow").click(function (e) {
                 // Stop jqGrid from selecting the row when it's clicked
                 e.stopPropagation();
@@ -242,20 +259,25 @@ function getBilledproducts(data) {
                     $(this).find('.qty-display').text('0'); // Update the display to 0
                 }
             });
-           
+
         },
         emptyrecords: "No data available"
     });
-    
+
     const returnproductsearchtxt = document.getElementById('returnproductsearch');
     returnproductsearchtxt.addEventListener('input', function () {
         $("#returnproductgrid").jqGrid('setGridParam', {
             postData: {
                 filters: JSON.stringify({
-                    groupOp: "AND",
+                    groupOp: "OR",
                     rules: [
                         {
                             field: "Item_Name",
+                            op: "cn",
+                            data: returnproductsearchtxt.value
+                        },
+                        {
+                            field: "Product_Barcode",
                             op: "cn",
                             data: returnproductsearchtxt.value
                         }
@@ -271,7 +293,7 @@ function Increment(e) {
     var rowData = $("#returnproductgrid").jqGrid('getRowData', rowId);
     var itemQty = ''
     $.each(initialbilleddetails, function (billedindex, billedrow) {
-        if (billedrow.Billed_Items_Pk_ID == rowData.Billed_Items_Pk_ID) {
+        if (billedrow.ItemSNo == rowData.ItemSNo) {
             itemQty = billedrow.Qty
         }
     });
@@ -285,10 +307,10 @@ function decrement(e) {
     var rowId = e.dataset.id;
     var rowData = $("#returnproductgrid").jqGrid('getRowData', rowId);
     //if (billedproducts)
-    var itemQty=''
+    var itemQty = ''
     var currentQty = parseInt(rowData.return, 10);
     $.each(initialbilleddetails, function (billedindex, billedrow) {
-        if (billedrow.Billed_Items_Pk_ID == rowData.Billed_Items_Pk_ID) {
+        if (billedrow.ItemSNo == rowData.ItemSNo) {
             itemQty = billedrow.Qty
         }
     });
@@ -337,7 +359,7 @@ function returnconfirm() {
         else {
             status.push('Y')
         }
-        
+
     });
     if (!status.includes('Y')) {
         alert('Update any item!!..', 'failure');
@@ -350,20 +372,20 @@ function returnconfirm() {
 
         $.each(gridData, function (index, row) {
             if (!(row.return == '0' || row.return == undefined)) {
-                    var jsonObject = {
-                        ItemSNo: row.Billed_Items_Pk_ID,
-                        ItemName: row.Item_Name,
-                        Qty: row.return,
-                        SellPrice: row.SellPrice,
-                        ReturnValue: row.Return_Total_Amount
-                    };
-                    jsonArray.push(jsonObject);
-                }
+                var jsonObject = {
+                    ItemSNo: row.ItemSNo,
+                    ItemName: row.Item_Name,
+                    Qty: row.return,
+                    SellPrice: row.SellPrice,
+                    ReturnValue: row.Return_Total_Amount
+                };
+                jsonArray.push(jsonObject);
+            }
         });
         var data = JSON.stringify(jsonArray, null, 2).replace(/\n/g, '').replace(/\s{2,}/g, ' ').trim(); // Convert array to JSON string
         var jdata = {
             str_PageName: 'ReturnData',
-            str_param: 'ReturnConfirm^' + $('#itemInvoice_Pk_Id').html() + '^' + sessionStorage.getItem('UserID') + '^'+data
+            str_param: 'ReturnConfirm^' + $('#itemInvoice_Pk_Id').html() + '^' + sessionStorage.getItem('UserID') + '^' + data
         }
 
         PostServiceCall(jdata, generatePDF);
@@ -381,7 +403,7 @@ function generatePDF(data) {
     //// Loop through the jqGrid data and add each row to the table
     //gridData.forEach(function (row) {
     //    htmlContent += '<tr>';
-    //    htmlContent += '<td>' + row.Billed_Items_Pk_ID + '</td>';
+    //    htmlContent += '<td>' + row.ItemSNo + '</td>';
     //    htmlContent += '<td>' + row.Item_Name + '</td>';
     //    htmlContent += '<td>' + row.MRP_Rate + '</td>';
     //    htmlContent += '<td>' + row.SellPrice + '</td>';
@@ -441,5 +463,19 @@ function generatePDF(data) {
     //finalpopupclear();
     getItemList();
     location.reload();
-    
+
+}
+$(document).off('click', '.Print-icon').on('click', '.Print-icon', function () {
+    var rowId = $(this).data('id');
+    var rowData = $("#returnbillgrid").jqGrid('getRowData', rowId);
+
+    var jdata = {
+        str_PageName: 'PrintBill',
+        str_param: 'BillPrint^' + rowData.InvNo + '^' + sessionStorage.getItem('UserID')
+    }
+
+    PostServiceCall(jdata, returnFinalPrintBill);
+});
+function returnFinalPrintBill(billData) {
+    SendToprint('Bill', billData, '');
 }

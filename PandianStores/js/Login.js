@@ -33,7 +33,13 @@ function Loginsuccess(data) {
     var data = JSON.parse(data);
     if (data.Table[0].Msg == 'Success') {
         sessionStorage.setItem('UserID', $('#txtUserName').val());
-        window.location.href = 'DashBoard.html';
+        sessionStorage.setItem('UserRole', data.Table[0].UserRole);
+        if (data.Table[0].UserRole == 'Admin') {
+            window.location.href = 'DashBoard.html';
+        }
+        else {
+            window.location.href = 'Billing.html';
+        }
     }
     else {
         alert(data.Table[0].Msg);

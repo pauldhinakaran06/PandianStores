@@ -7,6 +7,7 @@
 
     <!----======== CSS ======== -->
     <link rel="stylesheet" href="../css/DashBoard.css">
+    <link rel="stylesheet" href="../css/MasterData.css">
 
     <!----===== Iconscout CSS ===== -->
     <link rel="stylesheet" href="../Icons/font/bootstrap-icons.css">
@@ -15,6 +16,18 @@
 
     <title>Master Data</title>
     <style>
+        .ui-icon bi bi-chevron-right {
+            font-family: "bootstrap-icons";
+            content: "\f285"; /* chevron-right */
+            background: none;
+        }
+
+        .ui-jqgrid .ui-state-highlight {
+            background: #ffffff !important;
+            border: 1px solid #dddddd !important;
+            color: #333333 !important;
+        }
+
         .dash-content .boxes {
             justify-content: start !important;
             margin-top: 5%;
@@ -108,7 +121,7 @@
             border-radius: 10px;
             width: 80%;
             max-width: 550px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 0 10px #000;
             overflow-y: auto;
             height: 46%;
             max-height: 80%;
@@ -117,7 +130,7 @@
             position: absolute;
         }
 
-        #productsgrid .ui-state-hover {
+        #productsgrid .ui-state-hover, #Categorygrid .ui-state-hover, #Brandgrid .ui-state-hover {
             background-color: #dcdcdc !important; /* Light gray background */
             cursor: pointer;
         }
@@ -135,7 +148,7 @@
             font-size: 1.1vw;
         }
 
-        .ui-jqgrid-htable, #productsgrid {
+        .ui-jqgrid-htable, #productsgrid, #Categorygrid, #Brandgrid {
             width: 100% !important;
         }
             /* Optional: Change hover color on the column headers */
@@ -143,8 +156,8 @@
                 background-color: #45a049; /* Lighter shade when hovered */
             }
 
-        #gbox_productsgrid td {
-            font-weight: bold;
+        #gbox_productsgrid td, #gbox_Categorygrid td, #gbox_Brandgrid td {
+            font-weight: 500;
             font-size: 1.1vw;
             text-align: center;
         }
@@ -177,27 +190,31 @@
         .commonconfirm-btn {
             position: relative;
             right: 0px;
-            top: 10px;
+            top: 0px;
             background: aquamarine;
             border: outset;
-            width: 106px;
-            line-height: 15px;
+            width: 135px;
+            line-height: 20px;
             font-weight: bold;
         }
 
-        .popup-container .editproductconfirm-btn:hover {
-            border: ridge;
-        }
+            .popup-container .editproductconfirm-btn:hover, .commonconfirm-btn:hover {
+                border: ridge;
+            }
+
         .edit-icon {
             color: #337ab7 !important;
         }
-        .edit-icon:hover {
-            color: darkblue !important;
-        }
+
+            .edit-icon:hover {
+                color: darkblue !important;
+            }
+
         .span-error {
             display: block;
-            position: absolute;
+            position: relative;
             color: red;
+            top: 17px;
         }
     </style>
 </head>
@@ -207,31 +224,87 @@
     <section id="section" class="dashboard">
         <div class="overview dash-content">
             <div class="title">
-                <i class="bi bi-database"></i>
-                <span class="text">Inventory Details</span>
-                <marquee width="40%" direction="left" height="50px" style="width: 40%;padding: 14px;position: relative;left: 11px;">
+                <img src="/Icons/Gif/inventory.gif" class="menu-gif" alt="Inventory">
+                <span class="text" style="width: 100%;">Inventory Details</span>
+                <marquee direction="left" height="50px" style="width: 60%;padding: 0px;position: relative;left:0px;">
                     This is a sample scrolling text that has scrolls in the upper direction.
                 </marquee>
-                <div class="search-box">
+                <!--<div class="search-box" style="margin: 0 !important;display:flex;">
                     <button class="commonconfirm-btn" onclick="openpopup('AddCategory')">Add Category</button>
                     <button class="commonconfirm-btn" onclick="openpopup('AddBrand')">Add Brand</button>
                     <button class="commonconfirm-btn" onclick="openpopup('AddProduct')">Add Product</button>
-                </div>
-
+                </div>-->
             </div>
-
-            <div id="productsedit" style=" width:100%;display: none;">
-
-                <label for="ProductsCategory" style="margin-left: 14px;">ProductsCategory :  </label>
-                <select id="ProductsCategory" style=" width: 20%; text-align: center;" placeholder="Select Product Category">
-                    <option value="">Select Product Category</option>
-                </select>
-                <label for="ProductsBrand" style="margin-left: 14px;">ProductsBrand :  </label>
-                <select id="ProductsBrand" style=" width: 20%; text-align: center;" placeholder="Select Product Brand">
-                    <option value="">Select Product Brand</option>
-                </select>
-                <label for="Productsearch" style="margin-left: 14px;">Search :  </label>
-                <input type="text" id="Productsearch" style=" width: 20%; text-align: center;" placeholder="Search by Product Name" />
+            <div class="inventorymenu-items">
+                <ul class="inventorylinks" style="display:flex;">
+                    <li>
+                        <a href="#" id="Category" class="menu-item inventorymenuitem" data-target="Categorydiv">
+                            <img src="/Icons/Gif/list.gif" class="menu-gif" alt="Dahsboard">
+                            <span class="link-name" style="width: 100%;">Category </span>
+                        </a>
+                    </li>&nbsp;&nbsp;
+                    <li>
+                        <a href="#" id="Brand" class="menu-item inventorymenuitem" data-target="Branddiv">
+                            <img src="/Icons/Gif/Brand.gif" class="menu-gif" alt="Inventory">
+                            <span class="link-name" style="width: 100%;">Brand </span>
+                        </a>
+                    </li>&nbsp;&nbsp;
+                    <li>
+                        <a href="#" id="Product" class="menu-item inventorymenuitem" data-target="productsdiv">
+                            <img src="/Icons/Gif/bill.gif" class="menu-gif" alt="Billing">
+                            <span class="link-name" style="width: 100%;">Product</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div id="Categorydiv" style=" width: 850px; display: none;">
+                <div style="display: flex;justify-content: space-between;">
+                    <div style="width: 100%;">
+                        <label for="Categorysearch" style="margin-left: 14px;">Search :  </label>
+                        <input type="text" id="Categorysearch" style=" width: 40%; text-align: center;" placeholder="Search by Category Name" />
+                    </div>
+                    <div>
+                        <button class="commonconfirm-btn" onclick="openpopup('AddCategory')" title="Click To Add Category">Add Category</button>
+                    </div>
+                </div>
+                <table id="Categorygrid"></table>
+                <div id="Categorypager"></div>
+            </div>
+            <div id="Branddiv" style=" width: 950px; display: none;">
+                <div style="display: flex;justify-content: space-between;">
+                    <div style="width: 100%;">
+                        <label for="BrandCategory" style="margin-left: 14px;">ProductsCategory :  </label>
+                        <select id="BrandCategory" style=" width: 35%; text-align: center;" placeholder="Select Product Category">
+                            <option value="">Select Product Category</option>
+                        </select>
+                        <label for="Brandsearch" style="margin-left: 14px;">Search :  </label>
+                        <input type="text" id="Brandsearch" style=" width: 30%; text-align: center;" placeholder="Search by Brand Name" />
+                    </div>
+                    <div>
+                        <button class="commonconfirm-btn" onclick="openpopup('AddBrand')" title="Click To Add Brand">Add Brand</button>
+                    </div>
+                </div>
+                <table id="Brandgrid"></table>
+                <div id="Brandpager"></div>
+            </div>
+            <div id="productsdiv" style=" width: 1380px; display: none;">
+                <div style="display: flex;justify-content: space-between;">
+                    <div style="width: 100%;">
+                        <label for="ProductsCategory" style="margin-left: 14px;">ProductsCategory :  </label>
+                        <select id="ProductsCategory" style=" width: 20%; text-align: center;" placeholder="Select Product Category">
+                            <option value="">Select Product Category</option>
+                        </select>
+                        <label for="ProductsBrand" style="margin-left: 14px;">ProductsBrand :  </label>
+                        <select id="ProductsBrand" style=" width: 20%; text-align: center;" placeholder="Select Product Brand">
+                            <option value="">Select Product Brand</option>
+                        </select>
+                        <label for="Productsearch" style="margin-left: 14px;">Search :  </label>
+                        <input type="text" id="Productsearch" style=" width: 20%; text-align: center;" placeholder="Search by Product Name" />
+                    </div>
+                    <div>
+                        <button class="commonconfirm-btn" onclick="openpopup('AddProduct')" title="Click To Add Product">Add Product</button>
+                    </div>
+                </div>
                 <table id="productsgrid"></table>
                 <div id="productspager"></div>
             </div>
@@ -284,140 +357,182 @@
                     </div>
                 </div>
             </div>
-
-            <div id="Addproductpopup" class="popup-overlay">
-                <div class="popup-container" style="top: 25%;left: 34%;">
-                    <h2 style="text-align: center; background: aquamarine; font-size: 1.5vw; font-weight: bold; margin-top: 0px; margin-bottom: 14px; ">
-                        Add Product Detail
-                        <button class="billclose-btn" onclick="closeHeader('Addproduct')">X</button>
-                    </h2>
-                    <div>
-                        <div id="divBrand" class="product brand col-md-6 padding" style="left: 7%;">
-                            <label for="txtCategory">Category</label> <br />
-                            <input id="txtCategory" name="txtCategory" onkeyup="getCategoryList('Add');" placeholder="Enter Category.." autocomplete="off">
-                            <div id="Category-list" class="categorylist autocomplete-items"></div>
-                            <span id="spnCategory" class="span-error"></span>
-                        </div>
-                        <div id="divName" class="product col-md-6 padding">
-                            <label for="txtBrand">Brand</label> <br />
-                            <input id="txtBrand" name="txtBrand" onkeyup="getBrandList('Add');" placeholder="Enter Text.." autocomplete="off">
-                            <div id="Brand-list" class="brandlist autocomplete-items"></div>
-                            <span id="spnBrand" class="span-error"></span>
-
-                        </div>
-                        <div id="divBarcode" class="product col-md-6 padding" style="left: 7%;">
-                            <label for="txtBarcode">Barcode</label>
-                            <input id="txtBarcode" name="txtBarcode" placeholder="Enter Product Name.." autocomplete="off">
-                            <span id="spnBarcode" class="span-error"></span>
-                        </div>
-                        <div id="divProductName" class="product col-md-6 padding">
-                            <label for="txtProductName">Product Name</label>
-                            <input id="txtProductName" name="txtProductName" placeholder="Enter Product Name.." autocomplete="off">
-                            <span id="spnProductName" class="span-error"></span>
-                        </div>
-                        <div id="divBuyprice" class="product col-md-6 padding" style="left: 7%;">
-                            <label for="txtbuyprice">Buy Price</label>
-                            <input id="txtbuyprice" name="txtbuyprice" placeholder="Enter buy Price .." autocomplete="off">
-                            <span id="spnBuyprice" class="span-error"></span>
-                        </div>
-                        <div id="divMrpPrice" class="product col-md-6 padding">
-                            <label for="txtmrp">MRP Price</label>
-                            <input id="txtmrp" name="txtmrp" placeholder="Enter MRP.." autocomplete="off">
-                            <span id="spnMrpPrice" class="span-error"></span>
-                        </div>
-                        <div id="divSellprice" class="product col-md-6 padding" style="left: 7%;">
-                            <label for="txtsellprice">selling Price</label>
-                            <input id="txtsellprice" name="txtsellprice" placeholder="Enter Selling Price .." autocomplete="off">
-                            <span id="spnSellprice" class="span-error"></span>
-                        </div>
-                        <div id="divQuantity" class="product col-md-6 padding">
-                            <label for="txtquantity">No. of Quantity</label>
-                            <input id="txtquantity" name="txtquantity" placeholder="Enter Quantity.." autocomplete="off">
-                            <span id="spnQuantity" class="span-error"></span>
-                        </div>
-                        <div id="AddProductconfirm" class="Product col-md-6 padding">
-                            <button class="editproductconfirm-btn" id="addproductClear" style="left: 60%;" onclick="btnClear('Addproduct');">Clear</button>
-                            <button class="editproductconfirm-btn" id="addproductconfirm" style="left: 100%;" onclick="btnconfirm('Addproduct')">Confirm</button>
+            <div id="Addcategorypopup" class="modal">
+                <div class="card Addcategorypopup" id="Addcategorypopup">
+                    <button class="billclose-btn" style=" top: 18px;" onclick="closeHeader('AddCategory')">X</button>
+                    <h3 style="background-color: aquamarine; display: flex; justify-content: center; margin-bottom: 10px; ">Add Category Detail</h3>
+                    <div id="Ledger" style=" width:100%;">
+                        <div>
+                            <div class="gradient-box p-5 rounded-2xl">
+                                <div class="row">
+                                    <div class="floating-group" title="Enter Category">
+                                        <input type="text" id="txtaddCategory" placeholder=" " onkeydown="if(event.key==='Enter'){event.preventDefault();AddData('AddCategory');}">
+                                        <label class="floating-label" for="txtaddCategory">Category<span style="color:red;">*</span></label>
+                                    </div>
+                                    <div class="floating-group" style="top: -12px;">
+                                        <button type="button" class="common-btn" id="Addcat" style=" width: 80px; height: 28px;" onclick="AddData('AddCategory')">ADD</button>
+                                        <!--<button type="button" class="common-btn" id="Clearcat" style=" width: 80px; height: 28px;" onclick="btnClear('AddCategory');">Clear</button>-->
+                                    </div>
+                                </div>
+                            </div>
+                            <table id="tblcategory">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>category</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="Categorydatarow">
+                                    <tr><td colspan="9" class="text-center">No records found</td></tr>
+                                </tbody>
+                            </table>
+                            <div class="floating-group right-corner">
+                                <button type="button" class="common-btn" id="Clearcat" style=" width: 80px; height: 28px;" onclick="btnClear('AddCategory');">Clear All</button>
+                                <button type="button" class="common-btn" style=" width: 80px; height: 28px;" id="addcategoryconfirm" onclick="btnconfirm('AddCategory')">Confirm</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <div id="AddBrandpopup" class="modal">
+                <div class="card AddBrandpopup" id="AddBrandpopup">
+                    <button class="billclose-btn" style=" top: 18px;" onclick="closeHeader('AddBrand')">X</button>
+                    <h3 style="background-color: aquamarine; display: flex; justify-content: center; margin-bottom: 10px; ">Add Brand Detail</h3>
+                    <div id="Ledger" style=" width:100%;">
+                        <div>
+                            <div class="gradient-box p-5 rounded-2xl">
+                                <div class="row">
+                                    <div class="floating-group" title="Select Category">
+                                        <input id="txtbrandCategory" name="txtbrandCategory" onkeyup="getCategoryList('Brand');" placeholder=" " style=" margin-bottom: 3px !important;" autocomplete="off">
+                                        <label class="floating-label" for="txtbrandCategory">Category<span style="color:red;">*</span></label>
+                                        <div id="brandCategory-list" class="categorylist autocomplete-items" style="width: calc(100% - 86%);left: calc(100% - 70.8%);"></div>
 
-            <div id="Addcategorypopup" class="popup-overlay">
-                <div class="popup-container" style="top: 25%; left: 34%;">
-                    <h2 style="text-align: center; background: aquamarine; font-size: 1.5vw; font-weight: bold; margin-top: 0px; margin-bottom: 14px; ">
-                        Add Category Detail
-                        <button class="billclose-btn" onclick="closeHeader('AddCategory')">X</button>
-                    </h2>
-                    <div style="position: relative;z-index: 10000;">
-                        <div id="divAddcat" class="brand category col-md-3 padding">
-                            <label for="txtaddCategory">Category</label> <br />
-                            <input id="txtaddCategory" name="txtaddCategory" placeholder="Enter Category.." autocomplete="off">
+                                    </div>
+                                    <div class="floating-group" title="Enter Brand">
+                                        <input type="text" id="txtaddBrand" disabled placeholder=" " onkeydown="if(event.key==='Enter'){event.preventDefault();AddData('AddBrand');}">
+                                        <label class="floating-label" for="txtaddBrand">Brand<span style="color:red;">*</span></label>
+                                    </div>
+                                    <div class="floating-group" style="top: -12px;">
+                                        <button type="button" class="common-btn" id="AddBrand" style=" width: 80px; height: 28px;" onclick="AddData('AddBrand')">ADD</button>
+                                        <!--<button type="button" class="common-btn" id="Clearcat" style=" width: 80px; height: 28px;" onclick="btnClear('AddCategory');">Clear</button>-->
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="divtblBrand">
+                                <table id="tblBrand">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>category</th>
+                                            <th>Brand</th>
+                                            <th style="display:none;">cat_ID</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="Branddatarow">
+                                        <tr><td colspan="9" class="text-center">No records found</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="floating-group right-corner">
+                                <button type="button" class="common-btn" id="Clearbrand" style=" width: 80px; height: 28px;" onclick="btnClear('AddBrand');">Clear All</button>
+                                <button type="button" class="common-btn" style=" width: 80px; height: 28px;" id="addbrandconfirm" onclick="btnconfirm('AddBrand')">Confirm</button>
+                            </div>
                         </div>
-                        <div id="CategoryAdd" class="category col-md-6 padding">
-                            <button class="editproductconfirm-btn" id="Addcat" style="right: 67px;top: 160%;" onclick="AddData('AddCategory')">ADD</button>
-                            <button class="editproductconfirm-btn" id="Clearcat" style="top: 160%;" onclick="btnClear('AddCategory');">Clear</button>
-                            <button class="editproductconfirm-btn" style="left: 110%;top: 150%;" id="addcategoryconfirm" onclick="btnconfirm('AddCategory')">Confirm</button>
-
-                        </div>
-                    </div>
-                    <br />
-                    <br />
-                    <div id="divtblcategory" style="max-height: 200px;overflow-y: scroll;position: relative;right: 14%;top: 8%;">
-                        <table class="custom-table" id="tblcategory" style="display:none;">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>category</th>
-                                </tr>
-                            </thead>
-                            <tbody id="Categorydatarow">
-                            </tbody>
-                        </table>
                     </div>
                 </div>
             </div>
-            <div id="AddBrandpopup" class="popup-overlay">
-                <div class="popup-container" style="top: 25%; left: 34%;">
-                    <h2 style="text-align: center; background: aquamarine; font-size: 1.5vw; font-weight: bold; margin-top: 0px; margin-bottom: 14px; ">
-                        Add Brand Detail
-                        <button class="billclose-btn" onclick="closeHeader('AddBrand')">X</button>
+            <div id="AddProductpopup" class="modal">
+                <div class="card AddProductpopup" id="AddProductpopup">
+                    <button class="billclose-btn" style=" top: 18px;" onclick="closeHeader('AddProduct')">X</button>
+                    <h3 style="background-color: aquamarine; display: flex; justify-content: center; margin-bottom: 10px; ">Add Product Detail</h3>
+                    <div id="Ledger" style=" width:100%;">
+                        <div>
+                            <div class="gradient-box p-5 rounded-2xl">
+                                <div class="row">
+                                    <div class="floating-group" title="Category">
+                                        <input type="text" class="product" id="txtCategory" style=" margin-bottom: 0 !important;" placeholder=" " onkeyup="getCategoryList('Add');" onkeydown="if(event.key==='Enter'){event.preventDefault();}">
+                                        <label class="floating-label" for="txtCategory">Category<span style="color:red;">*</span></label>
+                                        <div id="Category-list" class="categorylist autocomplete-items" style="width: calc(100% - 86%);left: calc(100% - 70.8%);"></div>
+                                       
+                                    </div>
+                                    <div class="floating-group" title="Brand">
+                                        <input type="text"  class="product" id="txtBrand" style=" margin-bottom: 0 !important;" placeholder=" " onkeyup="getBrandList('Add');" onkeydown="if(event.key==='Enter'){event.preventDefault();}">
+                                        <label class="floating-label" for="txtBrand">Brand<span style="color:red;">*</span></label>
+                                        <div id="Brand-list" class="brandlist autocomplete-items" style="width: calc(100% - 86%);left: calc(100% - 70.8%);"></div>
+                                       
+
+                                    </div>
+                                    <div class="floating-group" title="Barcode">
+                                        <input type="text"  class="product" id="txtBarcode"  placeholder=" ">
+                                        <label class="floating-label" for="txtBarcode">Barcode<span style="color:red;">*</span></label>
+                                      
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="floating-group" title="Product Name">
+                                        <input type="text"  class="product" id="txtProductName"  placeholder=" ">
+                                        <label class="floating-label" for="txtProductName">Product Name<span style="color:red;">*</span></label>
+                                       
+                                    </div>
+                                    <div class="floating-group" title="Buy Price">
+                                        <input type="text"  class="product" id="txtbuyprice"  placeholder=" ">
+                                        <label class="floating-label" for="txtbuyprice">Buy Price<span style="color:red;">*</span></label>
+                                        
+                                    </div>
+                                    <div class="floating-group" title="MRP Price">
+                                        <input type="text" id="txtmrp" placeholder=" " >
+                                        <label class="floating-label" for="txtmrp">MRP Price<span style="color:red;">*</span></label>
+                                       
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="floating-group" title="Selling Price">
+                                        <input type="text"  class="product" id="txtsellprice" placeholder=" " >
+                                        <label class="floating-label" for="txtsellprice">Selling Price<span style="color:red;">*</span></label>
+                                        
+                                    </div>
+                                    <div class="floating-group" title="No. of Quantity">
+                                        <input type="text"  class="product" id="txtquantity" placeholder=" " >
+                                        <label class="floating-label" for="txtquantity">No. of Quantity<span style="color:red;">*</span></label>
+                                        
+                                    </div>
+                                    <div class="floating-group" title="GST%">
+                                        <input type="text"  class="product" id="txtGST" placeholder=" " >
+                                        <label class="floating-label" for="txtGST">GST%<span style="color:red;">*</span></label>
+                                        
+                                    </div>
+                                </div>
+                                <!--<div class="row">-->
+                                    <!--<div id="AddProductconfirm" class="Product col-md-6 padding">
+                                        <button class="editproductconfirm-btn" id="addproductClear" style="left: 60%;" onclick="btnClear('Addproduct');">Clear</button>
+                                        <button class="editproductconfirm-btn" id="addproductconfirm" style="left: 100%;" onclick="btnconfirm('Addproduct')">Confirm</button>
+                                    </div>-->
+                                    <!--<div class="floating-group" style="top: -12px;">
+                                        <button type="button" class="common-btn" id="Addcat" style=" width: 80px; height: 28px;" onclick="AddData('AddCategory')">ADD</button>-->
+                                        <!--<button type="button" class="common-btn" id="Clearcat" style=" width: 80px; height: 28px;" onclick="btnClear('AddCategory');">Clear</button>-->
+                                    <!--</div>
+                                </div>-->
+                            </div>
+                            
+                            <div class="floating-group right-corner">
+                                    <span class="span-error"></span>
+                                    <button type="button" class="common-btn" id="Clearcat" style=" width: 80px; height: 28px;" onclick="btnClear('Addproduct');">Clear All</button>
+                                    <button type="button" class="common-btn" style=" width: 80px; height: 28px;" id="addcategoryconfirm" onclick="btnconfirm('Addproduct')">Confirm</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="popup-overlay" id="labelPopup">
+                <div class="popup-container" style="top: 40%; left: 50%; transform: translate(-50%, -50%); width: 25%; height: 15%;">
+                    <h2 style="text-align: center; background: aquamarine; font-size: 16px; font-weight: bold; margin-top: 0px; margin-bottom: 14px; ">
+                        Enter Label Rows Count
+                        <button class="billclose-btn" onclick="closeHeader('labelPopup')" style="top: 17px;">X</button>
                     </h2>
-                    <div style="position: relative;z-index: 10000;">
-                        <div id="BrandAddconfirm" class="category col-md-6 padding">
-                            <button class="editproductconfirm-btn" id="Clearbrnd" style="left:136%;top: 0%;" onclick="btnClear('AddBrand');">Clear</button>
-                            <button class="editproductconfirm-btn" style="left: 170%;top: 0%;" id="addbrandconfirm" onclick="btnconfirm('AddBrand')">Confirm</button>
-                        </div>
-                        <br />
-                        <div id="divAddBrand" class="product brand col-md-5 padding">
-                            <label for="txtbrandCategory">Category</label> <br />
-                            <input id="txtbrandCategory" name="txtbrandCategory" onkeyup="getCategoryList('Brand');" placeholder="Enter Category.." autocomplete="off">
-                            <div id="brandCategory-list" class="categorylist autocomplete-items"></div>
-                        </div>
-                        <div id="divaddbrnd" class="brand category col-md-3 padding" style="display: contents;">
-                            <label for="txtaddBrand">Brand</label> <br />
-                            <input id="txtaddBrand" name="txtaddBrand" placeholder="Enter Brand.." autocomplete="off">
-                            <button class="editproductconfirm-btn" id="addbrnd" style="top: 0%; position:relative;" onclick="AddData('AddBrand')">ADD</button>
-
-                        </div>
-                        <!--<div id="BrandAddclear" class="category col-md-6 padding">
-                        </div>-->
-
-                    </div>
-                    <div id="divtblBrand" style="max-height: 200px; overflow-y: scroll; position: relative; left: 22%;width: 60%;">
-                        <table class="custom-table" id="tblBrand" style="display:none;">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>category</th>
-                                    <th>Brand</th>
-                                    <th style="display:none;">cat_ID</th>
-                                </tr>
-                            </thead>
-                            <tbody id="Branddatarow">
-                            </tbody>
-                        </table>
-                    </div>
+                    <input type="number" id="labelCount" min="1" style="width: 50%;" />
+                    <button id="Labelconfirm" style=" background: aquamarine; border: outset; width: 60px; line-height: 18px;" onclick="confirmLabel(this)">OK</button>
                 </div>
             </div>
         </div>
@@ -432,13 +547,15 @@
         </div>
     </div>
     <script src="../Scripts/jquery-3.7.0.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <!--<link rel="stylesheet" href="../css/bootstrap.min.css">-->
+    <link rel="stylesheet" href="../Icons/font/bootstrap-icons.css">
     <link rel="stylesheet" href="../css/customalert.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="../Scripts/jquery-3.6.0.min.js"></script>
+    <script src="../scripts/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../css/jquery-ui.css">
     <link rel="stylesheet" href="../css/jqgrid.css">
     <script src="../Scripts/jquery-3.6.0.min.js"></script>
+    <script src="../Scripts/Tailwind.js"></script>
     <!--<script src="../Scripts/dialog.js"></script>-->
     <script src="../Scripts/jquery.jqgrid.min.js"></script>
     <script src="../js/Common_URL.js"></script>

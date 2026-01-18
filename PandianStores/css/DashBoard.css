@@ -345,7 +345,7 @@ body.dark .switch:before {
 
 .dashboard {
     position: relative;
-    left: 250px;
+    left: 200px;
     background-color: var(--panel-color);
     min-height: 100vh;
     width: calc(100% - 250px);
@@ -354,7 +354,7 @@ body.dark .switch:before {
 }
 
 nav.close ~ .dashboard {
-    left: 73px;
+    left: 70px;
     width: calc(100% - 73px);
 }
 
@@ -649,7 +649,7 @@ table {
 }
 
 table, th, td {
-    border: 1px solid #ddd;
+    /*border: 1px solid #ddd;*/
 }
 
 th, td {
@@ -1021,15 +1021,14 @@ p {
 }
 
 nav {
-    height: auto;
     width: 14%;
     border-right: 0px;
 }
 
 .dash-content .title {
     position: relative;
-    left: 14%;
-    width: 86%;
+    /*left: 14%;*/
+    width: 100%;
 }
 
 #gbox_grid td {
@@ -1212,4 +1211,177 @@ h1 {
 
 #bill-items #gst-summary table tbody {
     border: 0;
+}
+.custom-dropdown {
+    position: relative;
+    width: 60px;
+    user-select: none;
+    font-family: "Segoe UI", sans-serif;
+}
+
+.selected {
+    background: linear-gradient(135deg, #f0f0f0, #e0f7f7);
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 4px 12px 4px 12px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+    .selected:hover {
+        border-color: #00bfa6;
+        box-shadow: 0 0 6px rgba(0,191,166,0.3);
+    }
+
+.options {
+    display: none;
+    position: absolute;
+    top: 105%;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    z-index: 10;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.option {
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #e0f7f7;
+}
+
+    .option:hover {
+        background: linear-gradient(135deg, #00bfa6, aquamarine);
+        color: #fff;
+    }
+
+
+.calendar {
+    position: absolute;
+    top: 52px;
+    left: 0;
+    background: white;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    z-index: 999;
+    width: 260px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.calendar.hidden {
+    display: none;
+}
+
+.calendar table {
+    width: 100%;
+    text-align: center;
+}
+
+.calendar th {
+    padding: 6px;
+    color: #4a90e2;
+    font-weight: bold;
+}
+
+.calendar td {
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 6px;
+}
+
+    .calendar td:hover {
+        background: #4a90e2;
+        color: white;
+    }
+
+.no-scroll {
+    overflow: hidden;
+    height: 100%;
+}
+
+/* Common menu alignment */
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    /*padding: 10px 16px;*/
+}
+
+/* GIF icon styling */
+.menu-gif {
+    width: 50px;
+    height: 35px;
+    object-fit: contain;
+    position:relative;
+    left:4px;
+}
+
+/* Hover effect */
+.menu-item:hover {
+    background-color: rgba(13, 110, 253, 0.08);
+    border-radius: 6px;
+}
+
+/* Active menu */
+.menu-item.active {
+    background-color: rgba(13, 110, 253, 0.15);
+    color: var(--primary-color);
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+.blink {
+    animation: blink 1s linear infinite;
+}
+
+/* Scrollable menu */
+.nav-links {
+    flex: 1; /* take remaining space */
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Fixed bottom section */
+.logout-mode {
+    border-top: 1px solid #e5e7eb;
+    padding-top: 10px;
+    margin-top: auto; /* push to bottom */
+    background: #fff; /* match sidebar */
+}
+
+/* Active menu item */
+.menu-item.active {
+    background-color: rgba(13, 110, 253, 0.15);
+    color: #0d6efd;
+    border-radius: 6px;
+}
+
+    /* Active GIF highlight */
+    .menu-item.active .menu-gif {
+        filter: drop-shadow(0 0 4px rgba(13,110,253,0.6));
+    }
+
+    /* Optional: active left indicator */
+    .menu-item.active::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: #0d6efd;
+        border-radius: 0 4px 4px 0;
+    }
+.Print-icon:hover {
+    filter: drop-shadow(0 0 4px rgba(13,110,253,0.6));
 }

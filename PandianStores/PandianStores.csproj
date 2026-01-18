@@ -149,17 +149,20 @@
     <Content Include="css\bootstrap.rtl.min.css" />
     <Content Include="css\customalert.css" />
     <Content Include="css\DashBoard.css" />
+    <Content Include="css\flatpickr.min.css" />
     <Content Include="css\fonticon.css" />
     <Content Include="css\jqgrid.css" />
+    <Content Include="css\Ledger.css" />
     <Content Include="css\line.css" />
     <Content Include="css\Login.css" />
+    <Content Include="css\MasterData.css" />
     <Content Include="css\theme.css" />
     <Content Include="Default.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="HTMLPages\Billing.html" />
-    <Content Include="HTMLPages\BillingNew.html" />
     <Content Include="HTMLPages\DashBoard.html" />
+    <Content Include="HTMLPages\Ledger.html" />
     <Content Include="HTMLPages\Login.html" />
     <Content Include="HTMLPages\print-template.html" />
     <Content Include="HTMLPages\SideMenu.html" />
@@ -1282,6 +1285,11 @@
     <Content Include="Icons\geo.svg" />
     <Content Include="Icons\gift-fill.svg" />
     <Content Include="Icons\gift.svg" />
+    <Content Include="Icons\Gif\bill.gif" />
+    <Content Include="Icons\Gif\book.gif" />
+    <Content Include="Icons\Gif\dashboard.gif" />
+    <Content Include="Icons\Gif\inventory.gif" />
+    <Content Include="Icons\Gif\return.gif" />
     <Content Include="Icons\git.svg" />
     <Content Include="Icons\github.svg" />
     <Content Include="Icons\gitlab.svg" />
@@ -2244,6 +2252,7 @@
     <Content Include="js\Common_URL.js" />
     <Content Include="js\DashBoard.js" />
     <Content Include="HTMLPages\LoadJs.js" />
+    <Content Include="js\Ledger.js" />
     <Content Include="js\Login.js" />
     <Content Include="js\MasterData.js" />
     <Content Include="js\MasterPage.js" />
@@ -2308,9 +2317,11 @@
     <Content Include="css\bootstrap.rtl.min.css.map" />
     <Content Include="css\pxiByp8kv8JHgFVrLEj6Z1xlFQ.woff2" />
     <Content Include="css\pxiEyp8kv8JHgFVrJJfecg.woff2" />
+    <Content Include="Reports\BillPrint.ashx" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
+    <Content Include="Scripts\chart.js" />
     <Content Include="Scripts\dialog.js" />
-    <Content Include="Scripts\grid.locale-en.js" />
+    <Content Include="Scripts\flatpickr.js" />
     <Content Include="Scripts\html2pdf.js" />
     <Content Include="Scripts\jquery-3.6.0.min.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
@@ -2319,6 +2330,7 @@
     <Content Include="Scripts\jquery-3.7.0.slim.min.js" />
     <Content Include="Scripts\jquery.jqgrid.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\Tailwind.js" />
     <Content Include="Scripts\WebForms\DetailsView.js" />
     <Content Include="Scripts\WebForms\Focus.js" />
     <Content Include="Scripts\WebForms\GridView.js" />
@@ -2379,6 +2391,11 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reports\BillPrint.ashx.cs">
+      <DependentUpon>BillPrint.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Reports\LabelLayout.cs" />
+    <Compile Include="Reports\RawPrinterHelper.cs" />
     <Compile Include="Site.Master.cs">
       <DependentUpon>Site.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

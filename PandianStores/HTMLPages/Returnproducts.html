@@ -148,15 +148,19 @@
             }
 
         #gbox_returnbillgrid td {
+            font-weight: bold;
             font-size: 1.1vw;
             text-align: center;
+        }
+        .edit-icon {
+            color: #337ab7 !important;
         }
 
         #gbox_returnproductgrid td {
+            font-weight: bold;
             font-size: 1.1vw;
             text-align: center;
         }
-
         .billclose-btn {
             position: absolute;
             right: 24px;
@@ -216,6 +220,15 @@
             pointer-events: none;
             color: darkgray;
         }
+        .ui-jqgrid .s-ico {
+            display: none !important;
+        }
+        .ui-jqgrid-sort-order {
+            display: none !important;
+        }
+        .ui-jqgrid-btable tr.jqgrow:hover {
+            cursor: default !important;
+        }
     </style>
 </head>
 <body>
@@ -242,8 +255,12 @@
                     <h3 style="background-color: aquamarine; display: flex; justify-content: center; margin-bottom: 10px; ">Product Details</h3>
                     <div id="returnproduct" style=" width:100%;">
                         <div>
-                            <label for="returnproductsearch" style="margin-left: 14px;">Invoice No.:  </label>
-                            <input type="text" id="returnproductsearch" style=" width: 20%; text-align: center;" placeholder="Search by Invoice No." />
+                            <div style="display: flex;">
+                                <label for="returnproductsearch" style=" margin: 14px 14px 0px 0px;">Search :  </label>
+                                <input type="text" id="returnproductsearch" style="width: 25%; text-align: center; margin: 8px 14px 6px 0px; padding: 4px; " placeholder="Search by Product Barcode & Name." />
+                                <h5 style="font-size: 15px; margin: 14px 14px 0px 0px;">Customer Name : </h5><P id="custName" style="position: relative; margin: 14px 14px 0px 0px; width: auto; max-width: 12%; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;"></P>
+                                <h5 style="font-size: 15px; margin: 14px 14px 0px 0px;">Customer Ph.No : </h5><P id="custph" style="position: relative; width: 10%; margin: 14px 14px 0px 0px;"></P>
+                            </div>
                             <div style="display: flex; right: 80px; top: 20px; position: absolute; ">
                                 <h3>Total : </h3><h4 style="top: 2px;position: relative;">&nbsp;₹&nbsp;</h4><h4 id="totaldiv" style="top: 2px;position: relative;"></h4><h6>&nbsp;by&nbsp;</h6><h4 id="paymentterms"></h4>
                             </div>
@@ -252,8 +269,8 @@
                         <table id="returnproductgrid"></table>
                         <div id="returnproductpager"></div>
                         <!--<div style="display: flex;">
-            <h3>Total : </h3><h4 style="margin-top: 23px;">&nbsp;₹&nbsp;</h4><h4 style="margin-top: 23px;" id="totaldiv"></h4><h6 style="margin-top: 26px;">&nbsp;by&nbsp;</h6><h4 style="margin-top: 23px;" id="paymentterms"></h4>
-        </div>-->
+                            <h3>Total : </h3><h4 style="margin-top: 23px;">&nbsp;₹&nbsp;</h4><h4 style="margin-top: 23px;" id="totaldiv"></h4><h6 style="margin-top: 26px;">&nbsp;by&nbsp;</h6><h4 style="margin-top: 23px;" id="paymentterms"></h4>
+                        </div>-->
                         <h1 id="itemInvoice_Pk_Id" style="display:none"></h1>
                     </div>
                     <button style=" background-color: aquamarine; border: none; display: flex; justify-self: center; position: relative; top: 5px;cursor:pointer; " onclick="returnconfirm();">Check Out</button>
@@ -322,6 +339,7 @@
     <link rel="stylesheet" href="../css/customalert.css">
     <!--<script src="../Scripts/bootstrap.min.js"></script>-->
     <link rel="stylesheet" href="../Icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../css/jquery-ui.css">
     <link rel="stylesheet" href="../css/jqgrid.css">
     <script src="../Scripts/jquery-3.6.0.min.js"></script>
     <!--<script src="../Scripts/dialog.js"></script>-->

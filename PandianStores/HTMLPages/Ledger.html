@@ -1,0 +1,164 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ledger Details</title>
+    <link rel="stylesheet" href="../css/flatpickr.min.css">
+    <script src="../Scripts/flatpickr.js"></script>
+
+</head>
+<body>
+    <style>
+        
+    </style>
+    <nav id="Master">
+    </nav>
+    <section id="section" class="dashboard">
+        <div class="overview dash-content">
+            <div class="title">
+                <i class="bi bi-cart-x"></i>
+                <span class="text">Ledger Details</span>
+                <button class="common-btn" onclick="openLedgerpopup()" style="position: absolute; right: 0; padding: 5px;">Add Ledger Details</button>
+
+            </div>
+            <div id="ledger " style=" width:100%;">
+
+                <label for="compnamesearch" style="margin-left: 14px;">Company Name</label>
+                <input type="text" id="compnamesearch" style=" width: 20%; text-align: center;" placeholder="Search by Company Name." />
+                <label for="ledgersearchDate" style="margin-left: 14px;">Date:  </label>
+                <input type="date" id="ledgersearchDate" style=" width: 20%; text-align: center;" placeholder="Search by Date." />
+                <table id="ledgergrid"></table>
+                <div id="ledgerpager"></div>
+            </div>
+            <div id="LedgerModal" class="modal">
+                <div class="card Ledgerpopup" id="Ledgerpopup">
+                    <button class="billclose-btn" style=" top: 18px;" onclick="closeLedgerpopup()">X</button>
+                    <h3 style="background-color: aquamarine; display: flex; justify-content: center; margin-bottom: 10px; ">Ledger Details</h3>
+                    <div id="Ledger" style=" width:100%;">
+                        <div>
+                            <div class="gradient-box p-5 rounded-2xl">
+                                <div class="row">
+
+                                    <div class="floating-group" title="Enter Dealer Name">
+                                        <input type="text" id="dealerName" placeholder=" ">
+                                        <label class="floating-label" for="dealerName">Dealer Name <span style="color:red;">*</span></label>
+                                    </div>
+
+                                    <div class="floating-group" title="Enter Description">
+                                        <input type="text" id="Description" placeholder=" ">
+                                        <label class="floating-label" for="Description">Description <span style="color:red;">*</span></label>
+                                    </div>
+
+                                    <div class="floating-group" title="Select Date">
+                                        <input type="text" id="dealerDate" placeholder=" ">
+                                        <label class="floating-label" for="dealerDate">Date of Purchase <span style="color:red;">*</span></label>
+                                        <div id="calendar" class="calendar hidden"></div>
+                                        <a href="javascript:void(0);" onclick="PickProduct();" class="edit-icon" title="Pick Product"></a>
+                                    </div>
+                                </div>
+                                <div class="row">
+
+                                    <div class="floating-group" title="Pick Product Category">
+                                        <input type="text" id="Category" disabled placeholder=" ">
+                                        <label class="floating-label floating-label-disabled" for="Category">Category <span style="color:red;">*</span></label>
+                                    </div>
+
+                                    <div class="floating-group" title="Pick Product Brand">
+                                        <input type="text" id="Brand" disabled placeholder=" ">
+                                        <label class="floating-label floating-label-disabled" for="Brand">Brand <span style="color:red;">*</span></label>
+                                    </div>
+
+                                    <div class="floating-group" title="Pick Product Name">
+                                        <input type="text" id="Product" disabled placeholder=" ">
+                                        <label class="floating-label floating-label-disabled" for="Product">Product Name <span style="color:red;">*</span></label>
+
+                                        <input type="text" id="hdnproductID" hidden>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="radio-block" title="Select Amount Type">
+                                        <input type="radio" name="AmountType" class="hidden" id="InAmount" value="In">
+                                        <label for="InAmount" style="color: darkgrey;">InAmount </label>
+
+                                        <input type="radio" name="AmountType" value="Out" class="hidden" id="OutAmount">
+                                        <label for="OutAmount" style="color: darkgrey;">OutAmount </label>
+                                        <span style="color:red;">*</span>
+                                    </div>
+                                    <div class="floating-group" title="Enter Amount">
+                                        <input type="text" id="Amount" placeholder=" ">
+                                        <label class="floating-label" for="Amount">Amount <span style="color:red;">*</span></label>
+                                    </div>
+                                    <div class="floating-group">
+                                        <button type="button" class="common-btn" style=" width: 121px; height: 36px;" onclick="addLedger()">Add Entry</button>
+                                        <button type="button" class="common-btn" style=" width: 121px; height: 36px;" onclick="cleartxt()">Clear</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <table id="ledgerTable">
+                                <thead>
+                                    <tr>
+                                        <th>S.No.</th>
+                                        <th>Dealer Name</th>
+                                        <th>Description</th>
+                                        <th>Date of Purchase</th>
+                                        <th>Category</th>
+                                        <th>Brand</th>
+                                        <th>Product Name</th>
+                                        <th>Amount type</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td colspan="9" class="text-center">No records found</td></tr>
+                                </tbody>
+                            </table>
+                            <div class="floating-group right-corner">
+                                <button type="button" class="common-btn" style=" width: 121px; height: 36px;" onclick="popupClear();">Clear All</button>
+                                <button type="button" class="common-btn" style=" width: 121px; height: 36px;" onclick="confirmledger();">Confirm</button>
+                            </div>
+                            <div id="popup" class="popup-overlay">
+                                <div class="popup-container" style=" right: 31%; bottom: 40%;">
+                                    <h2 style="text-align: center; background: aquamarine;">
+                                        Product Details
+                                        <button class="billclose-btn" style="top: 17px;" onclick="closeHeader('productlist')">X</button>
+                                    </h2>
+                                    <label for="Productsearch">Search :  </label>
+                                    <input type="text" id="Productsearch" style=" width: 55%; text-align: center;" placeholder="Search by Product Name" />
+                                    <button class="refreshbtn" onclick="getproduct('productrefresh');"><i class="bi bi-arrow-clockwise"></i></button>
+                                    <table id="productsgrid"></table>
+                                    <div id="productspager"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="alert hide">
+            <span class="bi bi-exclamation-circle"></span>
+            <span id="alertMessage" class="msg"></span>
+            <div class="close-btn" onclick="closeAlert();">
+                <span class="bi bi-x"></span>
+            </div>
+        </div>
+    </section>
+    <link rel="stylesheet" href="../css/customalert.css">
+    <!--<script src="../Scripts/bootstrap.min.js"></script>-->
+    <link rel="stylesheet" href="../Icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../css/jqgrid.css">
+    <script src="../Scripts/jquery-3.6.0.min.js"></script>
+    <!--<script src="../Scripts/dialog.js"></script>-->
+    <script src="../Scripts/jquery.jqgrid.min.js"></script>
+    <script src="../Scripts/html2pdf.js"></script>
+    <link rel="stylesheet" href="../css/DashBoard.css">
+    <link rel="stylesheet" href="../css/Ledger.css">
+    <link rel="stylesheet" href="../css/customalert.css">
+    <script src="../Scripts/Tailwind.js"></script>
+    <script src="../js/Common_URL.js"></script>
+    <script src="../js/common.js"></script>
+    <script src="../js/Ledger.js"></script>
+</body>
+</html>

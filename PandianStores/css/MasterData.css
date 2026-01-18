@@ -1,0 +1,425 @@
+﻿.ledger-container {
+    max-width: 800px;
+    margin: auto;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+h2 {
+    text-align: center;
+}
+
+form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+input, textarea, button {
+    margin: 5px !important;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    text-align: center;
+    color: black !important;
+}
+
+    button.common-btn {
+        position: relative;
+        right: 0px;
+        top: 10px;
+        background: aquamarine;
+        border: outset;
+        width: 200px;
+        line-height: 15px;
+        font-weight: bold;
+    }
+
+        button.common-btn:hover {
+            border: ridge;
+        }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: -15px;
+}
+
+th, td {
+    padding: 8px;
+    text-align: center;
+    /*border: 1px solid #ddd;*/
+}
+
+th {
+    background-color: aquamarine !important;
+    color: black;
+}
+/*
+nav.close ~ .dashboard {
+    left: 50px !important;
+    top: -15px !important;
+    width: calc(100% - 73px) !important;
+}
+*/
+.popup-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.popup-container {
+    background: white;
+    padding: 20px 20px 0px 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 550px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+    height: 46%;
+    max-height: 80%;
+    position: absolute;
+}
+
+.billclose-btn {
+    position: absolute;
+    right: 24px;
+    top: 21px;
+    background: transparent;
+    border: outset;
+    width: 28px;
+    line-height: 15px;
+}
+
+.popup-container .billclose-btn:hover {
+    border: ridge;
+}
+
+.modal.Addcategorypopup .popup-container .billclose-btn:hover, .modal.AddBrandpopup .popup-container .billclose-btn:hover, .modal.AddProductpopup .popup-container .billclose-btn:hover {
+    border: ridge;
+}
+
+.Addcategorypopup, .AddBrandpopup, .AddProductpopup {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+    max-height: 80%;
+    position: absolute;
+    height: 55%;
+}
+.Addcategorypopup, .AddBrandpopup, .AddProductpopup {
+    overflow: auto;
+    scrollbar-width: thin;
+    scrollbar-color: darkgrey transparent;
+}
+
+    .Addcategorypopup::-webkit-scrollbar, .AddBrandpopup::-webkit-scrollbar, .AddProductpopup::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .Addcategorypopup::-webkit-scrollbar-thumb, .AddBrandpopup::-webkit-scrollbar-thumb, .AddProductpopup::-webkit-scrollbar-thumb {
+        background: darkgrey;
+    }
+
+.row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.floating-group {
+    position: relative;
+}
+
+    .floating-group input {
+        padding: 1px 0px;
+        margin-bottom: 20px !important;
+    }
+
+        .floating-group input:disabled {
+            background: #f5f5f5;
+        }
+
+.floating-label {
+    position: absolute;
+    left: 12px;
+    top: 6px;
+    color: #777;
+    padding: 0 4px;
+    transition: 0.2s ease;
+    pointer-events: none;
+}
+
+.floating-group input:focus + .floating-label,
+.floating-group input:not(:placeholder-shown) + .floating-label,
+.floating-group input.has-value + .floating-label {
+    left: 5px;
+    top: -10px;
+    background: white;
+    font-size: 12px;
+    border-radius: 10px;
+}
+
+.floating-label-disabled {
+    background: whitesmoke !important;
+}
+
+.floating-group input[type="date"]:not(.has-value) + .floating-label {
+    top: 7px;
+    font-size: 16px;
+}
+
+.common-btn {
+    background: aquamarine;
+    border: none;
+    padding: 0px;
+    font-size: 12px;
+    color: #003333;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.25s ease;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+}
+
+    .common-btn:hover {
+        background: #7fffd4;
+        transform: translateY(-2px);
+    }
+
+    .common-btn:active {
+        background: #66e6c0;
+        transform: translateY(0px);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+.radio-block {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    left: 8px;
+    position: relative;
+}
+
+input[type="radio"] + label {
+    cursor: pointer;
+}
+
+input[type="radio"]:checked + label {
+    font-weight: 600;
+    color: black !important;
+}
+
+.right-corner {
+    position: absolute;
+    right: 15px;
+    display: flex;
+    gap: 10px;
+    padding-bottom: 20px;
+}
+.Left-corner {
+    position: absolute;
+    Left: 15px;
+    display: flex;
+    gap: 10px;
+    padding-bottom: 20px;
+}
+
+/*.edit-icon {
+    background-image: url(../images/search.png);
+    background-repeat: no-repeat;
+    background-size: contain;
+    padding: 18px 15px 6px 10px;
+    top: 10px;
+    position: relative;
+    opacity: 0.42;
+    display: inline-block;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+    .edit-icon:hover {
+        opacity: 1;
+        transform: scale(1.15);
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+    }*/
+
+
+.flatpickr-clear-btn {
+    margin: 5px;
+    padding: 5px 10px;
+    background: #ff3b3b;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+    .flatpickr-clear-btn:hover {
+        background: #d63333;
+    }
+
+#gbox_grid, #gview_grid {
+    /*background-image: url('../images/Groceryshopping.svg');*/
+    background-color: whitesmoke;
+    background-size: 112%;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.ui-jqgrid tr.jqgroup, .ui-jqgrid tr.jqgrow {
+    background-color: transparent !important;
+}
+
+.ui-jqgrid-btable tr.jqgrow:hover {
+    background-color: #e0e0e0 !important;
+}
+
+.edit-cell {
+    background-color: transparent !important;
+}
+
+.ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr > td {
+    text-align: center;
+}
+
+.ui-icon-triangle-1-e, .ui-icon-triangle-1-s {
+    display: none;
+}
+
+#ledgergrid .ui-state-hover {
+    background-color: #dcdcdc !important; /* Light gray background */
+    cursor: pointer;
+}
+
+#gbox_grid .ui-jqgrid-caption {
+    background: aquamarine; /* Your desired color */
+}
+
+.ui-jqgrid-titlebar-close {
+    display: none;
+}
+
+.ui-jqgrid-htable, #ledgergrid {
+    width: 100% !important;
+}
+
+#gbox_ledgergrid td {
+    font-size: 1.1vw;
+    text-align: center;
+}
+
+.ui-jqgrid-empty {
+    font-size: 1.1vw;
+    color: #FF0000;
+    text-align: center;
+    padding: 20px;
+}
+
+.ui-jqgrid .s-ico {
+    display: none !important;
+}
+
+.ui-jqgrid-sort-order {
+    display: none !important;
+}
+
+.ui-jqgrid-btable tr.jqgrow:hover {
+    cursor: default !important;
+}
+
+.ui-jqgrid-htable th {
+    background-color: aquamarine !important;
+    font-size: 1.1vw;
+}
+
+.ui-jqgrid-titlebar-close {
+    display: none;
+}
+
+/* Pager container */
+.ui-jqgrid .ui-jqgrid-pager {
+    background: #f8f9fa;
+    /*border-top: 1px solid #dee2e6;*/
+    /*padding: 6px 10px;*/
+    height: auto !important;
+}
+
+/* Pager table */
+.ui-pg-table {
+    height: auto !important;
+}
+
+#ledgerpager_center {
+    width: 629.762px !important;
+}
+/* Pager buttons */
+.ui-jqgrid .ui-pg-button {
+    border: 1px solid #ced4da;
+    background: #ffffff;
+    padding: 4px 8px;
+    margin: 0 3px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+    /* Hover effect */
+    .ui-jqgrid .ui-pg-button:hover:not(.ui-state-disabled) {
+        background: #0d6efd;
+        color: #fff;
+        border-color: #0d6efd;
+    }
+
+/* Disabled buttons */
+.ui-jqgrid .ui-state-disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* Icons inside buttons */
+.ui-jqgrid .ui-icon {
+    font-size: 14px;
+    color: inherit;
+}
+
+/* Page text */
+.ui-jqgrid .ui-paging-info {
+    font-size: 13px;
+    color: #495057;
+    padding-right: 8px;
+}
+
+/* Page input */
+.ui-jqgrid .ui-pg-input {
+    width: 45px;
+    border-radius: 4px;
+    border: 1px solid #ced4da;
+    text-align: center;
+}
+
+/* Remove ugly separators */
+.ui-separator {
+    display: none;
+}
+
+/* Center pager properly */
+.ui-jqgrid-pg-center table {
+    margin: auto !important;
+}
+
+.ui-jqgrid .ui-pg-button:hover:not(.ui-state-disabled) {
+    background: linear-gradient(135deg, #0d6efd, #0b5ed7);
+}
+
+#productsgrid {
+    width: 100% !important;
+}

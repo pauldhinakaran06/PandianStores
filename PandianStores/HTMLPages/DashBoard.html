@@ -13,103 +13,212 @@
     <link rel="stylesheet" href="../Icons/font/bootstrap-icons.css">
 
      <title>Dashboard</title>
+<script src="../Scripts/Tailwind.js"></script>
+  <script src="../Scripts/chart.js"></script>
+  <style>
+    body { background-color: #eef1ff; }
+    .sidebar { background-color: #ffffff; }
+    .card { background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-radius: 20px; }
+    .gradient-box { background: linear-gradient(130deg, black,aquamarine); }
+      section.dashboard {
+          overflow-x: hidden; /* no horizontal scroll */
+          box-sizing: border-box;
+      }
+      .ui-jqgrid-jquery-ui.ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr > td {
+          height: 44px;
+      }
+
+  </style>
 </head>
-<body>
+<body class="flex min-h-screen text-gray-700">
     <nav id="Master">
     </nav>
-    <section id="section" class="dashboard">
-       
-        <div class="overview dash-content">
-            <div class="title">
-                <i class="bi bi-grid"></i>
-                <span class="text">Dashboard</span>
-                <div class="search-box">
-                    <i class="uil uil-search"></i>
-                    <input type="text" placeholder="Search here...">
+    <section class="flex-1 p-8 space-y-8 dashboard" id="section">
+        <div class="overview dash-content" style="width: 95%;">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="gradient-box p-5 text-white rounded-2xl shadow-lg">
+                    <div class="text-xl" style="display: flex;"><img src="/Icons/Gif/totalsale.gif" class="menu-gif" style="left: 0px;" alt="totalsales" /><span style="display: flex;align-items: end;">Total Sales (This Year)</span></div>
+                    <div class="text-4xl font-bold mt-10 text-right" id="TotalsaleYear">₹ 0</div>
+                    <!--<div class="text-xs mt-1 opacity-75">+12% vs Last Year</div>-->
+                </div>
+
+                <div class="gradient-box p-5 text-white rounded-2xl shadow-lg">
+                    <div class="text-xl" style="display: flex;">Sales Summary</div>
+                    <div class="flex justify-between mt-3">
+                        <div>
+                            <div class="text-xl opacity-75">This Week</div>
+                            <div class="text-2xl mt-4 font-bold" id="TotalsaleWeek">₹ 0</div>
+                        </div>
+                        <div>
+                            <div class="text-xl opacity-75">This Month</div>
+                            <div class="text-2xl mt-4 font-bold" id="TotalsaleMonth">₹ 0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gradient-box p-5 text-white rounded-2xl shadow-lg">
+                    <div class="text-sm" style="display: flex;"> <img src="/Icons/Gif/inventory.gif" class="menu-gif" style="left: 0px;" alt="Inventory" /><span style="display: flex;align-items: end;">Inventory</span></div>
+                    <div class="flex justify-between mt-3 space-y-1">
+                        <div>Categories: <b id="catcount">12</b></div>
+                        <div>Brands: <b id="brandcount">25</b></div>
+                        <div>Products: <b id="productcount">320</b></div>
+                    </div>
                 </div>
             </div>
 
-            <div class="boxes">
-                <div class="box box1">
-                    <i class="bi bi-receipt-cutoff"></i>
-                    <span class="text">Total Sale(Week)</span>
-                    <span class="number">50,120</span>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6" style="top: 20px;position: relative;">
+                <div class="card p-5 col-span-2">
+                    <div class="flex justify-between items-center mb-3">
+                        <h2 class="font-semibold text-gray-700" style="display: flex;">Sales Overview</h2>
+                        <div class="custom-dropdown" id="yearDropdown">
+                            <div class="selected" id="selectedYear">Select Year</div>
+                            <div class="options" id="yearOptions"></div>
+                        </div>
+                    </div>
+                    <canvas id="salesChart" height="100"></canvas>
                 </div>
-                <div class="box box2">
-                    <i class="bi bi-receipt-cutoff"></i>
-                    <span class="text">Total Sale(Month)</span>
-                    <span class="number">20,120</span>
+                <div class="card p-5">
+                    <h2 class="font-semibold text-gray-700 mb-2"style="display: flex;">Products Stock</h2>
+                    <ul id="stockheading" class="space-y-2 mb-2 text-sm">
+                        <li class="flex justify-between items-center bg-gray-100 px-3 py-2 rounded-lg">
+                            <span style="font-size: small;font-weight: 700;">Product Id | Product Name</span><span style="font-size: small;font-weight: 700;">Quantity left</span>
+                        </li>
+                    </ul>
+                    <ul id="lowStockList" class="space-y-2 text-sm" style="max-height: 265px;overflow-y: scroll;"></ul>
                 </div>
-                <div class="box box3">
-                    <i class="bi bi-receipt-cutoff"></i>
-                    <span class="text">Total Sale(Year)</span>
-                    <span class="number">10,120</span>
-                </div>
-                <div class="box box1" style="margin-top:10px;">
-                    <i class="glyphicon glyphicon-hdd"></i>
-                    <span class="text">Total Categories</span>
-                    <span class="number">50,120</span>
-                </div>
-                <div class="box box2" style="margin-top:10px;">
-                    <i class="glyphicon glyphicon-hdd"></i>
-                    <span class="text">Total Brands</span>
-                    <span class="number">20,120</span>
-                </div>
-                <div class="box box3" style="margin-top:10px;">
-                    <i class="glyphicon glyphicon-hdd"></i>
-                    <span class="text">Total Products</span>
-                    <span class="number">10,120</span>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6" style="top: 50px; margin-bottom:100px; position: relative;">
+                <div class="recentbills card p-5 col-span-2">
+                    <h2 class="font-semibold text-gray-700 mb-2"style="display: flex;">Recent Bills</h2>
+                    <table id="productbilledgrid"></table>
+                    <div id="productbilledgridpager"></div>
                 </div>
             </div>
         </div>
+        <div style="display:none;">
+            <div id="printableArea">
+                <div class="center bold" style="line-height: 1.2;">Pandian Department Stores</div>
+                <div class="center" style="line-height: 1.2;">2#,Bypass Road,Gummidipoondi</div>
+                <div class="center" style="line-height: 1.4;">GSTIN: 22AAAAA0000A1Z5</div>
+                <hr>
+                <table width="100%" style="font-size: 12px;">
+                    <tr>
+                        <td>Bill #: <span id="Bill-InvoiceNumber"></span></td>
+                        <td class="right" id="bill-payment"></td>
+                    </tr>
+                    <tr>
+                        <td>Cashier: <span id="CashierName"></span></td>
+                        <td class="right">Date: <span id="InvoiceDate"></span></td>
+                    </tr>
+                    <tr>
+                        <td>Counter: <span id="CounterNo">1</span></td>
+                        <td class="right">Time: <span id="InvoiceTime"></span></td>
+                    </tr>
+                </table>
 
-        <div class="activity dash-content">
-            <div class="title">
-                <i class="bi bi-clock-history"></i>
-                <span class="text">Recent Bills </span>
-            </div>
-
-            <div class="activity-data">
-                <table class="table table-bordered table-hover">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>S.No</th>
-                            <th>Name</th>
-                            <th>Total Amount</th>
-                            <th>Action</th>
+                <hr>
+                <table border="1" cellspacing="0" cellpadding="4" width="100%" style="font-size: 12px;border: 0;">
+                    <thead>
+                        <tr class="bold">
+                            <th>Item</th>
+                            <th>Qty</th>
+                            <th>Rate</th>
+                            <th>Amount</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>John Doe</td>
-                            <td>250.00</td>
-                            <td>
-                                <button class="btn btn-info btn-sm"><i class="bi bi-eye"></i> View</button>
-                                <button class="btn btn-warning btn-sm"><i class="bi bi-arrow-return-left"></i> Return Product</button>
-                            </td>
+                    <tbody id="bill-items">
+                    </tbody>
+                </table>
+
+                <hr>
+                <table width="100%" style="font-size: 12px;">
+                    <tr colspan="2">
+                        <td>Total Qty: <span id="bill-total-qty">0</span></td>
+                        <td class="right" style="font-size: 16px;top: 9px;position: relative;">Total Amt: <span id="bill-total-amount">0.00</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Total Items: <span id="bill-total-items">0</span></td>
+                        <td></td>
+                    </tr>
+                </table>
+                <hr>
+                <table width="100%" style="font-size: 12px;" id="cashdiv">
+                    <tr>
+                        <td colspan="2"></td>
+                        <td class="right">Cash Amt: <span id="bill-cash">0.00</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td class="right">Balance: <span id="bill-balance">0.00</span></td>
+                    </tr>
+                </table>
+
+                <hr>
+                <table border="1" cellspacing="0" cellpadding="4" width="100%" style="font-size: 12;border: 0;">
+                    <thead>
+                        <tr class="bold">
+                            <th>Tax %</th>
+                            <th>Taxable</th>
+                            <th>CGST</th>
+                            <th>SGST</th>
+                            <th>Total</th>
                         </tr>
+                    </thead>
+                    <tbody id="gst-summary">
                         <tr>
-                            <td>2</td>
-                            <td>Jane Smith</td>
-                            <td>$180.50</td>
-                            <td>
-                                <button class="btn btn-info btn-sm"><i class="bi bi-eye"></i> View</button>
-                                <button class="btn btn-warning btn-sm"><i class="bi bi-arrow-return-left"></i> Return product</button>
-                            </td>
+                            <td>0%</td>
+                            <td class="right">12.00</td>
+                            <td class="right">0.00</td>
+                            <td class="right">0.00</td>
+                            <td class="right">12.00</td>
                         </tr>
                     </tbody>
                 </table>
+
+                <hr>
+                <div class="center">*** Thank You! Visit Again ***</div>
+            </div>
+        </div>
+        <div id="myModal" class="modal">
+            <div class="returnproductpopup" id="returnproductpopup">
+                <button class="billclose-btn" style=" top: 22px;" onclick="closeHeader('finalpopup')">X</button>
+                <h3 style="background-color: aquamarine; display: flex; justify-content: center; margin-bottom: 10px; ">Product Details</h3>
+                <div id="returnproduct" style=" width:100%;">
+                    <div>
+                        <div style="display: flex;">
+                            <label for="returnproductsearch" style=" margin: 14px 14px 0px 0px;">Search :  </label>
+                            <input type="text" id="returnproductsearch" style="width: 25%; text-align: center; margin: 8px 14px 6px 0px; padding: 4px; " placeholder="Search by Product Barcode & Name." />
+                            <h5 style="font-size: 15px; margin: 14px 14px 0px 0px;">Customer Name : </h5><P id="custName" style="position: relative; margin: 14px 14px 0px 0px; width: auto; max-width: 12%; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;"></P>
+                            <h5 style="font-size: 15px; margin: 14px 14px 0px 0px;">Customer Ph.No : </h5><P id="custph" style="position: relative; width: 10%; margin: 14px 14px 0px 0px;"></P>
+                        </div>
+                        <div style="display: flex; right: 80px; top: 20px; position: absolute; ">
+                            <h3>Total : </h3><h4 style="top: 2px;position: relative;">&nbsp;₹&nbsp;</h4><h4 id="totaldiv" style="top: 2px;position: relative;"></h4><h6>&nbsp;by&nbsp;</h6><h4 id="paymentterms"></h4>
+                        </div>
+                    </div>
+
+                    <table id="returnproductgrid"></table>
+                    <div id="returnproductpager"></div>
+                    <!--<div style="display: flex;">
+                    <h3>Total : </h3><h4 style="margin-top: 23px;">&nbsp;₹&nbsp;</h4><h4 style="margin-top: 23px;" id="totaldiv"></h4><h6 style="margin-top: 26px;">&nbsp;by&nbsp;</h6><h4 style="margin-top: 23px;" id="paymentterms"></h4>
+                </div>-->
+                    <h1 id="itemInvoice_Pk_Id" style="display:none"></h1>
+                </div>
+                <button style=" background-color: aquamarine; border: none; display: flex; justify-self: center; position: relative; top: 5px;cursor:pointer; " onclick="returnconfirm();">Check Out</button>
+                
             </div>
         </div>
     </section>
-   
 
+    <link rel="stylesheet" href="../css/customalert.css">
+    <!--<script src="../Scripts/bootstrap.min.js"></script>-->
+    <link rel="stylesheet" href="../Icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../css/jqgrid.css">
+    <script src="../Scripts/jquery-3.6.0.min.js"></script>
+    <!--<script src="../Scripts/dialog.js"></script>-->
+    <script src="../Scripts/jquery.jqgrid.min.js"></script>
+    <script src="../Scripts/html2pdf.js"></script>
+    <link rel="stylesheet" href="../css/DashBoard.css">
     <script src="../js/Common_URL.js"></script>
-    <script src="../Scripts/jquery-3.7.0.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="../js/common.js"></script>
     <script src="../js/DashBoard.js"></script>
 </body>
