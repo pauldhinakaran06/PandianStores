@@ -10,22 +10,21 @@
 </head>
 <body>
     <style>
-        
     </style>
     <nav id="Master">
     </nav>
     <section id="section" class="dashboard">
         <div class="overview dash-content">
             <div class="title">
-                <i class="bi bi-cart-x"></i>
+                <img src="../Icons/Gif/book.gif" class="menu-gif" alt="Ledger">
                 <span class="text">Ledger Details</span>
-                <button class="common-btn" onclick="openLedgerpopup()" style="position: absolute; right: 0; padding: 5px;">Add Ledger Details</button>
+                <button class="common-btn" onclick="openLedgerpopup()" id="addLedgerdetails" style="position: absolute; right: 0; padding: 5px;">Add Ledger Details</button>
 
             </div>
             <div id="ledger " style=" width:100%;">
 
-                <label for="compnamesearch" style="margin-left: 14px;">Company Name</label>
-                <input type="text" id="compnamesearch" style=" width: 20%; text-align: center;" placeholder="Search by Company Name." />
+                <label for="compnamesearch" style="margin-left: 14px;">Search</label>
+                <input type="text" id="compnamesearch" style=" width: 20%; text-align: center;" placeholder="Search..." />
                 <label for="ledgersearchDate" style="margin-left: 14px;">Date:  </label>
                 <input type="date" id="ledgersearchDate" style=" width: 20%; text-align: center;" placeholder="Search by Date." />
                 <table id="ledgergrid"></table>
@@ -37,84 +36,102 @@
                     <h3 style="background-color: aquamarine; display: flex; justify-content: center; margin-bottom: 10px; ">Ledger Details</h3>
                     <div id="Ledger" style=" width:100%;">
                         <div>
-                            <div class="gradient-box p-5 rounded-2xl">
+                            <div class="gradient-box p-5 rounded-2xl" style="padding-bottom: 0px;">
                                 <div class="row">
-
-                                    <div class="floating-group" title="Enter Dealer Name">
-                                        <input type="text" id="dealerName" placeholder=" ">
+                                    <div class="floating-group dealer-group" title="Enter Dealer Group">
+                                        <input type="text" id="DealerGroup" class="autocomplete-input" placeholder=" " data-listname="DealerGroup-list" onkeyup="getDealerList(event,'Group');">
+                                        <label class="floating-label" for="DealerGroup">Dealer Group<span style="color:red;">*</span></label>
+                                        <div id="DealerGroup-list" class="DealerGrouplist autocomplete-items"></div>
+                                    </div>
+                                    <div class="floating-group dealer-group" title="Enter Dealer Name">
+                                        <input type="text" id="dealerName" class="autocomplete-input" placeholder=" " data-listname="DealerName-list" onkeyup="getDealerList(event,'Name');">
                                         <label class="floating-label" for="dealerName">Dealer Name <span style="color:red;">*</span></label>
+                                        <div id="DealerName-list" class="DealerNamelist autocomplete-items"></div>
                                     </div>
 
-                                    <div class="floating-group" title="Enter Description">
-                                        <input type="text" id="Description" placeholder=" ">
-                                        <label class="floating-label" for="Description">Description <span style="color:red;">*</span></label>
-                                    </div>
-
-                                    <div class="floating-group" title="Select Date">
-                                        <input type="text" id="dealerDate" placeholder=" ">
-                                        <label class="floating-label" for="dealerDate">Date of Purchase <span style="color:red;">*</span></label>
-                                        <div id="calendar" class="calendar hidden"></div>
-                                        <a href="javascript:void(0);" onclick="PickProduct();" class="edit-icon" title="Pick Product"></a>
+                                    <div class="floating-group dealer-group" title="Enter Dealer Mobile No">
+                                        <input type="text" id="dealerMobno" class="autocomplete-input" placeholder=" " maxlength="10" data-listname="Dealermobile-list" onkeyup="getDealerList(event,'Mobile');">
+                                        <label class="floating-label" for="dealerMobno">Dealer Mobile No <span style="color:red;">*</span></label>
+                                        <div id="Dealermobile-list" class="Dealermobilelist autocomplete-items"></div>
                                     </div>
                                 </div>
                                 <div class="row">
+                                    <div class="floating-group dealer-group" title="Select Date">
+                                        <input type="date" id="dealerDate" placeholder=" ">
+                                        <label class="floating-label" for="dealerDate">Date of Purchase <span style="color:red;">*</span></label>
+                                        <div id="calendar" class="calendar hidden"></div>
+                                    </div>
+                                    <div class="radio-block dealer-group" title="Select Amount Type" style="top: 8px;left: 40px;">
+                                        <input type="radio" name="AmountType" class="hidden" id="Credit" value="Credit">
+                                        <label for="Credit" style="color: darkgrey;">Credit </label>
 
+                                        <input type="radio" name="AmountType" value="Debit" class="hidden" id="Debit">
+                                        <label for="Debit" style="color: darkgrey;">Debit </label>
+                                        <span style="color:red;">*</span>
+                                    </div>
+                                    <div class="floating-group dealer-group" title="Enter Amount" style="display: flex;left: 25%;">
+                                        <input type="number" id="Amount" placeholder=" ">
+                                        <label class="floating-label" for="Amount">Amount <span style="color:red;">*</span></label>
+                                        <button type="button" class="common-btn" id="btngo" style="width: 55px; height: 30px; top: 0px; line-height: 0px; padding-right: 40px; " onclick="LedgerGoClick()">Go</button>
+                                    </div>
+                                </div>
+                                <div class="row">
                                     <div class="floating-group" title="Pick Product Category">
                                         <input type="text" id="Category" disabled placeholder=" ">
-                                        <label class="floating-label floating-label-disabled" for="Category">Category <span style="color:red;">*</span></label>
+                                        <label class="floating-label" for="Category">Category <span style="color:red;">*</span></label>
                                     </div>
 
                                     <div class="floating-group" title="Pick Product Brand">
                                         <input type="text" id="Brand" disabled placeholder=" ">
-                                        <label class="floating-label floating-label-disabled" for="Brand">Brand <span style="color:red;">*</span></label>
+                                        <label class="floating-label" for="Brand">Brand <span style="color:red;">*</span></label>
                                     </div>
 
                                     <div class="floating-group" title="Pick Product Name">
                                         <input type="text" id="Product" disabled placeholder=" ">
-                                        <label class="floating-label floating-label-disabled" for="Product">Product Name <span style="color:red;">*</span></label>
+                                        <label class="floating-label" for="Product">Product Name <span style="color:red;">*</span></label>
 
                                         <input type="text" id="hdnproductID" hidden>
+                                    </div>
+                                    <div class="floating-group" title="Enter No.of Quantity">
+                                        <input type="number" id="Quantity" disabled placeholder=" ">
+                                        <label class="floating-label" for="Quantity">No.of Quantity <span style="color:red;">*</span></label>
+                                        <a href="javascript:void(0);" onclick="PickProduct();" id="productpicklist" style="position:absolute;" class="search-icon" title="Pick Product"></a>
                                     </div>
 
                                 </div>
                                 <div class="row">
-                                    <div class="radio-block" title="Select Amount Type">
-                                        <input type="radio" name="AmountType" class="hidden" id="InAmount" value="In">
-                                        <label for="InAmount" style="color: darkgrey;">InAmount </label>
-
-                                        <input type="radio" name="AmountType" value="Out" class="hidden" id="OutAmount">
-                                        <label for="OutAmount" style="color: darkgrey;">OutAmount </label>
-                                        <span style="color:red;">*</span>
+                                    <div class="floating-group" title="Enter Description">
+                                        <textarea id="Description" placeholder=" " disabled style="width: 612px; text-align: justify; height: 54px;"></textarea>
+                                        <label class="floating-label" for="Description">Description <span style="color:red;">*</span></label>
                                     </div>
-                                    <div class="floating-group" title="Enter Amount">
-                                        <input type="text" id="Amount" placeholder=" ">
-                                        <label class="floating-label" for="Amount">Amount <span style="color:red;">*</span></label>
-                                    </div>
-                                    <div class="floating-group">
-                                        <button type="button" class="common-btn" style=" width: 121px; height: 36px;" onclick="addLedger()">Add Entry</button>
-                                        <button type="button" class="common-btn" style=" width: 121px; height: 36px;" onclick="cleartxt()">Clear</button>
+                                    <div class="floating-group" style="display:flex;">
+                                        <button type="button" disabled id="addledger" class="common-btn" style=" width: 121px; height: 36px;" onclick="addLedger()">Add Entry</button>
+                                        <button type="button" disabled id="clearledger" class="common-btn" style=" width: 121px; height: 36px;" onclick="cleartxt()">Clear</button>
                                     </div>
                                 </div>
 
                             </div>
-                            <table id="ledgerTable">
-                                <thead>
-                                    <tr>
-                                        <th>S.No.</th>
-                                        <th>Dealer Name</th>
-                                        <th>Description</th>
-                                        <th>Date of Purchase</th>
-                                        <th>Category</th>
-                                        <th>Brand</th>
-                                        <th>Product Name</th>
-                                        <th>Amount type</th>
-                                        <th>Amount</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr><td colspan="9" class="text-center">No records found</td></tr>
-                                </tbody>
-                            </table>
+                            <div style="max-height: 165px;overflow: scroll;">
+                                <table id="ledgerTable">
+                                    <thead>
+                                        <tr>
+                                            <th>S.No.</th>
+                                            <!--<th>Dealer Name</th>-->
+                                            <!--<th>Date of Purchase</th>-->
+                                            <th>Category</th>
+                                            <th>Brand</th>
+                                            <th>Product Name</th>
+                                            <!--<th>Amount type</th>-->
+                                            <!--<th>Amount</th>-->
+                                            <th>Quantity</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td colspan="9" class="text-center">No records found</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
                             <div class="floating-group right-corner">
                                 <button type="button" class="common-btn" style=" width: 121px; height: 36px;" onclick="popupClear();">Clear All</button>
                                 <button type="button" class="common-btn" style=" width: 121px; height: 36px;" onclick="confirmledger();">Confirm</button>
@@ -132,6 +149,69 @@
                                     <div id="productspager"></div>
                                 </div>
                             </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="LedgerDetails" class="modal">
+            <div class="card Ledgerpopup" id="Ledgerpopup">
+                <button class="billclose-btn" style=" top: 18px;" onclick="closeHeader('LedgerDetails')">X</button>
+                <h3 style="background-color: aquamarine; display: flex; justify-content: center; margin-bottom: 10px; ">Ledger Details</h3>
+                <div id="Ledger" style=" width:100%;">
+                    <div>
+                        <div class="gradient-box p-5 rounded-2xl" style="padding-bottom: 0px;">
+                            <div class="row">
+                                <div class="floating-group disabled recorddealer-group" title="Enter Dealer Name">
+                                    <input type="text" id="BillNo" placeholder=" ">
+                                    <label class="floating-label" for="BillNo">Bill No</label>
+                                    <!--<h3>Bill No - <span id="BillNo"></span></h3>-->
+                                </div>
+                                <div class="floating-group recorddealer-group" title="Download PDF">
+                                    <a href="javascript:void(0);" style="text-align: -webkit-center; display: -webkit-inline-box;" id="btnprintdealer" class="Print-icon" title="Print Bill"><img src="/images/pdf-file.png" style=" width: 25px;" class="menu-gif" alt="printer"/></a>
+                                    <!--<h3>Bill No - <span id="BillNo"></span></h3>-->
+                                </div>
+                            </div>
+                            <div class="row">
+
+                                <div class="floating-group disabled recorddealer-group" title="Enter Dealer Name">
+                                    <input type="text" id="recorddealerName" placeholder=" ">
+                                    <label class="floating-label" for="recorddealerName">Dealer Name</label>
+                                </div>
+
+                                <div class="floating-group disabled recorddealer-group" title="Select Date">
+                                    <input type="date" id="recorddealerDate" placeholder=" ">
+                                    <label class="floating-label" for="recorddealerDate">Date of Purchase</label>
+                                    <div id="calendar" class="calendar hidden"></div>
+                                </div>
+                                <div class="floating-group disabled recorddealer-group" title="Enter Amount">
+                                    <input type="number" id="recordAmount" placeholder=" ">
+                                    <label class="floating-label" for="recordAmount">Amount</label>
+
+                                </div>
+                                <div class="radio-block disabled recorddealer-group" title="Select Amount Type">
+                                    <input type="radio" name="recordAmountType" class="hidden" id="recordCredit" value="Credit">
+                                    <label for="Credit" style="color: darkgrey;">Credit </label>
+
+                                    <input type="radio" name="recordAmountType" value="Debit" class="hidden" id="recordDebit">
+                                    <label for="Debit" style="color: darkgrey;">Debit </label>
+                                    <input type="text" id="DealerID" hidden/>
+                                </div>
+                            </div>
+                            <table id="recordDealerTable" border="1" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Product</th>
+                                        <th>Category</th>
+                                        <th>Brand</th>
+                                        <th>Quantity</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

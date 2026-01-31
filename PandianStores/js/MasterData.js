@@ -3,13 +3,13 @@ $(document).ready(function () {
     if (sessionStorage.getItem('UserID') == '' || sessionStorage.getItem('UserID') == null) {
         window.location.href = 'Login.html';
     }
+    getData('MasterGST');
     $('.boxes').css('display', 'none');
     $('#Category').addClass('active');
     $('#Categorydiv').css('display', 'block');
     getData('Categorydiv');
 });
-
-var count = 0, catcount = 0,Brandcount = 0, Exists = false;
+var count = 0, catcount = 0, Brandcount = 0, Exists = false;
 function AddData(Type) {
     if (Type == 'AddCategory') {
         const category = $("#txtaddCategory").val().trim();
@@ -153,39 +153,44 @@ function tablevaluetojson(id) {
     });
     return jsonData;
 }
-function getCategoryList(type) {
-    var cat = '';
-    glbtype = type;
-    if (type == 'Brand')
-        cat = $('#txtbrandCategory').val()
-    else if (type == 'Add') {
-        cat = $('#txtCategory').val()
-    }
-    $('#txtBrand').val('');
-    var jdata = {
-        str_PageName: 'MasterData',
-        str_param: 'GetCategorylist^' + JSON.stringify(tablevaluetojson('tblcategory')) + '^^^' + cat + '^' + sessionStorage.getItem('UserID')
-    }
-    if (cat.length >= 1) {
-        PostServiceCall(jdata, categorysuccess);
+function getCategoryList(data, type) {
+    if (data.key === "ArrowDown" || data.key === "ArrowUp" || data.key === "Enter") {
+        data.preventDefault();
     }
     else {
-        document.getElementById("Category-list").innerHTML = ''
-        //document.getElementById("Category-list").style.opacity = 0;
-        document.getElementById("Category-list").style.display = "none";
+        var cat = '';
+        glbtype = type;
+        if (type == 'Brand')
+            cat = $('#txtbrandCategory').val()
+        else if (type == 'Add') {
+            cat = $('#txtCategory').val()
+        }
+        $('#txtBrand').val('');
+        var jdata = {
+            str_PageName: 'MasterData',
+            str_param: 'GetCategorylist^' + JSON.stringify(tablevaluetojson('tblcategory')) + '^^^' + cat + '^' + sessionStorage.getItem('UserID')
+        }
+        if (cat.length >= 1) {
+            PostServiceCall(jdata, categorysuccess);
+        }
+        else {
+            document.getElementById("Category-list").innerHTML = ''
+            //document.getElementById("Category-list").style.opacity = 0;
+            document.getElementById("Category-list").style.display = "none";
+        }
     }
-
 }
 
 function categorysuccess(data) {
     document.getElementById("Category-list").innerHTML = ''
     document.getElementById("brandCategory-list").innerHTML = ''
+    currentIndex = -1
     if (glbtype == 'Add') {
         JSON.parse(data.PostServiceCallResult).Table.forEach(item => {
             if (item.Cat_name.toLowerCase().includes($('#txtCategory').val().toLowerCase())) {
                 const suggestionItem = document.createElement('div');
-
-                suggestionItem.innerHTML = '<img src="../images/' + item.Cat_Images + '.png" style="width: 20%;" />' + item.Cat_name;
+                suggestionItem.classList.add('autocomplete-item');
+                suggestionItem.innerHTML = '<img src="../images/' + item.Cat_Images + '.png" style="width: 20%;" />' + item.Cat_name + '';
                 suggestionItem.value = item.Cat_id;
                 suggestionItem.addEventListener('click', function () {
                     document.getElementById('txtCategory').value = this.innerText;
@@ -205,7 +210,7 @@ function categorysuccess(data) {
         JSON.parse(data.PostServiceCallResult).Table.forEach(item => {
             if (item.Cat_name.toLowerCase().includes($('#txtbrandCategory').val().toLowerCase())) {
                 const suggestionItem = document.createElement('div');
-
+                suggestionItem.classList.add('autocomplete-item');
                 suggestionItem.innerHTML = '<img src="../images/' + item.Cat_Images + '.png" style="width: 20%;" />' + item.Cat_name;
                 suggestionItem.value = item.Cat_id;
                 suggestionItem.addEventListener('click', function () {
@@ -232,27 +237,33 @@ function categorysuccess(data) {
 
 }
 
-function getBrandList(type) {
-    var jdata = {
-        str_PageName: 'MasterData',
-        str_param: 'GetBrandlist^' + JSON.stringify(tablevaluetojson('tblBrand')) + '^' + $('#txtCategory').attr('data-id') + '^^' + $('#txtBrand').val() + '^' + sessionStorage.getItem('UserID')
-    }
-    if ($('#txtBrand').val().length >= 1) {
-        PostServiceCall(jdata, brandsuccess);
+function getBrandList(data, type) {
+    if (data.key === "ArrowDown" || data.key === "ArrowUp" || data.key === "Enter") {
+        data.preventDefault();
     }
     else {
-        document.getElementById("Brand-list").innerHTML = ''
-        //document.getElementById("Brand-list").style.opacity = 0;
-        document.getElementById("Brand-list").style.display = "none";
+        var jdata = {
+            str_PageName: 'MasterData',
+            str_param: 'GetBrandlist^' + JSON.stringify(tablevaluetojson('tblBrand')) + '^' + $('#txtCategory').attr('data-id') + '^^' + $('#txtBrand').val() + '^' + sessionStorage.getItem('UserID')
+        }
+        if ($('#txtBrand').val().length >= 1) {
+            PostServiceCall(jdata, brandsuccess);
+        }
+        else {
+            document.getElementById("Brand-list").innerHTML = ''
+            //document.getElementById("Brand-list").style.opacity = 0;
+            document.getElementById("Brand-list").style.display = "none";
+        }
     }
 
 }
 function brandsuccess(data) {
     document.getElementById("Brand-list").innerHTML = ''
+    currentIndex = -1
     JSON.parse(data.PostServiceCallResult).Table.forEach(item => {
         if (item.Brand_Name.toLowerCase().includes($('#txtBrand').val().toLowerCase())) {
             const suggestionItem = document.createElement('div');
-
+            suggestionItem.classList.add('autocomplete-item');
             //suggestionItem.innerHTML = item.Brand_Name;
             suggestionItem.innerHTML = '<img src="../images/' + item.Brand_Images + '.png" style="width: 20%;" />' + item.Brand_Name;
             suggestionItem.value = item.Brand_ID;
@@ -282,7 +293,8 @@ function btnClear(type) {
         $('#txtmrp').val('');
         $('#txtsellprice').val('');
         $('#txtquantity').val('');
-        $('#txtGST').val('');
+        //$('#txtGST').val('');
+        document.getElementById("ddlGST").value = "";
         $('#txtCategory').focus();
     }
     else if (type == 'AddCategory') {
@@ -299,7 +311,7 @@ function btnClear(type) {
         $('#txtaddBrand').val('');
         $('#Branddatarow').empty();
         $('#Branddatarow').append('<tr><td colspan="9" class="text-center">No records found</td></tr>');
-        document.getElementById('txtaddBrand').setAttribute('disabled','disabled');
+        document.getElementById('txtaddBrand').setAttribute('disabled', 'disabled');
         $('#txtbrandCategory').focus();
     }
     else if (type == 'EditProduct') {
@@ -312,6 +324,7 @@ function btnClear(type) {
         $('#txtEditmrp').val('');
         $('#txtEditsellprice').val('');
         $('#txtEditquantity').val('');
+        document.getElementById("ddlEditGST").value = "";
     }
     count = 0;
     getData('productsdiv')
@@ -325,7 +338,7 @@ function btncancel() {
     //$('#Branddatarow').empty();
     //$('#Categorydatarow').empty();
     $("#AddProductpopup").css('display', 'none');
-    $("#Addcategorypopup").css('display', 'none');
+    $("#AddCategorypopup").css('display', 'none');
     $("#AddBrandpopup").css('display', 'none');
     $('.boxes').css('display', 'flex');
     count = 0;
@@ -432,7 +445,8 @@ function btnconfirm(type) {
                 BuyPrice: $('#txtbuyprice').val(),
                 MRPPrice: $('#txtmrp').val(),
                 SellPrice: $('#txtsellprice').val(),
-                Quantity: $('#txtquantity').val()
+                Quantity: $('#txtquantity').val(),
+                GST: $('#txtGST').val()
 
             }];
             var jdata = {
@@ -449,7 +463,8 @@ function btnconfirm(type) {
             MRPPrice: $('#txtEditmrp').val(),
             SellPrice: $('#txtEditsellprice').val(),
             Quantity: $('#txtEditquantity').val(),
-            ProductID: $('#txtEditProductid').val()
+            ProductID: $('#txtEditProductid').val(),
+            GST: document.getElementById("ddlEditGST").value //$('#txtEditGST').val()
 
         }];
         var jdata = {
@@ -470,7 +485,7 @@ function confirmsuccess(data) {
             if (data.Table[0].Msgfrom == 'ProductUpdate') {
                 editreload = 'Y';
                 getData('productsdiv')
-                $("#popup").css('display', 'none');
+                $("#EditProductpopup").css('display', 'none');
                 alert('Updated Successfully.', 'success');
 
             }
@@ -489,7 +504,7 @@ function confirmsuccess(data) {
             if (glbtype == 'AddCategory' || glbtype == 'AddBrand') {
                 getData('Categorydiv');
                 getData('Branddiv');
-                alert(data.Table[0].InsertedCount +' Data Inserted Successfully.', 'success');
+                alert(data.Table[0].InsertedCount + ' Data Inserted Successfully.', 'success');
             }
             else {
                 alert('Inserted Successfully.', 'success')
@@ -511,12 +526,12 @@ function confirmsuccess(data) {
 }
 
 function getData(type) {
-    var getType = type == 'Categorydiv' ? 'GetCategoryData' : type == 'Branddiv' ? 'GetBrandsData' :'GetItemList'
+    var getType = type == 'Categorydiv' ? 'GetCategoryData' : type == 'Branddiv' ? 'GetBrandsData' : type == 'MasterGST' ? 'GetMasterGST' : 'GetItemList'
     var jdata = {
         str_PageName: 'MasterData',
-        str_param: getType+ '^^^^' + '' + '^' + sessionStorage.getItem('UserID')
+        str_param: getType + '^^^^' + '' + '^' + sessionStorage.getItem('UserID')
     }
-    let getfunction = type == 'Categorydiv' ? Getcategory : type == 'Branddiv' ? GetBrand : GetProduct;
+    let getfunction = type == 'Categorydiv' ? Getcategory : type == 'Branddiv' ? GetBrand : type == 'MasterGST' ? bindGSTDropdown : GetProduct;
     PostServiceCall(jdata, getfunction);
 }
 function GetProduct(data) {
@@ -532,6 +547,9 @@ function GetProduct(data) {
     if (glbtype == "") {
         $('#Productsearch').focus();
     }
+    $("#productsgrid").jqGrid('setGridParam', {
+        data: products
+    }).trigger("reloadGrid");
     const drpProductsCategory = document.getElementById('ProductsCategory');
     const drpProductsBrand = document.getElementById('ProductsBrand');
     const uniqueProductsCategory = [...new Set(products.map(item => item.Cat_name))];
@@ -553,6 +571,7 @@ function GetProduct(data) {
             { name: 'SellPrice', label: 'SellPrice', width: 5, formatter: 'currency', editable: false },
             { name: 'Quantity', label: 'Quantity', width: 7, editable: false },
             { name: 'Barcode', label: 'Barcode', width: 7, editable: false, hidden: true },
+            { name: 'GSTRate', label: 'GST', width: 7, editable: false, hidden: true },
             {
                 name: 'Action',
                 index: 'Action',
@@ -577,6 +596,17 @@ function GetProduct(data) {
         rowattr: function (rd) {
             if (rd.Quantity <= 20) {
                 return { "style": "background-color: #FFCCCC !important;" };
+            }
+        },
+        gridComplete: function () {
+            var $grid = $("#productsgrid");
+            var records = $grid.jqGrid("getGridParam", "reccount");
+            $("#noDataImage").remove();
+
+            if (records === 0 || records == null) {
+                var emptyHtml = `<div id="noDataImage" style="text-align:center;padding: 0px;justify-items: center;"><img src="../images/no-product-found.png" alt="No Records" style="max-width:50%;position: relative;top: 90px;" /></div>`;
+
+                $grid.closest(".ui-jqgrid-bdiv").append(emptyHtml);
             }
         }
 
@@ -668,14 +698,14 @@ function GetProduct(data) {
     $(document).off('click', '.edit-icon').on('click', '.edit-icon', function () {
 
         var rowId = $(this).data('id');
-        const popup = document.getElementById("popup");
+        const popup = document.getElementById("EditProductpopup");
         const computedStyle = window.getComputedStyle(popup);
         const displayValue = computedStyle.display;
         if (displayValue == 'flex') {
-            $("#popup").css('display', 'none');
+            $("#EditProductpopup").css('display', 'none');
         }
         else {
-            $("#popup").css('display', 'flex');
+            $("#EditProductpopup").css('display', 'flex');
         }
         var rowData = $("#productsgrid").jqGrid('getRowData', rowId);
         $.each(products, function (index, row) {
@@ -694,6 +724,7 @@ function GetProduct(data) {
                 $('#txtEditmrp').val(row.MRP_Rate);
                 $('#txtEditsellprice').val(row.SellPrice);
                 $('#txtEditquantity').val(row.Quantity)
+                document.getElementById("ddlEditGST").value = row.GSTRate
 
 
 
@@ -716,16 +747,20 @@ function closeHeader(event) {
     btnClear(event);
     document.body.classList.remove("no-scroll");
     if (event == 'EditProduct') {
-        $("#popup").css('display', 'none');
+        $("#EditProductpopup").css('display', 'none');
+        $('#Productsearch').focus();
     }
     else if (event == 'AddProduct') {
         $("#AddProductpopup").css('display', 'none');
+        $('#Productsearch').focus();
     }
     else if (event == 'AddCategory') {
-        $("#Addcategorypopup").css('display', 'none');
+        $("#AddCategorypopup").css('display', 'none');
+        $('#Categorysearch').focus();
     }
     else if (event == 'AddBrand') {
         $("#AddBrandpopup").css('display', 'none');
+        $('#Brandsearch').focus();
     }
     else if (event == 'labelPopup') {
         $("#labelPopup").css('display', 'none');
@@ -757,7 +792,7 @@ function openpopup(type) {
 
     }
     else if (type == 'AddCategory') {
-        $("#Addcategorypopup").css('display', 'flex');
+        $("#AddCategorypopup").css('display', 'flex');
         $("#txtaddCategory").focus();
     }
     else if (type == 'AddBrand') {
@@ -854,25 +889,19 @@ function Getcategory(data) {
     if (glbtype == "") {
         $('#Categorysearch').focus();
     }
-    
+    $("#Categorygrid").jqGrid('setGridParam', {
+        data: products
+    }).trigger("reloadGrid");
     $("#Categorygrid").jqGrid({
         colModel: [
-            { name: 'Cat_id', label: 'Category_id', align: 'center', width: 7, editable: false },
-            { name: 'Cat_name', label: 'Category', align: 'center', width: 15 },
-            { name: 'ProductCount', label: 'No. of Products', align: 'center', width: 15 },
-            {
-                name: 'Action',
-                index: 'Action',
-                width: 5,
-                align: 'center', sortable: false,
-                formatter: function (cellValue, options, rowObject) {
-                    return `<a href="javascript:void(0);" class="bi bi-pencil-square edit-icon" data-id="${rowObject.id}" title="Edit"></a>&nbsp&nbsp`;
-                }
-            }
+            { name: 'Cat_id', label: 'Category_id', align: 'center', width: 12, editable: false },
+            { name: 'Cat_name', label: 'Category', align: 'center', width: 50 },
+            { name: 'BrandCount', label: 'No. of Brands', align: 'center', width: 15 },
+            { name: 'ProductCount', label: 'No. of Products', align: 'center', width: 15 }
         ],
         datatype: 'local',
         data: products,
-        width: 850,
+        width: 750,
         height: 300,
         treeGrid: false,
         viewrecords: true,
@@ -885,6 +914,17 @@ function Getcategory(data) {
             if (rd.Quantity <= 20) {
                 return { "style": "background-color: #FFCCCC !important;" };
             }
+        },
+        gridComplete: function () {
+            var $grid = $("#Categorygrid");
+            var records = $grid.jqGrid("getGridParam", "reccount");
+            $("#nocatdata").remove();
+
+            if (records === 0 || records == null) {
+                var emptyHtml = `<div id="nocatdata" style="text-align:center;padding: 0px;justify-items: center;"><img src="../images/no-product-found.png" alt="No Records" style="max-width:100%;position: relative;top: 0px;" /></div>`;
+
+                $grid.closest(".ui-jqgrid-bdiv").append(emptyHtml);
+            }
         }
 
     });
@@ -896,9 +936,9 @@ function Getcategory(data) {
         if (searchValue === '') {
             $("#Categorygrid").jqGrid('setGridParam', {
                 search: false,
-                postData: { filters: "" } 
+                postData: { filters: "" }
             }).trigger("reloadGrid");
-             return;
+            return;
         }
 
         $("#Categorygrid").jqGrid('setGridParam', {
@@ -917,50 +957,7 @@ function Getcategory(data) {
         //    Categorysearchtxt.focus(); // Optional: ready for next scan
         //}, 100);
     });
-    $(document).off('click', '.edit-icon').on('click', '.edit-icon', function () {
 
-        var rowId = $(this).data('id');
-        const popup = document.getElementById("popup");
-        const computedStyle = window.getComputedStyle(popup);
-        const displayValue = computedStyle.display;
-        if (displayValue == 'flex') {
-            $("#popup").css('display', 'none');
-        }
-        else {
-            $("#popup").css('display', 'flex');
-        }
-        var rowData = $("#Categorygrid").jqGrid('getRowData', rowId);
-        $.each(products, function (index, row) {
-            if (row.Product_id == rowData.Product_id) {
-
-                document.getElementById('txtEditCategory').removeAttribute('data-id');
-                document.getElementById('txtEditCategory').setAttribute('data-id', row.Cat_Id)
-                document.getElementById('txtEditBrand').removeAttribute('data-id');
-                document.getElementById('txtEditBrand').setAttribute('data-id', row.Brand_ID)
-                $('#txtEditCategory').val(row.Cat_name);
-                $('#txtEditBrand').val(row.Brand_Name);
-                $('#txtEditProductid').val(row.Product_id);
-                $('#txtEditBarcode').val(row.Barcode);
-                $('#txtEditProductName').val(row.ProductName);
-                $('#txtEditbuyprice').val(row.BuyPrice);
-                $('#txtEditmrp').val(row.MRP_Rate);
-                $('#txtEditsellprice').val(row.SellPrice);
-                $('#txtEditquantity').val(row.Quantity)
-
-
-
-                return false;
-            }
-
-        });
-    });
-
-    $(document).off('click', '.delete-icon').on('click', '.delete-icon', function () {
-        var rowId = $(this).data('id');
-        if (confirm('Are you sure you want to delete this record?')) {
-            alert('Delete clicked for row with ID: ' + rowId);
-        }
-    });
 
 }
 
@@ -983,27 +980,20 @@ function GetBrand(data) {
 
     uniqueBrandCategory.forEach(Category => {
         const option = document.createElement('option');
-        option.value = Category; 
-        option.textContent = Category; 
+        option.value = Category;
+        option.textContent = Category;
         drpBrandCategory.appendChild(option);
     });
-
+    $("#Brandgrid").jqGrid('setGridParam', {
+        data: Brands
+    }).trigger("reloadGrid");
     $("#Brandgrid").jqGrid({
         colModel: [
             { name: 'Brand_ID', label: 'Brand_ID', align: 'center', width: 7, editable: false },
             { name: 'Cat_ID', label: 'Category ID', align: 'center', width: 15 },
             { name: 'Cat_name', label: 'Category Name', align: 'center', width: 15 },
             { name: 'Brand_Name', label: 'Brand Name', align: 'center', width: 15 },
-            { name: 'ProductCount', label: 'No. of Products', align: 'center', width: 15 },
-            {
-                name: 'Action',
-                index: 'Action',
-                width: 5,
-                align: 'center', sortable: false,
-                formatter: function (cellValue, options, rowObject) {
-                    return `<a href="javascript:void(0);" class="bi bi-pencil-square edit-icon" data-id="${rowObject.id}" title="Edit"></a>&nbsp&nbsp`;
-                }
-            }
+            { name: 'ProductCount', label: 'No. of Products', align: 'center', width: 15 }
         ],
         datatype: 'local',
         data: Brands,
@@ -1019,6 +1009,17 @@ function GetBrand(data) {
         rowattr: function (rd) {
             if (rd.Quantity <= 20) {
                 return { "style": "background-color: #FFCCCC !important;" };
+            }
+        },
+        gridComplete: function () {
+            var $grid = $("#Brandgrid");
+            var records = $grid.jqGrid("getGridParam", "reccount");
+            $("#noBranddata").remove();
+
+            if (records === 0 || records == null) {
+                var emptyHtml = `<div id="noBranddata" style="text-align:center;padding: 0px;justify-items: center;"><img src="../images/no-product-found.png" alt="No Records" style="max-width:70%;position: relative;top: 0px;" /></div>`;
+
+                $grid.closest(".ui-jqgrid-bdiv").append(emptyHtml);
             }
         }
 
@@ -1082,49 +1083,221 @@ function GetBrand(data) {
         //    drpProductsBrand.appendChild(option); // Append the option to the dropdown
         //});
     });
-    $(document).off('click', '.edit-icon').on('click', '.edit-icon', function () {
 
-        var rowId = $(this).data('id');
-        const popup = document.getElementById("popup");
-        const computedStyle = window.getComputedStyle(popup);
-        const displayValue = computedStyle.display;
-        if (displayValue == 'flex') {
-            $("#popup").css('display', 'none');
-        }
-        else {
-            $("#popup").css('display', 'flex');
-        }
-        var rowData = $("#Brandgrid").jqGrid('getRowData', rowId);
-        $.each(Brands, function (index, row) {
-            if (row.Product_id == rowData.Product_id) {
-
-                document.getElementById('txtEditCategory').removeAttribute('data-id');
-                document.getElementById('txtEditCategory').setAttribute('data-id', row.Cat_Id)
-                document.getElementById('txtEditBrand').removeAttribute('data-id');
-                document.getElementById('txtEditBrand').setAttribute('data-id', row.Brand_ID)
-                $('#txtEditCategory').val(row.Cat_name);
-                $('#txtEditBrand').val(row.Brand_Name);
-                $('#txtEditProductid').val(row.Product_id);
-                $('#txtEditBarcode').val(row.Barcode);
-                $('#txtEditProductName').val(row.ProductName);
-                $('#txtEditbuyprice').val(row.BuyPrice);
-                $('#txtEditmrp').val(row.MRP_Rate);
-                $('#txtEditsellprice').val(row.SellPrice);
-                $('#txtEditquantity').val(row.Quantity)
-
-
-
-                return false;
-            }
-
-        });
-    });
-
-    $(document).off('click', '.delete-icon').on('click', '.delete-icon', function () {
-        var rowId = $(this).data('id');
-        if (confirm('Are you sure you want to delete this record?')) {
-            alert('Delete clicked for row with ID: ' + rowId);
-        }
-    });
 
 }
+
+let currentIndex = -1;
+
+//const input = document.getElementsByClassName("autocomplete-input");
+//const list = document.getElementsByClassName("autocomplete-items");
+
+document.querySelectorAll(".autocomplete-input").forEach(input => {
+    input.addEventListener("keydown", function (e) {
+        if (!(e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "Enter")) {
+            return;
+        }
+        else {
+            const listId = this.dataset.listname; // 🔥 magic line
+            const list = document.getElementById(listId);
+            const items = list.querySelectorAll(".autocomplete-item");
+            if (!items.length) return;
+
+            if (e.key === "ArrowDown") {
+                if (currentIndex < items.length - 1) {
+                    e.preventDefault();
+                    currentIndex++;
+                    setActive(items);
+                    return;
+                }
+            }
+
+            if (e.key === "ArrowUp") {
+                if (currentIndex > 0) {
+                    e.preventDefault();
+                    currentIndex--;
+                    if (currentIndex < 0) currentIndex = items.length - 1;
+                    setActive(items);
+                }
+                return;
+            }
+
+            if (e.key === "Enter") {
+                if (currentIndex > -1) {
+                    e.preventDefault();
+                    items[currentIndex].click();
+                }
+            }
+        }
+    });
+});
+
+function setActive(items) {
+    items.forEach(item => item.classList.remove("selected"));
+    items[currentIndex].classList.add("selected");
+    items[currentIndex].scrollIntoView({ block: "nearest" });
+}
+
+//document.addEventListener("keydown", function (e) {
+
+//    // Optional: block when typing in input fields
+//    const tag = document.activeElement.tagName;
+//    //if (tag === "INPUT" || tag === "TEXTAREA") return;
+//    if (!e.ctrlKey) return;
+
+//    switch (e.key) {
+
+//        case "F9":
+//            e.preventDefault();
+//            document.getElementById("Category")?.click();
+//            break;
+
+//        case "F10":
+//            e.preventDefault();
+//            document.getElementById("Brand")?.click();
+//            break;
+
+//        case "F11":
+//            e.preventDefault(); // VERY IMPORTANT (prevents fullscreen)
+//            document.getElementById("Product")?.click();
+//            break;
+//    }
+//});
+
+const shortcuts = {
+    F9: { menuId: "Category", buttonId: "btnCategoryAction", popupId: "AddCategory" },
+    F10: { menuId: "Brand", buttonId: "btnBrandAction", popupId: "AddBrand" },
+    F11: { menuId: "Product", buttonId: "btnProductAction", popupId: "AddProduct" }
+};
+function isAnyModalOpen() {
+    return Array.from(document.querySelectorAll(".modal"))
+        .some(modal => getComputedStyle(modal).display === "flex");
+}
+document.addEventListener("keydown", function (e) {
+
+    if (!e.ctrlKey) return;
+
+    const tag = document.activeElement.tagName;
+    //if (tag === "INPUT" || tag === "TEXTAREA") return;
+
+    const shortcut = shortcuts[e.key];
+    if (!shortcut) return;
+    if (isAnyModalOpen()) {
+        closeHeader(shortcut.popupId);
+
+        return;
+    }
+
+    e.preventDefault();
+
+    const menu = document.getElementById(shortcut.menuId);
+    if (!menu) return;
+
+    // ✅ If already active → click button
+    if (menu.classList.contains("active")) {
+        if (document.getElementById(shortcut.popupId + 'popup').style.display == "flex") {
+            closeHeader(shortcut.popupId);
+        }
+        else {
+
+            document.getElementById(shortcut.buttonId)?.click();
+
+        }
+    }
+    // 🔄 Else → activate menu
+    else {
+        menu.click();
+        $('#' + shortcut.menuId + 'search').focus();
+    }
+});
+function bindGSTDropdown(data) {
+    let MasterGST = JSON.parse(data.PostServiceCallResult).Table;
+    const ddl = document.getElementById("ddlGST");
+    const ddl1 = document.getElementById("ddlEditGST");
+
+    ddl.innerHTML = '<option value="">Select GST%</option>';
+    ddl1.innerHTML = '<option value="">Select GST%</option>';
+
+    MasterGST.forEach(item => {
+        const option = document.createElement("option");
+        option.value = item.rate;
+        option.text = item.rate + " %";
+        ddl.appendChild(option);
+        ddl1.appendChild(option);
+    });
+}
+
+document.getElementById("ddlGST").addEventListener("change", function () {
+    const sellInput = document.getElementById("txtsellprice");
+    sellInput.readOnly = !this.value;
+    updateSellPrice('Add');
+});
+document.getElementById("ddlEditGST").addEventListener("change", function () {
+    const sellInput = document.getElementById("txtEditsellprice");
+    sellInput.readOnly = !this.value;
+    updateSellPrice('Edit');
+});
+function updateSellPrice(type) {
+    var mrpInput = '', gstSelect = '', sellInput = '';
+    if (type == 'Edit') {
+        mrpInput = document.getElementById("txtEditmrp");
+        gstSelect = document.getElementById("ddlEditGST");
+        sellInput = document.getElementById("txtEditsellprice");
+    }
+    else {
+        mrpInput = document.getElementById("txtmrp");
+        gstSelect = document.getElementById("ddlGST");
+        sellInput = document.getElementById("txtsellprice");
+    }
+
+    const mrp = parseFloat(mrpInput.value);
+    const gstRate = parseFloat(gstSelect.value);
+
+    // if GST not selected OR MRP invalid → do nothing
+    if (isNaN(mrp) || mrp <= 0 || isNaN(gstRate)) {
+        sellInput.value = 0;
+        return;
+    }
+
+    const sellPrice = Math.round((mrp * 100 / (100 + gstRate)) * 100) / 100;
+    sellInput.value = sellPrice.toFixed(2);
+}
+document.getElementById("txtmrp").addEventListener("input", function () {
+    updateSellPrice('Add');
+});
+document.getElementById("txtEditmrp").addEventListener("input", function () {
+    updateSellPrice('Edit');
+});
+
+document.querySelectorAll(".price").forEach(input => {
+
+    input.addEventListener("input", function () {
+        let value = this.value.replace(/[^0-9.]/g, '');
+        const parts = value.split('.');
+        if (parts.length > 2) {
+            value = parts[0] + '.' + parts.slice(1).join('');
+        }
+        if (value.includes('.')) {
+            const [intPart, decPart] = value.split('.');
+            value = intPart + '.' + decPart.slice(0, 2);
+        }
+        this.value = value;
+    });
+
+    input.addEventListener("blur", function () {
+        let value = this.value.trim();
+
+        if (value === "") return;
+
+        let num = parseFloat(value);
+
+        if (isNaN(num)) {
+            this.value = "";
+            return;
+        }
+
+        // Always format to 2 decimals
+        this.value = num.toFixed(2);
+    });
+
+});

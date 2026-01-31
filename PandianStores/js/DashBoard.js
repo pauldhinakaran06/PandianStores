@@ -20,30 +20,43 @@ function formatIndian(num) {
     });
 }
 function dashboardpageloadsuccess(data) {
-    data =JSON.parse(data.PostServiceCallResult);
+    data = JSON.parse(data.PostServiceCallResult);
     saledetails = data.Table;
     MonthlySale = data.Table1
     productsQtydata = data.Table2;
     Billedproducts = data.Table3;
+    const currentYear = new Date().getFullYear();
 
-    $("#TotalsaleYear").text('₹ ' +formatIndian(saledetails[0].Year_Sales));
-    $("#TotalsaleWeek").text('₹ ' +formatIndian(saledetails[0].Week_Sales));
-    $("#TotalsaleMonth").text('₹ ' +formatIndian(saledetails[0].Month_Sales));
+    $("#TotalsaleYear").text('₹ ' + formatIndian(saledetails[0].Year_Sales));
+    $("#TotalsaleWeek").text('₹ ' + formatIndian(saledetails[0].Week_Sales));
+    $("#TotalsaleMonth").text('₹ ' + formatIndian(saledetails[0].Month_Sales));
     $("#catcount").text(saledetails[0].Category_Count);
     $("#brandcount").text(saledetails[0].Brand_Count);
     $("#productcount").text(saledetails[0].Product_Count);
 
-    const list = document.getElementById("lowStockList");
-    productsQtydata.forEach(p => {
-        const li = document.createElement("li");
-        li.className = "flex justify-between items-center bg-gray-100 px-3 py-2 rounded-lg";
-        //li.innerHTML = `<span style="font-size: small;">${p.Product_id} | ${p.ProductName}</span><span style="font-size: small;" class="${p.Quantity < 10 ? 'text-red-600 font-bold' : 'text-green-600'}">${(p.Quantity ?? 0)} left</span>`;
-        const qty = p.Quantity ?? 0;
 
-        li.innerHTML = `<span style="font-size: small;">${p.Product_id} | ${p.ProductName}</span><span style="font-size: small;"class="${qty === 0 ? 'text-red-600 font-bold blink': qty < 5 ? 'text-red-600 font-bold blink': qty < 10 ? 'text-red-600 font-bold' : 'text-green-600'}">${qty === 0 ? 'Out of stock' :`${qty} left`}</span>`;
-        list.appendChild(li);
-    });
-    const years = [...new Set(MonthlySale.map(d => d.Year))].sort();
+
+    if (!productsQtydata || productsQtydata.length === 0) {
+        $("#lowStockList").css('display', 'none');
+        $("#nostocklist").css('display', 'block');
+    }
+    else {
+        const list = document.getElementById("lowStockList");
+        list.innerHTML = "";
+        $("#nostocklist").css('display', 'none');
+        $("#lowStockList").css('display', 'block');
+
+        productsQtydata.forEach(p => {
+            const li = document.createElement("li");
+            li.className = "flex justify-between items-center bg-gray-100 px-3 py-2 rounded-lg";
+            //li.innerHTML = `<span style="font-size: small;">${p.Product_id} | ${p.ProductName}</span><span style="font-size: small;" class="${p.Quantity < 10 ? 'text-red-600 font-bold' : 'text-green-600'}">${(p.Quantity ?? 0)} left</span>`;
+            const qty = p.Quantity ?? 0;
+
+            li.innerHTML = `<span style="font-size: small;">${p.Product_id} | ${p.ProductName}</span><span style="font-size: small;"class="${qty === 0 ? 'text-red-600 font-bold blink' : qty < 5 ? 'text-red-600 font-bold blink' : qty < 10 ? 'text-red-600 font-bold' : 'text-green-600'}">${qty === 0 ? 'Out of stock' : `${qty} left`}</span>`;
+            list.appendChild(li);
+        });
+    }
+    const years = MonthlySale.length > 0 ? [...new Set(MonthlySale.map(d => d.Year))].sort() : [currentYear];
 
     const dropdown = document.getElementById("yearDropdown");
     const selected = document.getElementById("selectedYear");
@@ -69,7 +82,7 @@ function dashboardpageloadsuccess(data) {
     window.addEventListener("click", e => {
         if (!dropdown.contains(e.target)) options.style.display = "none";
     });
-    getbilledproduct(Billedproducts);    
+    getbilledproduct(Billedproducts);
 }
 
 
@@ -102,7 +115,7 @@ function renderChart(year) {
     });
     if (chartInstance) chartInstance.destroy();
 
-    chartInstance=new Chart(ctx, {
+    chartInstance = new Chart(ctx, {
         type: "bar",
         data: {
             labels: allMonths,
@@ -165,7 +178,7 @@ function getbilledproduct(products) {
             { name: 'CustMobNo', label: 'Mobile Number', width: 150, editable: false },
             { name: 'InvNo', label: 'Invoice No', width: 130, editable: false },
             { name: 'BilledDate', label: 'Invoice Date', width: 150, editable: false },
-            { name: 'Total', label: 'T.Amount', width: 100,editable: false },
+            { name: 'Total', label: 'T.Amount', width: 100, editable: false },
             { name: 'Payterms', label: 'Payment terms', width: 100, hidden: true, editable: false },
             { name: 'Billedby', label: 'Billed By', width: 100, hidden: true, editable: false },
             {
@@ -179,7 +192,7 @@ function getbilledproduct(products) {
                     if (rowObject["Actionenable"] == 'N') {
                         disable = "disable";
                     }
-                    return `<a href="javascript:void(0);" style="text-align: -webkit-center;" class="Print-icon" data-id="${rowObject.id}" title="Print Bill"><img src="/Icons/Gif/printer.gif" class="menu-gif" alt="printer"></img></a>`;
+                    return `<a href="javascript:void(0);" style="text-align: -webkit-center;" class="Print-icon" data-id="${rowObject.id}" title="Print Bill"><img src="../Icons/Gif/printer.gif" class="menu-gif" alt="printer"></img></a>`;
                 }
             }
         ],
@@ -201,7 +214,7 @@ function getbilledproduct(products) {
             $("#noDataImage").remove();
 
             if (records === 0 || records == null) {
-                var emptyHtml = `<div id="noDataImage" style="text-align:center; padding:40px;"><img src="images/no-product-found.png" alt="No Records" style="max-width:50%;position: relative;top: 30px;" /></div>`;
+                var emptyHtml = `<div id="noDataImage" style="text-align:center;padding: 0px;justify-items: center;"><img src="../images/no-product-found.png" alt="No Records" style="max-width:50%;position: relative;top: 0px;" /></div>`;
 
                 $grid.closest(".ui-jqgrid-bdiv").append(emptyHtml);
             }
@@ -210,7 +223,7 @@ function getbilledproduct(products) {
     });
     $(document).off('click', '.Print-icon').on('click', '.Print-icon', function () {
         var rowId = $(this).data('id');
-        var rowData = $("#returnbillgrid").jqGrid('getRowData', rowId);
+        var rowData = $("#productbilledgrid").jqGrid('getRowData', rowId);
 
         var jdata = {
             str_PageName: 'PrintBill',

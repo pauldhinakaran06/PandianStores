@@ -61,10 +61,18 @@ function getproduct(data) {
             $("#noDataImage").remove();
 
             if (records === 0 || records == null) {
-                var emptyHtml = `<div id="noDataImage" style="text-align:center; padding:40px;"><img src="images/no-product-found.png" alt="No Records" style="max-width:50%;position: relative;top: 30px;" /></div>`;
+                var emptyHtml = `<div id="noDataImage" style="text-align:center; padding:40px;"><img src="../images/no-product-found.png" alt="No Records" style="max-width:50%;position: relative;top: 30px;" /></div>`;
 
                 $grid.closest(".ui-jqgrid-bdiv").append(emptyHtml);
             }
+        },
+        onSelectRow: function (rowId, status, e) {
+            // if click happened inside Action column → ignore
+            if ($(e.target).closest('.edit-icon, .Print-icon').length) {
+                return;
+            }
+            openEditPopup(rowId);
+
         }
 
     });
@@ -128,24 +136,46 @@ function getproduct(data) {
             }).trigger("reloadGrid");
         }
     });
-    $(document).off('click', '.edit-icon').on('click', '.edit-icon', function () {
-        var rowId = $(this).data('id');
+    function openEditPopup(rowId) {
+
         const popup = document.getElementById("myModal");
-        const computedStyle = window.getComputedStyle(popup);
-        const displayValue = computedStyle.display;
-        if (displayValue == 'flex') {
-            $("#myModal").css('display', 'none');
-        }
-        else {
-            $("#myModal").css('display', 'flex');
-        }
+        const displayValue = window.getComputedStyle(popup).display;
+
+        $("#myModal").css('display', displayValue === 'flex' ? 'none' : 'flex');
+
         var rowData = $("#returnbillgrid").jqGrid('getRowData', rowId);
+
+        $("#itemInvoice_NO").html(rowData.InvNo);
+
         var jdata = {
             str_PageName: 'ReturnData',
             str_param: 'GetBillDetails^' + rowData.Id + '^' + sessionStorage.getItem('UserID') + '^'
-        }
+        };
 
         PostServiceCall(jdata, getBilledproducts);
+    }
+    $(document).off('click', '.edit-icon').on('click', '.edit-icon', function (e) {
+        e.stopPropagation();
+        var rowId = $(this).data('id');
+        openEditPopup(rowId);
+        //var rowId = $(this).data('id');
+        //const popup = document.getElementById("myModal");
+        //const computedStyle = window.getComputedStyle(popup);
+        //const displayValue = computedStyle.display;
+        //if (displayValue == 'flex') {
+        //    $("#myModal").css('display', 'none');
+        //}
+        //else {
+        //    $("#myModal").css('display', 'flex');
+        //}
+        //var rowData = $("#returnbillgrid").jqGrid('getRowData', rowId);
+        //$("#itemInvoice_NO").html(rowData.InvNo)
+        //var jdata = {
+        //    str_PageName: 'ReturnData',
+        //    str_param: 'GetBillDetails^' + rowData.Id + '^' + sessionStorage.getItem('UserID') + '^'
+        //}
+
+        //PostServiceCall(jdata, getBilledproducts);
 
         //$.each(products, function (index, row) {
         //    if (row.Invoice_No == rowData.Invoice_No) {
@@ -160,6 +190,7 @@ function getproduct(data) {
         //});
 
     });
+
 
     $(document).off('click', '.delete-icon').on('click', '.delete-icon', function () {
         var rowId = $(this).data('id');
@@ -193,9 +224,8 @@ function getBilledproducts(data) {
             { name: 'Item_Name', label: 'Item Name', width: 18, sortable: false, editable: false },
             { name: 'SellPrice', label: 'Item Price', width: 10, sortable: false, editable: false },
             //{ name: 'Qty', label: 'Quantity', width: 10, editable: true,},
-            { name: 'Item_Total_Amount', label: 'Item Total', width: 18, sortable: false, editable: false },
             {
-                name: 'Qty',
+                name: 'InitialQty',
                 label: 'Quantity',
                 width: 10, sortable: false,
                 editable: false,
@@ -203,6 +233,8 @@ function getBilledproducts(data) {
                     return cell == 0 ? 9999999 : parseInt(cell, 10);
                 }
             },
+            { name: 'Item_Total_Amount', label: 'Item Total', width: 18, sortable: false, editable: false },
+
             {
                 name: 'return',
                 label: 'ReturnQuantity',
@@ -214,17 +246,71 @@ function getBilledproducts(data) {
                     defaultValue: '0' // Set default value to 0
                 },
                 formatter: function (cellValue, options, rowObject) {
-                    return `<div style="display:flex;justify-content: space-between;cursor: default;"><button style="cursor: pointer;" class="decrement" onclick="decrement(this);" data-id="${options.rowId}">-</button>
-                        <span class="qty-display">0</span>
-                        <button class="decrement" style="cursor: pointer;" onclick="Increment(this);" data-id="${options.rowId}">+</button></div>`;
+                    //let qty = rowObject.returnQty;
+                    //if (!qty) qty = 0;
+
+                    //return `<div style="display:flex;justify-content: space-between;cursor: default;"><button style="cursor: pointer;" class="decrement" onclick="decrement(this);" data-id="${options.rowId}">-</button>
+                    //    <span class="qty-display">0</span>
+                    //    <button class="decrement" style="cursor: pointer;" onclick="Increment(this);" data-id="${options.rowId}">+</button></div>`;
+                    //var currentReturn = parseInt(cellValue, 10) || rowObject.returnQty || 0;
+                    //var returnQty = parseInt(rowObject.returnQty, 10) || 0;
+                    //var maxQty = parseInt(rowObject.InitialQty, 10) || 0;
+
+                    //var disableMinus = currentReturn <= returnQty;
+                    //var disablePlus = currentReturn >= maxQty;
+                    var minQty = parseInt(rowObject.returnQty, 10) || 0;
+                    var availableQty = parseInt(rowObject.Qty, 10) || 0;
+
+                    var maxQty = minQty + availableQty;
+
+                    var currentReturn = parseInt(cellValue, 10);
+                    if (isNaN(currentReturn)) {
+                        currentReturn = minQty;
+                    }
+
+                    var disableMinus = currentReturn <= minQty;
+                    var disablePlus = currentReturn >= maxQty;
+
+                    return `<div style="display:flex;justify-content: space-between;cursor: default;">
+                    <button style="cursor: pointer;" class="decrement" ${disableMinus ? 'disabled title="Already returned minimum qty"' : 'title="Decrease return qty"'}
+                    onclick="decrement(this);" data-id="${options.rowId}">-</button>
+                        <span class="qty-display">${currentReturn}</span>
+                        <button class="decrement" style="cursor: pointer;" ${disablePlus ? 'disabled title="Maximum return quantity reached"' : 'title="Increase return qty"'}
+                        onclick="Increment(this);" data-id="${options.rowId}">+</button></div>`;
+
+                    //                return `
+                    //    <div style="display:flex;justify-content:space-between;align-items:center;">
+
+                    //        <button 
+                    //            class="decrement"
+                    //            ${disableMinus ? 'disabled title="Already returned minimum qty"' : 'title="Decrease return qty"'}
+                    //            onclick="decrement(this)"
+                    //            data-id="${options.rowId}">
+                    //            −
+                    //        </button>
+
+                    //        <span class="qty-display">${currentReturn}</span>
+
+                    //        <button 
+                    //            class="decrement"
+                    //            ${disablePlus ? 'disabled title="Maximum return quantity reached"' : 'title="Increase return qty"'}
+                    //            onclick="Increment(this)"
+                    //            data-id="${options.rowId}">
+                    //            +
+                    //        </button>
+                    //    </div>
+                    //`;
                 },
                 unformat: function (cellValue, options, rowObject) {
                     return $(rowObject).find('.qty-display').text();
                 }
             },
+            { name: 'returnQty', label: 'Returned Qty', width: 14, defaultValue: 0, sortable: false, editable: false },
             { name: 'Return_Total_Amount', label: 'Return Total', width: 18, defaultValue: 0, sortable: false, editable: false },
             { name: 'Invoice_No', label: 'Invoice_No', width: 18, defaultValue: 0, hidden: true, sortable: false, editable: false },
-            { name: 'Product_Barcode', label: 'Product_Barcode', width: 18, defaultValue: 0, hidden: true, sortable: false, editable: false }
+            { name: 'Product_Barcode', label: 'Product_Barcode', width: 18, defaultValue: 0, hidden: true, sortable: false, editable: false },
+            { name: 'Product_ID', label: 'Product_ID', width: 18, defaultValue: 0, hidden: true, sortable: false, editable: false },
+            { name: 'Qty', label: 'returnable Qty', width: 18, defaultValue: 0, hidden: true, sortable: false, editable: false }
 
         ],
         datatype: 'local',
@@ -288,37 +374,47 @@ function getBilledproducts(data) {
         }).trigger("reloadGrid");
     });
 }
+//function Increment(e) {
+//    var rowId = e.dataset.id;
+//    var rowData = $("#returnproductgrid").jqGrid('getRowData', rowId);
+//    var itemQty = ''
+//    $.each(initialbilleddetails, function (billedindex, billedrow) {
+//        if (billedrow.ItemSNo == rowData.ItemSNo) {
+//            itemQty = billedrow.Qty
+//        }
+//    });
+//    var currentQty = parseInt(rowData.return, 10);
+//    if (!isNaN(currentQty) && currentQty < itemQty) {
+//        var newQty = currentQty + 1;
+//        updateQuantity(rowId, newQty, itemQty);
+//    }
+//};
 function Increment(e) {
     var rowId = e.dataset.id;
     var rowData = $("#returnproductgrid").jqGrid('getRowData', rowId);
-    var itemQty = ''
-    $.each(initialbilleddetails, function (billedindex, billedrow) {
-        if (billedrow.ItemSNo == rowData.ItemSNo) {
-            itemQty = billedrow.Qty
-        }
-    });
-    var currentQty = parseInt(rowData.return, 10);
-    if (!isNaN(currentQty) && currentQty < itemQty) {
-        var newQty = currentQty + 1;
-        updateQuantity(rowId, newQty, itemQty);
+
+    var minQty = parseInt(rowData.returnQty, 10) || 0;
+    var availableQty = parseInt(rowData.Qty, 10) || 0;
+
+    var maxQty = minQty + availableQty;
+
+    var currentReturn = parseInt(rowData.return, 10) || minQty;
+
+    if (currentReturn < maxQty) {
+        updateQuantity(rowId, currentReturn + 1);
     }
-};
+}
 function decrement(e) {
     var rowId = e.dataset.id;
     var rowData = $("#returnproductgrid").jqGrid('getRowData', rowId);
-    //if (billedproducts)
-    var itemQty = ''
-    var currentQty = parseInt(rowData.return, 10);
-    $.each(initialbilleddetails, function (billedindex, billedrow) {
-        if (billedrow.ItemSNo == rowData.ItemSNo) {
-            itemQty = billedrow.Qty
-        }
-    });
-    if (!isNaN(currentQty) && currentQty > 0) {
-        var newQty = currentQty - 1;
-        updateQuantity(rowId, newQty, itemQty);
+
+    var minQty = parseInt(rowData.returnQty, 10) || 0;
+    var currentReturn = parseInt(rowData.return, 10) || minQty;
+
+    if (currentReturn > minQty) {
+        updateQuantity(rowId, currentReturn - 1);
     }
-};
+}
 function updateQuantity(rowId, newQty, itemQty) {
     var rowData = $("#returnproductgrid").jqGrid('getRowData', rowId);
 
@@ -377,7 +473,8 @@ function returnconfirm() {
                     ItemName: row.Item_Name,
                     Qty: row.return,
                     SellPrice: row.SellPrice,
-                    ReturnValue: row.Return_Total_Amount
+                    ReturnValue: row.Return_Total_Amount,
+                    ProductID: row.Product_ID
                 };
                 jsonArray.push(jsonObject);
             }
@@ -433,36 +530,43 @@ function generatePDF(data) {
     console.log(data.PostServiceCallResult);
     var data = JSON.parse(data.PostServiceCallResult)
 
-    var tabledata = ''
-    if (data.Table.length > 0) {
 
-        for (var i = 0; i < data.Table.length; i++) {
-            tabledata += '<tr><td>' + data.Table[i].Sno + '</td>'
-                + '<td>' + data.Table[i].Item_Name + '</td>'
-                + '<td>' + data.Table[i].Qty + '</td>'
-                + '<td>' + data.Table[i].SellPrice + '</td>'
-                + '<td>' + data.Table[i].Item_Total_Amount + '</td>'
-                + '</tr>'
-        }
+    var jdata = {
+        str_PageName: 'PrintBill',
+        str_param: 'BillPrint^' + $("#itemInvoice_NO").html() + '^' + sessionStorage.getItem('UserID')
     }
 
+    PostServiceCall(jdata, returnFinalPrintBill);
+    //var tabledata = ''
+    //if (data.Table.length > 0) {
 
-    $('#bill-items').append(tabledata);
-    const content = document.getElementById('printableArea').innerHTML;
+    //    for (var i = 0; i < data.Table.length; i++) {
+    //        tabledata += '<tr><td>' + data.Table[i].Sno + '</td>'
+    //            + '<td>' + data.Table[i].Item_Name + '</td>'
+    //            + '<td>' + data.Table[i].Qty + '</td>'
+    //            + '<td>' + data.Table[i].SellPrice + '</td>'
+    //            + '<td>' + data.Table[i].Item_Total_Amount + '</td>'
+    //            + '</tr>'
+    //    }
+    //}
 
-    var options = {
-        margin: [0, 0], // No margins for thermal printer
-        filename: 'document.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'mm', format: [80, 297] } // Width 80mm, height can be adjusted
-    };
 
-    html2pdf().from(content).set(options).save();
+    //$('#bill-items').append(tabledata);
+    //const content = document.getElementById('printableArea').innerHTML;
+
+    //var options = {
+    //    margin: [0, 0], // No margins for thermal printer
+    //    filename: 'document.pdf',
+    //    image: { type: 'jpeg', quality: 0.98 },
+    //    html2canvas: { scale: 2 },
+    //    jsPDF: { unit: 'mm', format: [80, 297] } // Width 80mm, height can be adjusted
+    //};
+
+    //html2pdf().from(content).set(options).save();
     $("#myModal").css('display', 'none');
     //finalpopupclear();
     getItemList();
-    location.reload();
+    //location.reload();
 
 }
 $(document).off('click', '.Print-icon').on('click', '.Print-icon', function () {

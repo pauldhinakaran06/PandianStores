@@ -752,32 +752,44 @@ input[type="text"], select, textarea {
 
 
 .autocomplete-items {
-    position: fixed;
+    /*position: fixed;
     border-top: none;
     border: 1px solid;
     z-index: 10000;
     background-color: #fff;
     width: 14%;
-    border-radius: 4px;
+    border-radius: 4px;*/
     /* right: 61%; */
-    max-height: 27%;
-    height: auto;
+    /*max-height: 27%;
+    height: auto;*/
     /*opacity: 0;*/
     /*visibility:hidden;*/
-    display:none;
-    overflow: auto;
+    /*display:none;
+    overflow: auto;*/
+    position: absolute;
+    top: 62%; /* directly below input */
+    left: 5px;
+    width: 95%; /* SAME width as textbox */
+    background: #fff;
+    border: 1px solid #ddd;
+    border-top: none;
+    z-index: 9999;
+    max-height: 220px;
+    overflow-y: auto;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
     .autocomplete-items div {
-        padding: 10px;
+        padding: 8px 10px;
         cursor: pointer;
-        border-bottom: 1px unset;
         display: flex;
+        align-items: center;
+        gap: 8px;
     }
 
-.autocomplete-items div:hover {
-    background-color: #e9e9e9;
-}
+        .autocomplete-items div:hover {
+            background-color: #f0f4ff;
+        }
 
 
 
@@ -1168,7 +1180,7 @@ body {
 }
 .finalprintbtn {
     background-color: aquamarine;
-    border: none;
+    border: outset;
     display: flex;
     justify-self: center;
     position: relative;
@@ -1178,10 +1190,13 @@ body {
     justify-content: center;
     font-weight: bold;
 }
+    .finalprintbtn:hover{
+        border:ridge;
+    }
 
-#pager {
-    background-color: aquamarine;
-}
+    #pager {
+        background-color: aquamarine;
+    }
 
 .ui-jqgrid-htable th {
     background-color: #e0e0e0 !important;
@@ -1202,7 +1217,7 @@ h1 {
 
 .refreshbtn {
     background: aquamarine;
-    width: 6%;
+    width: 10%;
     border: outset;
 }
     .refreshbtn:hover {
@@ -1385,3 +1400,32 @@ h1 {
 .Print-icon:hover {
     filter: drop-shadow(0 0 4px rgba(13,110,253,0.6));
 }
+
+
+.jq-caption {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2px 10px;
+}
+
+.jq-title {
+    margin: 0;
+}
+
+.jq-caption-right {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.cap-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.refreshbtn {
+    white-space: nowrap;
+}
+

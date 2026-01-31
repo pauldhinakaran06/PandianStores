@@ -224,47 +224,61 @@
     <section id="section" class="dashboard">
         <div class="overview dash-content">
             <div class="title">
-                <img src="/Icons/Gif/inventory.gif" class="menu-gif" alt="Inventory">
-                <span class="text" style="width: 100%;">Inventory Details</span>
+                <img src="../Icons/Gif/inventory.gif" class="menu-gif" alt="Inventory">
+                <div class="text" style="width: 100%;display:flex;">
+                    Inventory Details
+                </div>
                 <marquee direction="left" height="50px" style="width: 60%;padding: 0px;position: relative;left:0px;">
                     This is a sample scrolling text that has scrolls in the upper direction.
                 </marquee>
                 <!--<div class="search-box" style="margin: 0 !important;display:flex;">
-                    <button class="commonconfirm-btn" onclick="openpopup('AddCategory')">Add Category</button>
-                    <button class="commonconfirm-btn" onclick="openpopup('AddBrand')">Add Brand</button>
-                    <button class="commonconfirm-btn" onclick="openpopup('AddProduct')">Add Product</button>
-                </div>-->
+            <button class="commonconfirm-btn" onclick="openpopup('AddCategory')">Add Category</button>
+            <button class="commonconfirm-btn" onclick="openpopup('AddBrand')">Add Brand</button>
+            <button class="commonconfirm-btn" onclick="openpopup('AddProduct')">Add Product</button>
+        </div>-->
             </div>
-            <div class="inventorymenu-items">
+            <div class="inventorymenu-items" style="display: flex; align-items: center; justify-content: space-between;">
                 <ul class="inventorylinks" style="display:flex;">
                     <li>
-                        <a href="#" id="Category" class="menu-item inventorymenuitem" data-target="Categorydiv">
-                            <img src="/Icons/Gif/list.gif" class="menu-gif" alt="Dahsboard">
+                        <a href="#" id="Category" class="menu-item inventorymenuitem" title="Category" data-target="Categorydiv">
+                            <img src="../Icons/Gif/list.gif" class="menu-gif">
                             <span class="link-name" style="width: 100%;">Category </span>
                         </a>
                     </li>&nbsp;&nbsp;
                     <li>
-                        <a href="#" id="Brand" class="menu-item inventorymenuitem" data-target="Branddiv">
-                            <img src="/Icons/Gif/Brand.gif" class="menu-gif" alt="Inventory">
+                        <a href="#" id="Brand" class="menu-item inventorymenuitem" title="Brand" data-target="Branddiv">
+                            <img src="../Icons/Gif/Brand.gif" class="menu-gif">
                             <span class="link-name" style="width: 100%;">Brand </span>
                         </a>
                     </li>&nbsp;&nbsp;
                     <li>
                         <a href="#" id="Product" class="menu-item inventorymenuitem" data-target="productsdiv">
-                            <img src="/Icons/Gif/bill.gif" class="menu-gif" alt="Billing">
+                            <img src="../Icons/Gif/bill.gif" class="menu-gif">
                             <span class="link-name" style="width: 100%;">Product</span>
                         </a>
+                    </li>&nbsp;&nbsp;
+                    <li>
+                        <div class="menu-item inventorymenuitem info-tooltip" title="Info" onclick="event.preventDefault(); event.stopPropagation();">
+                            <img src="../Icons/Gif/info.gif" class="menu-gif" alt="info">
+                            <!--<span class="link-name" style="width: 100%;">Info</span>-->
+                            <div class="tooltip-content">
+                                Ctrl + F9 → Category |
+                                Ctrl + F10 → Brand |
+                                Ctrl + F11 → Product
+                            </div>
+                        </div>
                     </li>
                 </ul>
             </div>
-            <div id="Categorydiv" style=" width: 850px; display: none;">
+            <div id="Categorydiv" style=" width: 750px; display: none;">
                 <div style="display: flex;justify-content: space-between;">
                     <div style="width: 100%;">
                         <label for="Categorysearch" style="margin-left: 14px;">Search :  </label>
                         <input type="text" id="Categorysearch" style=" width: 40%; text-align: center;" placeholder="Search by Category Name" />
                     </div>
-                    <div>
-                        <button class="commonconfirm-btn" onclick="openpopup('AddCategory')" title="Click To Add Category">Add Category</button>
+                    <div style="display: flex;">
+                        <button class="commonconfirm-btn" id="btnCategoryAction" onclick="openpopup('AddCategory')" title="Click To Add Category">Add Category</button>
+
                     </div>
                 </div>
                 <table id="Categorygrid"></table>
@@ -280,8 +294,8 @@
                         <label for="Brandsearch" style="margin-left: 14px;">Search :  </label>
                         <input type="text" id="Brandsearch" style=" width: 30%; text-align: center;" placeholder="Search by Brand Name" />
                     </div>
-                    <div>
-                        <button class="commonconfirm-btn" onclick="openpopup('AddBrand')" title="Click To Add Brand">Add Brand</button>
+                    <div style="display: flex;">
+                        <button class="commonconfirm-btn" id="btnBrandAction" onclick="openpopup('AddBrand')" title="Click To Add Brand">Add Brand</button>
                     </div>
                 </div>
                 <table id="Brandgrid"></table>
@@ -301,64 +315,16 @@
                         <label for="Productsearch" style="margin-left: 14px;">Search :  </label>
                         <input type="text" id="Productsearch" style=" width: 20%; text-align: center;" placeholder="Search by Product Name" />
                     </div>
-                    <div>
-                        <button class="commonconfirm-btn" onclick="openpopup('AddProduct')" title="Click To Add Product">Add Product</button>
+                    <div style="display: flex;">
+                        <button class="commonconfirm-btn" id="btnProductAction" onclick="openpopup('AddProduct')" title="Click To Add Product">Add Product</button>
                     </div>
                 </div>
                 <table id="productsgrid"></table>
                 <div id="productspager"></div>
             </div>
-            <div id="popup" class="popup-overlay">
-                <div class="popup-container" style="top: 25%;left: 34%;">
-                    <h2 style="text-align: center; background: aquamarine; font-size: 1.5vw; font-weight: bold; margin-top: 0px; margin-bottom: 14px; ">
-                        Edit Product Details
-                        <button class="billclose-btn" onclick="closeHeader('EditProduct')">X</button>
-                    </h2>
-                    <div>
-                        <div id="EditBarcode" class="editproduct col-md-6 padding">
-                            <label for="txtEditBarcode">Barcode</label>
-                            <input id="txtEditBarcode" name="txtEditBarcode" placeholder="Enter Product Name.." autocomplete="off">
-                        </div>
-                        <div id="EditProductName" class="editproduct col-md-6 padding">
-                            <label for="txtEditProductName">Product Name</label>
-                            <input id="txtEditProductName" name="txtEditProductName" placeholder="Enter Product Name.." autocomplete="off">
-                        </div>
-                        <div id="EditBuyprice" class="editproduct col-md-6 padding">
-                            <label for="txtEditbuyprice">Buy Price</label>
-                            <input id="txtEditbuyprice" name="txtEditbuyprice" placeholder="Enter buy Price .." autocomplete="off">
-                        </div>
-                        <div id="EditMrpPrice" class="editproduct col-md-6 padding">
-                            <label for="txtEditmrp">MRP Price</label>
-                            <input id="txtEditmrp" name="txtEditmrp" placeholder="Enter MRP.." autocomplete="off">
-                        </div>
-                        <div id="EditSellprice" class="editproduct col-md-6 padding">
-                            <label for="txtEditsellprice">selling Price</label>
-                            <input id="txtEditsellprice" name="txtEditsellprice" placeholder="Enter Selling Price .." autocomplete="off">
-                        </div>
-                        <div id="EditQuantity" class="editproduct col-md-6 padding">
-                            <label for="txtEditquantity">No. of Quantity</label>
-                            <input id="txtEditquantity" name="txtEditquantity" placeholder="Enter Quantity.." autocomplete="off">
-                        </div>
-                        <div id="EditCategory" class="editproduct col-md-6 padding" style="display:none !important;">
-                            <label for="txtEditCategory">Category</label>
-                            <input id="txtEditCategory" name="txtEditCategory" placeholder="Enter Category.." autocomplete="off">
-                        </div>
-                        <div id="EditBrand" class="editproduct col-md-6 padding" style="display:none !important;">
-                            <label for="txtEditBrand">Brand</label>
-                            <input id="txtEditBrand" name="txtEditBrand" placeholder="Enter Brand.." autocomplete="off">
-                        </div>
-                        <div id="EditProductid" class="editproduct col-md-6 padding" style="display:none !important;">
-                            <label for="txtEditProductid">Productid</label>
-                            <input id="txtEditProductid" name="txtEditProductid" placeholder="Enter Productid.." autocomplete="off">
-                        </div>
-                        <div id="Editconfirm" class="editproduct col-md-6 padding">
-                            <button class="editproductconfirm-btn" id="editproductconfirm" onclick="btnconfirm('EditProduct')">Confirm</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="Addcategorypopup" class="modal">
-                <div class="card Addcategorypopup" id="Addcategorypopup">
+           
+            <div id="AddCategorypopup" class="modal">
+                <div class="card AddCategorypopup" id="AddCategorypopup">
                     <button class="billclose-btn" style=" top: 18px;" onclick="closeHeader('AddCategory')">X</button>
                     <h3 style="background-color: aquamarine; display: flex; justify-content: center; margin-bottom: 10px; ">Add Category Detail</h3>
                     <div id="Ledger" style=" width:100%;">
@@ -404,9 +370,9 @@
                             <div class="gradient-box p-5 rounded-2xl">
                                 <div class="row">
                                     <div class="floating-group" title="Select Category">
-                                        <input id="txtbrandCategory" name="txtbrandCategory" onkeyup="getCategoryList('Brand');" placeholder=" " style=" margin-bottom: 3px !important;" autocomplete="off">
+                                        <input id="txtbrandCategory" class="autocomplete-input" data-listname="brandCategory-list" name="txtbrandCategory" onkeyup="getCategoryList(event,'Brand');" placeholder=" " style=" margin-bottom: 3px !important;" autocomplete="off">
                                         <label class="floating-label" for="txtbrandCategory">Category<span style="color:red;">*</span></label>
-                                        <div id="brandCategory-list" class="categorylist autocomplete-items" style="width: calc(100% - 86%);left: calc(100% - 70.8%);"></div>
+                                        <div id="brandCategory-list" class="categorylist autocomplete-items"></div>
 
                                     </div>
                                     <div class="floating-group" title="Enter Brand">
@@ -452,74 +418,167 @@
                             <div class="gradient-box p-5 rounded-2xl">
                                 <div class="row">
                                     <div class="floating-group" title="Category">
-                                        <input type="text" class="product" id="txtCategory" style=" margin-bottom: 0 !important;" placeholder=" " onkeyup="getCategoryList('Add');" onkeydown="if(event.key==='Enter'){event.preventDefault();}">
+                                        <input type="text" class="product autocomplete-input" id="txtCategory" data-listname="Category-list" style=" margin-bottom: 0 !important;" placeholder=" " onkeyup="getCategoryList(event,'Add');" onkeydown="if(event.key==='Enter'){event.preventDefault();}">
                                         <label class="floating-label" for="txtCategory">Category<span style="color:red;">*</span></label>
-                                        <div id="Category-list" class="categorylist autocomplete-items" style="width: calc(100% - 86%);left: calc(100% - 70.8%);"></div>
-                                       
+                                        <div id="Category-list" class="categorylist autocomplete-items"></div>
+
                                     </div>
                                     <div class="floating-group" title="Brand">
-                                        <input type="text"  class="product" id="txtBrand" style=" margin-bottom: 0 !important;" placeholder=" " onkeyup="getBrandList('Add');" onkeydown="if(event.key==='Enter'){event.preventDefault();}">
+                                        <input type="text" class="product autocomplete-input" id="txtBrand" data-listname="Brand-list" style=" margin-bottom: 0 !important;" placeholder=" " onkeyup="getBrandList(event,'Add');" onkeydown="if(event.key==='Enter'){event.preventDefault();}">
                                         <label class="floating-label" for="txtBrand">Brand<span style="color:red;">*</span></label>
-                                        <div id="Brand-list" class="brandlist autocomplete-items" style="width: calc(100% - 86%);left: calc(100% - 70.8%);"></div>
-                                       
+                                        <div id="Brand-list" class="brandlist autocomplete-items"></div>
+
 
                                     </div>
                                     <div class="floating-group" title="Barcode">
-                                        <input type="text"  class="product" id="txtBarcode"  placeholder=" ">
+                                        <input type="text" class="product" id="txtBarcode" placeholder=" ">
                                         <label class="floating-label" for="txtBarcode">Barcode<span style="color:red;">*</span></label>
-                                      
+
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="floating-group" title="Product Name">
-                                        <input type="text"  class="product" id="txtProductName"  placeholder=" ">
+                                        <input type="text" class="product" id="txtProductName" placeholder=" ">
                                         <label class="floating-label" for="txtProductName">Product Name<span style="color:red;">*</span></label>
-                                       
-                                    </div>
-                                    <div class="floating-group" title="Buy Price">
-                                        <input type="text"  class="product" id="txtbuyprice"  placeholder=" ">
-                                        <label class="floating-label" for="txtbuyprice">Buy Price<span style="color:red;">*</span></label>
                                         
                                     </div>
+                                    <div class="floating-group" title="Buy Price">
+                                        <input type="text" class="product price" id="txtbuyprice" placeholder=" ">
+                                        <label class="floating-label" for="txtbuyprice">Buy Price<span style="color:red;">*</span></label>
+
+                                    </div>
                                     <div class="floating-group" title="MRP Price">
-                                        <input type="text" id="txtmrp" placeholder=" " >
+                                        <input type="text" id="txtmrp" class="product price" placeholder=" ">
                                         <label class="floating-label" for="txtmrp">MRP Price<span style="color:red;">*</span></label>
-                                       
+
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="floating-group" title="Selling Price">
-                                        <input type="text"  class="product" id="txtsellprice" placeholder=" " >
+                                        <input type="text" class="product price" id="txtsellprice" placeholder=" ">
                                         <label class="floating-label" for="txtsellprice">Selling Price<span style="color:red;">*</span></label>
-                                        
+
                                     </div>
                                     <div class="floating-group" title="No. of Quantity">
-                                        <input type="text"  class="product" id="txtquantity" placeholder=" " >
+                                        <input type="text" class="product" id="txtquantity" placeholder=" ">
                                         <label class="floating-label" for="txtquantity">No. of Quantity<span style="color:red;">*</span></label>
-                                        
+
                                     </div>
                                     <div class="floating-group" title="GST%">
-                                        <input type="text"  class="product" id="txtGST" placeholder=" " >
-                                        <label class="floating-label" for="txtGST">GST%<span style="color:red;">*</span></label>
-                                        
+                                        <!--<input type="text" class="product" id="txtGST" placeholder=" ">
+                                        <label class="floating-label" for="txtGST">GST%<span style="color:red;">*</span></label>-->
+                                        <select class="product" id="ddlGST" style="width: 95%;left: 6px;position: relative;text-align: center;height: 25px;top: 6px;">
+                                            <option value="">Select GST%</option>
+                                        </select>
+                                        <label class="floating-label" for="ddlGST">
+                                            GST% <span style="color:red;">*</span>
+                                        </label>
+
                                     </div>
                                 </div>
                                 <!--<div class="row">-->
-                                    <!--<div id="AddProductconfirm" class="Product col-md-6 padding">
-                                        <button class="editproductconfirm-btn" id="addproductClear" style="left: 60%;" onclick="btnClear('Addproduct');">Clear</button>
-                                        <button class="editproductconfirm-btn" id="addproductconfirm" style="left: 100%;" onclick="btnconfirm('Addproduct')">Confirm</button>
-                                    </div>-->
-                                    <!--<div class="floating-group" style="top: -12px;">
-                                        <button type="button" class="common-btn" id="Addcat" style=" width: 80px; height: 28px;" onclick="AddData('AddCategory')">ADD</button>-->
-                                        <!--<button type="button" class="common-btn" id="Clearcat" style=" width: 80px; height: 28px;" onclick="btnClear('AddCategory');">Clear</button>-->
-                                    <!--</div>
-                                </div>-->
+                                <!--<div id="AddProductconfirm" class="Product col-md-6 padding">
+                            <button class="editproductconfirm-btn" id="addproductClear" style="left: 60%;" onclick="btnClear('Addproduct');">Clear</button>
+                            <button class="editproductconfirm-btn" id="addproductconfirm" style="left: 100%;" onclick="btnconfirm('Addproduct')">Confirm</button>
+                        </div>-->
+                                <!--<div class="floating-group" style="top: -12px;">
+                            <button type="button" class="common-btn" id="Addcat" style=" width: 80px; height: 28px;" onclick="AddData('AddCategory')">ADD</button>-->
+                                <!--<button type="button" class="common-btn" id="Clearcat" style=" width: 80px; height: 28px;" onclick="btnClear('AddCategory');">Clear</button>-->
+                                <!--</div>
+                        </div>-->
                             </div>
-                            
+
                             <div class="floating-group right-corner">
-                                    <span class="span-error"></span>
-                                    <button type="button" class="common-btn" id="Clearcat" style=" width: 80px; height: 28px;" onclick="btnClear('Addproduct');">Clear All</button>
-                                    <button type="button" class="common-btn" style=" width: 80px; height: 28px;" id="addcategoryconfirm" onclick="btnconfirm('Addproduct')">Confirm</button>
+                                <span class="span-error"></span>
+                                <button type="button" class="common-btn" id="Clearcat" style=" width: 80px; height: 28px;" onclick="btnClear('Addproduct');">Clear All</button>
+                                <button type="button" class="common-btn" style=" width: 80px; height: 28px;" id="addcategoryconfirm" onclick="btnconfirm('Addproduct')">Confirm</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="EditProductpopup" class="modal">
+                <div class="card EditProductpopup" id="EditProductpopup">
+                    <button class="billclose-btn" style=" top: 18px;" onclick="closeHeader('EditProduct')">X</button>
+                    <h3 style="background-color: aquamarine; display: flex; justify-content: center; margin-bottom: 10px; ">Add Product Detail</h3>
+                    <div id="Ledger" style=" width:100%;">
+                        <div>
+                            <div class="gradient-box p-5 rounded-2xl">
+                                <div class="row">
+                                    <div class="floating-group" title="Category">
+                                        <input type="text" class="product autocomplete-input" id="txtEditCategory" data-listname="Category-list" style=" margin-bottom: 0 !important;" placeholder=" " onkeyup="getCategoryList(event,'Edit');" onkeydown="if(event.key==='Enter'){event.preventDefault();}">
+                                        <label class="floating-label" for="txtEditCategory">Category<span style="color:red;">*</span></label>
+                                        <div id="Category-list" class="categorylist autocomplete-items"></div>
+
+                                    </div>
+                                    <div class="floating-group" title="Brand">
+                                        <input type="text" class="product autocomplete-input" id="txtEditBrand" data-listname="Brand-list" style=" margin-bottom: 0 !important;" placeholder=" " onkeyup="getBrandList(event,'Edit');" onkeydown="if(event.key==='Enter'){event.preventDefault();}">
+                                        <label class="floating-label" for="txtEditBrand">Brand<span style="color:red;">*</span></label>
+                                        <div id="Brand-list" class="brandlist autocomplete-items"></div>
+
+
+                                    </div>
+                                    <div class="floating-group" title="Barcode">
+                                        <input type="text" class="product" id="txtEditBarcode" placeholder=" ">
+                                        <label class="floating-label" for="txtEditBarcode">Barcode<span style="color:red;">*</span></label>
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="floating-group" title="Product Name">
+                                        <input type="text" class="product" id="txtEditProductName" placeholder=" ">
+                                        <label class="floating-label" for="txtEditProductName">Product Name<span style="color:red;">*</span></label>
+                                        <input type="text" id="txtEditProductid" hidden />
+                                    </div>
+                                    <div class="floating-group" title="Buy Price">
+                                        <input type="text" class="product" id="txtEditbuyprice" placeholder=" ">
+                                        <label class="floating-label" for="txtEditbuyprice">Buy Price<span style="color:red;">*</span></label>
+
+                                    </div>
+                                    <div class="floating-group" title="MRP Price">
+                                        <input type="text" id="txtEditmrp" placeholder=" ">
+                                        <label class="floating-label" for="txtEditmrp">MRP Price<span style="color:red;">*</span></label>
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="floating-group" title="Selling Price">
+                                        <input type="text" class="product" id="txtEditsellprice" placeholder=" ">
+                                        <label class="floating-label" for="txtEditsellprice">Selling Price<span style="color:red;">*</span></label>
+
+                                    </div>
+                                    <div class="floating-group" title="No. of Quantity">
+                                        <input type="text" class="product" id="txtEditquantity" placeholder=" ">
+                                        <label class="floating-label" for="txtEditquantity">No. of Quantity<span style="color:red;">*</span></label>
+
+                                    </div>
+                                    <div class="floating-group" title="GST%">
+                                        <!--<input type="text" class="product" id="txtEditGST" placeholder=" ">
+                                        <label class="floating-label" for="txtEditGST">GST%<span style="color:red;">*</span></label>-->
+                                        <select class="product" id="ddlEditGST" style="width: 95%;left: 6px;position: relative;text-align: center;height: 25px;top: 6px;">
+                                            <option value="">Select GST%</option>
+                                        </select>
+                                        <label class="floating-label" for="ddlEditGST">
+                                            GST% <span style="color:red;">*</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <!--<div class="row">-->
+                                <!--<div id="AddProductconfirm" class="Product col-md-6 padding">
+                            <button class="editproductconfirm-btn" id="addproductClear" style="left: 60%;" onclick="btnClear('Addproduct');">Clear</button>
+                            <button class="editproductconfirm-btn" id="addproductconfirm" style="left: 100%;" onclick="btnconfirm('Addproduct')">Confirm</button>
+                        </div>-->
+                                <!--<div class="floating-group" style="top: -12px;">
+                            <button type="button" class="common-btn" id="Addcat" style=" width: 80px; height: 28px;" onclick="AddData('AddCategory')">ADD</button>-->
+                                <!--<button type="button" class="common-btn" id="Clearcat" style=" width: 80px; height: 28px;" onclick="btnClear('AddCategory');">Clear</button>-->
+                                <!--</div>
+                        </div>-->
+                            </div>
+
+                            <div class="floating-group right-corner">
+                                <span class="span-error"></span>
+                                <button type="button" class="common-btn" id="EditClearcat" style=" width: 80px; height: 28px;" onclick="btnClear('EditProduct');">Clear All</button>
+                                <button type="button" class="common-btn" style=" width: 80px; height: 28px;" id="Editcategoryconfirm" onclick="btnconfirm('EditProduct')">Confirm</button>
                             </div>
                         </div>
                     </div>
@@ -536,7 +595,7 @@
                 </div>
             </div>
         </div>
-
+        
     </section>
 
     <div class="alert hide">

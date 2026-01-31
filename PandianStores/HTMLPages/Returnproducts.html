@@ -133,6 +133,7 @@
         .ui-jqgrid-htable th {
             background-color: #e0e0e0 !important;
             font-size: 1.1vw;
+            font-weight: bold;
         }
 
         .ui-jqgrid-htable, #returnbillgrid {
@@ -148,16 +149,22 @@
             }
 
         #gbox_returnbillgrid td {
-            font-weight: bold;
+            font-weight: normal;
             font-size: 1.1vw;
             text-align: center;
+        }
+        #gbox_returnproductgrid th {
+            font-weight: bold;
+        }
+        #gbox_returnbillgrid th {
+            font-weight: bold;
         }
         .edit-icon {
             color: #337ab7 !important;
         }
 
         #gbox_returnproductgrid td {
-            font-weight: bold;
+            font-weight: normal;
             font-size: 1.1vw;
             text-align: center;
         }
@@ -229,6 +236,19 @@
         .ui-jqgrid-btable tr.jqgrow:hover {
             cursor: default !important;
         }
+        .returncheckout {
+            background-color: aquamarine;
+            border: outset;
+            display: flex;
+            justify-self: center;
+            position: relative;
+            top: 5px;
+            cursor: pointer;
+            padding: 8px
+        }
+        .returncheckout:hover{
+            border:ridge;
+        }
     </style>
 </head>
 <body>
@@ -237,7 +257,7 @@
     <section id="section" class="dashboard">
         <div class="overview dash-content">
             <div class="title">
-                <i class="bi bi-cart-x"></i>
+                <img src="../Icons/Gif/return.gif" class="menu-gif" alt="Return">
                 <span class="text">Return Products</span>
             </div>
             <div id="returnbill" style=" width:100%;">
@@ -272,8 +292,9 @@
                             <h3>Total : </h3><h4 style="margin-top: 23px;">&nbsp;₹&nbsp;</h4><h4 style="margin-top: 23px;" id="totaldiv"></h4><h6 style="margin-top: 26px;">&nbsp;by&nbsp;</h6><h4 style="margin-top: 23px;" id="paymentterms"></h4>
                         </div>-->
                         <h1 id="itemInvoice_Pk_Id" style="display:none"></h1>
+                        <h1 id="itemInvoice_NO" style="display:none"></h1>
                     </div>
-                    <button style=" background-color: aquamarine; border: none; display: flex; justify-self: center; position: relative; top: 5px;cursor:pointer; " onclick="returnconfirm();">Check Out</button>
+                    <button class="returncheckout" onclick="returnconfirm();">Check Out</button>
                     <div style="display:none;">
                         <div id="printableArea">
                             <div class="bill-header">

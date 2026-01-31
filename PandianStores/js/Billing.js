@@ -4,26 +4,28 @@ var InvoiceCount = 0;
 var hasConfirmed = false;
 var hasdatachanged = false;
 var hasitemquantityisactive = false;
+
 $(function () {
     const channel = new BroadcastChannel('auth_channel');
     window.addEventListener('beforeunload', function (event) {
         if (!hasConfirmed || !hasdatachanged) {
             const message = "Are you sure you want to leave this page?";
-            event.returnValue = message; 
-            return message; 
+            event.returnValue = message;
+            return message;
         }
     });
+
     function logout() {
         channel.postMessage('logout');
         signout();
     }
-   
+
     getItemList()
-    updateTime(); 
+    updateTime();
     setInterval(updateTime, 1000);
     /*setInterval(updateTotalPrice, 1000);*/
     setInterval(getItemList, 12000);
-    
+
     resizeJqGrid();
 
     function calculateTotal(rowId) {
@@ -40,8 +42,8 @@ $(function () {
         colModel: [
             { name: 'id', label: 'Sr.no.', width: 75, editable: false, sortable: false },
             { name: 'ItemName', label: 'Item Name', width: 150, editable: false, sortable: false },
-            { name: 'ItemMrpPrice', label: 'Item M.R.P', width: 100, formatter: 'currency', editable: false, sortable: false },
-            { name: 'ItemSellPrice', label: 'Item Rate', width: 100, formatter: 'currency', editable: false, sortable: false },
+            { name: 'ItemMrpPrice', label: 'Item M.R.P', width: 100, formatter: 'currency',formatoptions: { decimalSeparator: ".",thousandsSeparator: ",", decimalPlaces: 2, prefix: "" }, editable: false, sortable: false },
+            { name: 'ItemSellPrice', label: 'Item Rate', width: 100, formatter: 'currency', formatoptions: { decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "" }, editable: false, sortable: false },
             {
                 name: 'ItemQuantity',
                 label: 'Item Quantity',
@@ -110,7 +112,7 @@ $(function () {
                                 }, 20);
                             }
                         }
-                        
+
                     ]
                 },
                 editrules: {
@@ -118,11 +120,11 @@ $(function () {
                     minValue: 1
                 }, sortable: false
             },
-            { name: 'ItemGST', label: 'GST %', width: 80, editable: false, sortable: false },
-            { name: 'ItemTotal', label: 'Item Total', width: 80, editable: false, sortable: false },
-            { name: 'ItemGSTAmount', label: 'GST Total', width: 80, editable: false, hidden: true, sortable: false },
+            { name: 'GSTRate', label: 'GST %', width: 80, editable: false, sortable: false },
+            { name: 'ItemTotal', label: 'Item Total', width: 80, formatter: 'currency', formatoptions: { decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "" }, editable: false, sortable: false },
+            { name: 'GSTRateAmount', label: 'GST Total', width: 80, editable: false, hidden: true, sortable: false },
             { name: 'Quantity', label: 'Quantity', width: 80, editable: false, hidden: true, sortable: false },
-            { name: 'ProductID', label: 'ProductID', width: 80, editable: false,hidden:true,sortable:false }
+            { name: 'ProductID', label: 'ProductID', width: 80, editable: false, hidden: true, sortable: false }
         ],
         datatype: 'local',
         data: [], // Initialize with no data
@@ -131,11 +133,14 @@ $(function () {
         treeGrid: false,
         viewrecords: true,
         cellEdit: true,
-        height: 585,    
+        height: 585,
         width: 1280,
-        caption: '<div style="display: flex;align - items: center;justify-content: space-between;"><h2>Items</h2><div style="display: flex; flex-direction: row; align-items: center;"><button class="refreshbtn" style="position: fixed;right: 30%;text-align: center;" onclick=" GetProductList();">Product List</button> <h4>SubTotal : ₹&nbsp;</h4><h4 id="totaldiv">0.00</h4>&nbsp;&nbsp;&nbsp;<h4> GSTTotal : ₹&nbsp;</h4><h4 id="totalGSTDiv">0.00</h4> &nbsp;&nbsp; &nbsp;<h4>Invoice No. &nbsp;&nbsp;</h4><h3 id="InvoiceNumber" >&nbsp;&nbsp;</h3></div></div>',
+        //caption: '<div style="display: flex;align - items: center;justify-content: space-between;"><h2>Items</h2><div style="display: flex; flex-direction: row; align-items: center;"><button class="refreshbtn" style="position: fixed;right: 30%;text-align: center;" onclick=" GetProductList();">Product List</button> <h4>Taxable Amount : ₹&nbsp;</h4><h4 id="totaldiv">0.00</h4>&nbsp;&nbsp;&nbsp;<h4> GST Total : ₹&nbsp;</h4><h4 id="totalGSTDiv">0.00</h4> &nbsp;&nbsp; &nbsp;<h4>Invoice No. &nbsp;&nbsp;</h4><h3 id="InvoiceNumber" >&nbsp;&nbsp;</h3></div></div>',
+        caption: `<div class="jq-caption"><h2 class="jq-title">Items</h2><div class="jq-caption-right"><button style="display:none;" class="refreshbtn" onclick="GetProductList()">Product List</button>
+        <div class="cap-item"><h4>Taxable Amount : ₹</h4><h4 id="totaldiv">0.00</h4></div><div class="cap-item"><h4>GST Total : ₹</h4><h4 id="totalGSTDiv">0.00</h4></div><div class="cap-item">
+            <h4>Invoice No.</h4><h3 id="InvoiceNumber"></h3></div></div></div>`,
         multiselect: true,
-        autowidth: true, 
+        autowidth: true,
         shrinkToFit: true,
         sortable: false,
         afterEditCell: function (rowid, cellname, value, iRow, iCol) {
@@ -144,8 +149,8 @@ $(function () {
                 $('input[name="ItemQuantity"]').focus().select();
             }, 0);
         },
-       
-       
+
+
     });
     function deleteSelectedRows() {
         var selectedRowIds = $("#grid").jqGrid('getGridParam', 'selarrrow');
@@ -179,122 +184,130 @@ $(function () {
         }
         event.stopPropagation();
     });
-    
+
 
     $(document).keydown(function (e) {
-        if (e.key === 'Delete') { 
+        if (e.key === 'Delete') {
             deleteSelectedRows();
         }
     });
     $("#pager_center").css('display', 'none');
     $("#pager_left").html('<h4>CTRL + Q : Products List. | Delete : Delete Item. | F10 : Checkout.  </h4>')
     $(".close").click(function () {
-        $("#myModal").fadeOut(); 
+        $("#myModal").fadeOut();
     });
 
-    
+
 });
-
-//function printBill() {
-
-//    const content = document.getElementById('printableArea').innerHTML;
-
-//    var options = {
-//        margin: [0, 0], 
-//        filename: '' + $('#InvoiceNumber').val() + '.pdf',
-//        image: { type: 'jpeg', quality: 0.98 },
-//        html2canvas: { scale: 2 },
-//        jsPDF: { unit: 'mm', format: [80, 297] }
-//    };
-//    html2pdf().from(content).set(options).save();
-//    $("#myModal").css('display', 'none');
-//    $("#myModal").removeClass('open');
-//    finalpopupclear();
-//    hasConfirmed = true;
-//    location.reload();
-//}
 //function updateTotalPrice() {
-
 //    var grid = $("#grid");
-//    var totalPrice = 0;
+
+//    let totalTaxable = 0;
+//    let totalGST = 0;
+
+//    let gstSummary = {
+//        0: { taxable: 0, gst: 0 },
+//        5: { taxable: 0, gst: 0 },
+//        8: { taxable: 0, gst: 0 },
+//        12: { taxable: 0, gst: 0 },
+//        18: { taxable: 0, gst: 0 }
+//    };
+
 //    grid.jqGrid('getDataIDs').forEach(function (rowId) {
-//        var price = parseFloat(grid.jqGrid('getCell', rowId, 'ItemSellPrice')) || 0;
-//        var quantity = parseInt(grid.jqGrid('getCell', rowId, 'ItemQuantity')) || 0;
-//        totalPrice += price * quantity;
-//        var itemSellPrice = parseFloat($("#grid").jqGrid('getCell', rowId, 'ItemSellPrice')) || 0;
-//        var itemQuantity = parseInt($("#grid").jqGrid('getCell', rowId, 'ItemQuantity')) || 0;
-//        var itemTotal = itemSellPrice * itemQuantity;
-//        if (totalAmount != totalPrice) {
-//            $("#grid").jqGrid('setCell', rowId, 'ItemTotal', itemTotal.toFixed(2));
+
+//        let mrp = parseFloat(grid.jqGrid('getCell', rowId, 'ItemMrpPrice')) || 0;
+//        let qty = parseInt(grid.jqGrid('getCell', rowId, 'ItemQuantity')) || 0;
+//        let gstRate = parseFloat(grid.jqGrid('getCell', rowId, 'GSTRate')) || 0;
+
+//        let basePrice = mrp / (1 + gstRate / 100);
+//        let gstPerUnit = mrp - basePrice;
+
+//        let taxableAmount = basePrice * qty;
+//        let gstAmount = gstPerUnit * qty;
+//        let lineTotal = mrp * qty;
+
+//        // Update grid
+//        //grid.jqGrid('setCell', rowId, 'ItemSellPrice', mrp.toFixed(2));
+//        grid.jqGrid('setCell', rowId, 'GSTRateAmount', gstAmount.toFixed(2));
+//        grid.jqGrid('setCell', rowId, 'ItemTotal', lineTotal.toFixed(2));
+
+//        // Accumulate totals
+//        totalTaxable += taxableAmount;
+//        totalGST += gstAmount;
+
+//        gstRate = Number(gstRate); // ensure numeric key
+//        if (gstSummary[gstRate]) {
+//            gstSummary[gstRate].taxable += taxableAmount;
+//            gstSummary[gstRate].gst += gstAmount;
 //        }
 //    });
-//    var totalRecords = $("#grid").jqGrid('getGridParam', 'records');
-//    $("#pager_right").html('<h3>Total Items: ' + totalRecords +'</h3>');
-//    $("#totaldiv").html(totalPrice.toFixed(2));
 
-//    totalAmount = totalPrice.toFixed(2);
+//    let totalBill = totalTaxable + totalGST;
+
+//    // UI updates
+//    $("#totalAmount").text(totalTaxable.toFixed(2));
+//    $("#totalGSTAmount").text(totalGST.toFixed(2));
+//    $("#totalBillAmount").text(totalBill.toFixed(2));
+
+//    $("#totaldiv").html(totalTaxable.toFixed(2));
+//    $("#totalGSTDiv").html(totalGST.toFixed(2));
+//    $("#totalBillDiv").html(totalBill.toFixed(2));
+
+//    let totalRecords = grid.jqGrid('getGridParam', 'records');
+//    $("#pager_right").html('<h3>Total Items: ' + totalRecords + '</h3>');
+
+//    console.log("GST Summary:", gstSummary);
 //}
 function updateTotalPrice() {
     var grid = $("#grid");
-    var totalPrice = 0;    // sum of all items before GST
-    var totalGST = 0;      // sum of GST for all items
-    var totalBill = 0;     // totalPrice + totalGST
-    var itemTotalExcl = 0;     // totalPrice + totalGST
-    let gstSummary = {
-        0: { taxable: 0, gst: 0 },
-        5: { taxable: 0, gst: 0 },
-        8: { taxable: 0, gst: 0 },
-        12: { taxable: 0, gst: 0 },
-        18: { taxable: 0, gst: 0 }
-    };
-    // loop through each row
+
+    let totalTaxable = 0;
+    let totalGST = 0;
+
     grid.jqGrid('getDataIDs').forEach(function (rowId) {
-        var price = parseFloat(grid.jqGrid('getCell', rowId, 'ItemMrpPrice')) || 0;
-        var quantity = parseInt(grid.jqGrid('getCell', rowId, 'ItemQuantity')) || 0;
-        var gstRate = parseFloat(grid.jqGrid('getCell', rowId, 'ItemGST')) || 5; // GST % for this item
-        const basePrice = price / (1 + gstRate / 100);
-        var SellPrice = basePrice * (1 + gstRate / 100);
-        grid.jqGrid('setCell', rowId, 'ItemSellPrice', SellPrice.toFixed(2));
-        // calculate item total price
-        var itemTotal = price * quantity;
-        grid.jqGrid('setCell', rowId, 'ItemTotal', itemTotal.toFixed(2));
 
-        // calculate GST for this item
-        var itemGST = price - basePrice;
-        grid.jqGrid('setCell', rowId, 'ItemGSTAmount', itemGST.toFixed(2));
+        // 🔹 Get RAW row data (NOT getCell)
+        let rowData = grid.jqGrid('getRowData', rowId);
 
-        // accumulate totals
-        itemTotalExcl = basePrice * quantity;
-        totalPrice += itemTotalExcl;
-        totalGST += itemGST * quantity;
-        gstSummary[gstRate].taxable += itemTotalExcl;
-        gstSummary[gstRate].gst += itemGST * quantity;
+        let sellPrice = parseFloat(rowData.ItemSellPrice) || 0; // 19.05 stays 19.05
+        let qty = parseInt(rowData.ItemQuantity) || 0;
+        let gstRate = parseFloat(rowData.GSTRate) || 0;
+
+        let basePrice = sellPrice / (1 + gstRate / 100);
+        let gstPerUnit = sellPrice - basePrice;
+
+        let taxableAmount = basePrice * qty;
+        let gstAmount = gstPerUnit * qty;
+        let lineTotal = sellPrice * qty;
+
+        // ✅ ONLY update totals
+        grid.jqGrid('setCell', rowId, 'GSTRateAmount', gstAmount.toFixed(2));
+        grid.jqGrid('setCell', rowId, 'ItemTotal', lineTotal.toFixed(2));
+
+        totalTaxable += taxableAmount;
+        totalGST += gstAmount;
     });
 
-    totalBill = totalPrice + totalGST;
+    let totalBill = totalTaxable + totalGST;
 
-    // display totals
-    var totalRecords = grid.jqGrid('getGridParam', 'records');
+    $("#totaldiv").html(totalTaxable.toFixed(2));
+    $("#totalGSTDiv").html(totalGST.toFixed(2));
+    $("#totalBillDiv").html(totalBill.toFixed(2));
+    $("#totalAmount").text(totalTaxable.toFixed(2));
+    $("#totalGSTAmount").text(totalGST.toFixed(2));
+    $("#totalBillAmount").text(totalBill.toFixed(2));
+    let totalRecords = grid.jqGrid('getGridParam', 'records');
     $("#pager_right").html('<h3>Total Items: ' + totalRecords + '</h3>');
-    $("#totaldiv").empty();
-    $("#totalGSTDiv").empty();
-    $("#totalBillDiv").empty();
-    $('#totalAmount').text(totalPrice.toFixed(2));
-    $('#totalGSTAmount').text(totalGST.toFixed(2));
-    $('#totalBillAmount').text(totalBill.toFixed(2));
-    $("#totaldiv").html(totalPrice.toFixed(2));           // subtotal
-    $("#totalGSTDiv").html(totalGST.toFixed(2));          // total GST
-    $("#totalBillDiv").html(totalBill.toFixed(2));        // grand total
 }
 
 function getItemList() {
     var jdata = {
         str_PageName: 'MasterData',
-        str_param: 'GetItemList^^^^' +'' + '^' + sessionStorage.getItem('UserID')
+        str_param: 'GetItemList^^^^' + '' + '^' + sessionStorage.getItem('UserID')
     }
-    
+
     PostServiceCall(jdata, itemsuccess);
-   
+
 }
 function itemsuccess(data) {
     products = JSON.parse(data.PostServiceCallResult).Table;
@@ -310,17 +323,32 @@ document.addEventListener('keydown', function (event) {
         (event.ctrlKey && (event.key === 'r' || event.key === 'R')) ||
         (event.key === 'F12') ||
         (event.shiftKey && event.key === 'F5') || (event.ctrlKey && event.key === 'w')) {
-         event.preventDefault();        
+        event.preventDefault();
     }
     if (event.key === 'F11') {
         setTimeout(function () {
             resizeJqGrid();
         }, 300);
     }
-    if (event.key==='F10' && event.keyCode === 121) {
+    if (event.key === 'F10' && event.keyCode === 121) {
         //$("#totalAmount").text(totalAmount); 
-        //$("#total_Amount").text(totalAmount); 
+        //$("#total_Amount").text(totalAmount);
         //finalpopupclear()
+        var grid = $("#grid");
+        var rowCount = grid.jqGrid('getGridParam', 'records');
+
+        if (rowCount === 0) {
+            alert('No items in bill. Please add at least one product.');
+            return;
+        }
+        var customerJson = getCustomerJson();
+        if (customerJson === null) {
+            if (!confirm('Customer details not entered. Do you want to proceed?')) {
+                $('#customerName').focus();
+                return;
+            }
+            customerJson = '';
+        }
         const finalpopup = document.getElementById("myModal");
         const finaldisplayValue = window.getComputedStyle(finalpopup).display;
         if (finaldisplayValue == 'flex') {
@@ -337,7 +365,7 @@ document.addEventListener('keydown', function (event) {
     if (event.ctrlKey && event.keyCode === 81) {
         GetProductList();
     }
-    if (event.key === 'Enter' && event.keyCode === 13 && document.getElementById("myModal").style.display=='flex') {
+    if (event.key === 'Enter' && event.keyCode === 13 && document.getElementById("myModal").style.display == 'flex') {
         const finalpopup = document.getElementById("myModal");
         const finaldisplayValue = window.getComputedStyle(finalpopup).display;
         if (confirm('Are you sure you want to Print?')) {
@@ -370,7 +398,7 @@ document.addEventListener('keydown', function (event) {
         event.preventDefault();
     }
     if (event.target.matches('input[id$="_quantity"]')) {
-        
+
     }
 
 });
@@ -386,28 +414,28 @@ function getproduct(event) {
         enableProductGridNavigation();
     }
     else if (event == 'productlist') {
-        var selectedRow = null; 
+        var selectedRow = null;
         $('#Productsearch').focus().select();
         $("#productsgrid").jqGrid({
             colModel: [
                 { name: 'Product_id', label: 'Product_id', width: 75, editable: false },
                 { name: 'ProductName', label: 'ProductName', width: 200 },
-                { name: 'MRP_Rate', label: 'MRP_Rate', width: 100, formatter: 'currency', editable: false },
-                { name: 'SellPrice', label: 'SellPrice', width: 100, formatter: 'currency', editable: false },
+                { name: 'MRP_Rate', label: 'MRP_Rate', width: 100, formatter: 'currency', formatoptions: { decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "" }, editable: false },
+                { name: 'SellPrice', label: 'SellPrice', width: 100, formatter: 'currency', formatoptions: { decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "" }, editable: false },
                 { name: 'Quantity', label: 'Quantity', width: 80, editable: false, hidden: true },
-                { name: 'ItemGST', label: 'GST Rate', width: 80, editable: false, hidden: true }
+                { name: 'GSTRate', label: 'GST Rate', width: 80, editable: false, hidden: true }
             ],
             datatype: 'local',
-            data: products, 
+            data: products,
             width: 450,
-            height:285,
+            height: 285,
             treeGrid: false,
             viewrecords: true,
-            
+
             loadonce: false
 
         });
-        
+
 
         $("#productsgrid").jqGrid('setGridParam', {
             onSelectRow: function (rowId) {
@@ -415,26 +443,26 @@ function getproduct(event) {
                 var rowData = $("#productsgrid").jqGrid('getRowData', rowId);
 
                 var gridData = $("#grid").jqGrid('getGridParam', 'data');
-                var contains = '', rowIndex ='';
-                var containsrowID = '',proceed='N';
+                var contains = '', rowIndex = '';
+                var containsrowID = '', proceed = 'N';
                 const colModel = $("#grid").jqGrid('getGridParam', 'colModel');
                 const colIndex = colModel.findIndex(c => c.name === 'ItemQuantity');
 
                 $.each(products, function (index, row) {
                     if (row.ProductName === rowData.ProductName) {
                         proceed = row.Quantity > 0 ? 'Y' : 'N';
-                        return false; 
+                        return false;
                     }
                 });
                 if (proceed == 'Y') {
-                $.each(gridData, function (index, row) {
-                    if (row.ItemName == rowData.ProductName) {
-                        containsrowID = row;
-                        contains = 'Y';
-                    }
-                });
+                    $.each(gridData, function (index, row) {
+                        if (row.ItemName == rowData.ProductName) {
+                            containsrowID = row;
+                            contains = 'Y';
+                        }
+                    });
                 }
-                
+
                 if (contains == 'Y' && proceed == 'Y') {
                     var containsitemQuantity = containsrowID.ItemQuantity == undefined ? '1' : containsrowID.ItemQuantity;
                     if (containsrowID.Quantity >= 0 && parseInt(containsitemQuantity) < containsrowID.Quantity) {
@@ -459,8 +487,8 @@ function getproduct(event) {
                         ItemMrpPrice: rowData.MRP_Rate,
                         ItemSellPrice: rowData.SellPrice,
                         ItemQuantity: 1,
-                        Quantity:rowData.Quantity,
-                        ItemGST: rowData.GSTRate,
+                        Quantity: rowData.Quantity,
+                        GSTRate: rowData.GSTRate,
                         ProductID: rowData.Product_id
                     };
                     rowIndex = newRow.id;
@@ -468,7 +496,7 @@ function getproduct(event) {
                     var grid = $("#grid");
                     var rowId = newRow.id;
                     //grid.jqGrid('editRow', rowId, true);
-                    
+
                     $("#grid").jqGrid('editCell', rowId, colIndex, true);
                     setTimeout(() => {
                         $(`#${rowId}_ItemQuantity`).focus().select();
@@ -493,8 +521,8 @@ function getproduct(event) {
                         groupOp: "OR",
                         rules: [
                             {
-                                field: "ProductName", 
-                                op: "cn",             
+                                field: "ProductName",
+                                op: "cn",
                                 data: productsearchtxt.value
                             },
                             {
@@ -505,11 +533,11 @@ function getproduct(event) {
                         ]
                     })
                 },
-                search: true,   
-            }).trigger("reloadGrid"); 
+                search: true,
+            }).trigger("reloadGrid");
         });
-        
-        
+
+
         enableProductGridNavigation();
     }
 }
@@ -554,7 +582,7 @@ function getJsonFromGrid() {
             MRPRate: row.ItemMrpPrice,
             SellPrice: row.ItemSellPrice,
             Qty: row.ItemQuantity,
-            ItemGST: row.GSTRate,
+            GSTRate: row.GSTRate,
             ItemValue: row.ItemTotal,
             ProductID: row.ProductID
         };
@@ -584,23 +612,46 @@ function GenerateInvoiceNumber() {
     //    +'<h4> GSTTotal : ₹&nbsp; </h4><h4 id="totalGSTDiv"></h4> &nbsp; &nbsp; &nbsp;<h4>Invoice No. &nbsp;&nbsp;</h4><h3 id="InvoiceNumber" >' + invoiceNumber +'&nbsp;&nbsp;</h3></div></div>'
     //$("#grid").jqGrid('setCaption', newCaption)
     $('#InvoiceNumber').text(invoiceNumber);
+    resizeJqGrid();
 }
 function getCustomerJson() {
-    var jsonArray = [];
-    var jsonObject = {
-        Name: $('#customerName').val(),
-        MobileNumber: $('#phoneNumber').val(),
-        Address: ""       
-    };
-    jsonArray.push(jsonObject);
 
-    return JSON.stringify(jsonArray, null, 2).replace(/\n/g, '').replace(/\s{2,}/g, ' ').trim();
+    var name = $('#customerName').val().trim();
+    var mobile = $('#phoneNumber').val().trim();
+
+    if (name === '' && mobile === '') {
+        return null; 
+    }
+
+    var jsonArray = [{
+        Name: name,
+        MobileNumber: mobile,
+        Address: ""
+    }];
+
+    return JSON.stringify(jsonArray);
 }
 
 function BillingProcess() {
+    var grid = $("#grid");
+    var rowCount = grid.jqGrid('getGridParam', 'records');
+
+    if (rowCount === 0) {
+        alert('No items in bill. Please add at least one product.');
+        return;
+    }
+    var customerJson = getCustomerJson();
+    if (customerJson === null) {
+        if (!confirm('Customer details not entered. Do you want to proceed?')) {
+            $('#customerName').focus();
+            return;
+        }
+        customerJson = '';
+    }
+
     var jdata = {
         str_PageName: 'Billing',
-        str_param: 'BillingProcess^' + getCustomerJson() + '^' + getJsonFromGrid() + '^' + $("#InvoiceNumber").text() + '^' + $('#totalAmount').text() + '^' + $('#saleType').val() + '^' + sessionStorage.getItem('UserID')
+        str_param: 'BillingProcess^' + customerJson + '^' + getJsonFromGrid() + '^' + $("#InvoiceNumber").text() + '^' + $('#totalAmount').text() + '^' + $('#totalGSTAmount').text() + '^' + $('#totalBillAmount').text() + '^' + $('#saleType').val() + '^' + sessionStorage.getItem('UserID')
     }
 
     PostServiceCall(jdata, BillSuccess);
@@ -622,7 +673,7 @@ function BillingProcess() {
 //            +'</tr>'
 //        }
 //    }
-   
+
 
 //    $('#bill-items').append(tabledata);
 //    printBill();
@@ -662,7 +713,7 @@ function scrollToRow(selectedRow) {
 function updateTime() {
     const now = new Date();
     const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0'); 
+    const month = String(now.getMonth() + 1).padStart(2, '0');
     const day = String(now.getDate()).padStart(2, '0');
     const date = `${year}-${month}-${day}`;
     const hours = String(now.getHours()).padStart(2, '0');
@@ -687,7 +738,7 @@ function closeHeader(event) {
         $("#popup").removeClass('open');
     }
     else if (event == 'finalpopup') {
-        $("#myModal").css('display', 'none'); 
+        $("#myModal").css('display', 'none');
         $("#myModal").removeClass('open');
     }
 }
@@ -705,7 +756,7 @@ function finalpopupclear() {
 
 function bindbarcodedata(data) {
     hasdatachanged = true;
-    var rowData = data[0], rowIndex='';
+    var rowData = data[0], rowIndex = '';
     var grid = $("#grid");
     var gridData = grid.jqGrid('getGridParam', 'data');
 
@@ -744,7 +795,7 @@ function bindbarcodedata(data) {
             ItemSellPrice: rowData.SellPrice,
             ItemQuantity: 1,
             Quantity: rowData.Quantity,
-            ItemGST: rowData.GSTRate,
+            GSTRate: rowData.GSTRate,
             ProductID: rowData.Product_id
         };
         grid.jqGrid('addRowData', newRowId, newRow);
@@ -770,7 +821,7 @@ $(document).ready(function () {
 
     $("#barcodeinput").on("keypress", function (e) {
         //console.log(e.which);
-        if (e.which == 13) { 
+        if (e.which == 13) {
             const Barcode = $(this).val();
             const value = products.filter(prd => prd.Barcode === Barcode);
             //console.log($(this).val());
@@ -778,7 +829,7 @@ $(document).ready(function () {
                 //console.log(value);
                 bindbarcodedata(value)
             }
-            $(this).val(""); 
+            $(this).val("");
             $(this).focus();
         }
     });
@@ -812,8 +863,8 @@ $(document).ready(function () {
 //});
 $(document).on('keydown', function (e) {
     if (e.key === 'Tab') {
-        
-        if (document.getElementById('myModal').style.display=='flex') {
+
+        if (document.getElementById('myModal').style.display == 'flex') {
             $('#saleType').focus();
             return;
         }
@@ -830,7 +881,7 @@ $(document).on('keydown', function (e) {
         setTimeout(() => {
             $(`#${lastRowId}_ItemQuantity`).focus().select();
         }, 30);
-        
+
     }
 });
 
@@ -874,7 +925,7 @@ function printBill() {
         var itemName = grid.jqGrid('getCell', rowId, 'ItemName');
         var qty = parseFloat(grid.jqGrid('getCell', rowId, 'ItemQuantity')) || 0;
         var price = parseFloat(grid.jqGrid('getCell', rowId, 'ItemMrpPrice')) || 0;
-        var gstRate = parseFloat(grid.jqGrid('getCell', rowId, 'ItemGST')) || 0;
+        var gstRate = parseFloat(grid.jqGrid('getCell', rowId, 'GSTRate')) || 0;
 
         var basePrice = price / (1 + gstRate / 100);
         var amountExclGST = basePrice * qty;
@@ -919,7 +970,7 @@ function printBill() {
     });
 
     let now = new Date();
-    $("#Bill-InvoiceNumber").text($('#InvoiceNumber').text()); 
+    $("#Bill-InvoiceNumber").text($('#InvoiceNumber').text());
     $("#InvoiceDate").text(now.toLocaleDateString());
     $("#InvoiceTime").text(now.toLocaleTimeString());
     $("#CashierName").text(sessionStorage.getItem("UserID"));
@@ -974,33 +1025,33 @@ hr {
     printWindow.print();
 }
 function BillSuccess(data) {
-    
+
     var data = JSON.parse(data.PostServiceCallResult);
     var tabledata = '';
-    if (data.Table[0].Msg == 'Success'// && data.Table1[0].Msg == 'Success'
+    if (data.Table[0].Status == 'Success'// && data.Table1[0].Msg == 'Success'
     ) {
 
         //if (data.Table2.length > 0) {
 
-            var jdata = {
-                str_PageName: 'PrintBill',
-                str_param: 'BillPrint^' + data.Table[0].InvNo + '^' + sessionStorage.getItem('UserID')
-            }
+        var jdata = {
+            str_PageName: 'PrintBill',
+            str_param: 'BillPrint^' + data.Table[0].InvoiceId + '^' + sessionStorage.getItem('UserID')
+        }
 
-            PostServiceCall(jdata, FinalPrintBill);
-            //for (var i = 0; i < data.Table2.length; i++) {
-            //    tabledata += '<tr>'
-            //        //+ '<td>' + data.Table2[i].Sno + '</td>'
-            //        + '<td>' + data.Table2[i].Item_Name + '</td>'
-            //        + '<td>' + data.Table2[i].Qty + '</td>'
-            //        + '<td>' + data.Table2[i].SellPrice + '</td>'
-            //        + '<td class="right">' + data.Table2[i].Item_Total_Amount + '</td>'
-            //        + '</tr>';
-            //}
+        PostServiceCall(jdata, FinalPrintBill);
+        //for (var i = 0; i < data.Table2.length; i++) {
+        //    tabledata += '<tr>'
+        //        //+ '<td>' + data.Table2[i].Sno + '</td>'
+        //        + '<td>' + data.Table2[i].Item_Name + '</td>'
+        //        + '<td>' + data.Table2[i].Qty + '</td>'
+        //        + '<td>' + data.Table2[i].SellPrice + '</td>'
+        //        + '<td class="right">' + data.Table2[i].Item_Total_Amount + '</td>'
+        //        + '</tr>';
+        //}
         //}
     }
     else {
-        alert(data.Table[0].Msg == 'Success' ? data.Table1[0].Msg : data.Table[0].Msg);
+        alert(data.Table[0].Status == 'Success' ? data.Table1[0].Status : data.Table[0].Status);
         return;
     }
     //$('#bill-items').html(tabledata);
@@ -1103,4 +1154,135 @@ function resizeJqGrid() {
 }
 $(window).on("resize", function () {
     resizeJqGrid();
+});
+
+
+let currentIndex = -1;
+
+
+
+function setActive(items) {
+    items.forEach(item => item.classList.remove("selected"));
+    items[currentIndex].classList.add("selected");
+    items[currentIndex].scrollIntoView({ block: "nearest" });
+}
+
+function getCustomerList(data, type) {
+    if (data.key === "ArrowDown" || data.key === "ArrowUp" || data.key === "Enter") {
+        data.preventDefault();
+    }
+    else {
+        var searchvalue = $('#customerName').val() == '' ? $('#phoneNumber').val() : $('#customerName').val();
+        var jdata = {
+            str_PageName: 'MasterData',
+            str_param: 'GetCustomerlist^^^^' + searchvalue + '^' + sessionStorage.getItem('UserID')
+        }
+        if (searchvalue.length >= 1) {
+            PostServiceCall(jdata, Customersuccess);
+        }
+        else {
+            document.getElementById("customer-list").innerHTML = ''
+            document.getElementById("customer-list").style.display = "none";
+        }
+    }
+
+}
+function Customersuccess(data) {
+    const customers = JSON.parse(data.PostServiceCallResult).Table;
+    const customerList = document.getElementById("customer-list");
+
+    function showSuggestions(searchText) {
+
+        customerList.innerHTML = '';
+        customerList.style.display = 'none';
+
+        if (!searchText) return;
+
+        const search = searchText.toLowerCase();
+
+        customers.forEach(item => {
+
+            const nameMatch = item.Customer_Name?.toLowerCase().includes(search);
+            const mobileMatch = item.Customer_Mobile_Number?.toLowerCase().includes(search);
+
+            if (nameMatch || mobileMatch) {
+
+                const suggestionItem = document.createElement('div');
+                suggestionItem.classList.add('autocomplete-item');
+
+                suggestionItem.innerHTML = `
+                    <strong>${item.Customer_Name}</strong><br>
+                    <small>${item.Customer_Mobile_Number}</small>
+                `;
+
+                suggestionItem.addEventListener('click', function () {
+
+                    // ✅ Bind BOTH values
+                    $('#customerName').val(item.Customer_Name)
+                        .attr('data-id', item.Customer_ID);
+
+                    $('#phoneNumber').val(item.Customer_Mobile_Number);
+
+                    customerList.style.display = 'none';
+                    customerList.innerHTML = '';
+                });
+
+                customerList.appendChild(suggestionItem);
+                customerList.style.display = 'block';
+            }
+        });
+    }
+
+    // 🔹 Bind to BOTH inputs
+    $('#customerName, #phoneNumber').on('input', function () {
+        showSuggestions(this.value);
+    });
+
+    // 🔹 Hide on outside click
+    $(document).on('click', function (e) {
+        if (!$(e.target).closest('#customerName, #phoneNumber, #customer-list').length) {
+            customerList.style.display = 'none';
+        }
+    });
+}
+
+document.querySelectorAll(".autocomplete-input").forEach(input => {
+    debugger;
+    input.addEventListener("keydown", function (e) {
+        if (!(e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "Enter")) {
+            return;
+        }
+        else {
+            const listId = this.dataset.listname; // 🔥 magic line
+            const list = document.getElementById(listId);
+            const items = list.querySelectorAll(".autocomplete-item");
+            if (!items.length) return;
+
+            if (e.key === "ArrowDown") {
+                if (currentIndex < items.length - 1) {
+                    e.preventDefault();
+                    currentIndex++;
+                    setActive(items);
+                    return;
+                }
+            }
+
+            if (e.key === "ArrowUp") {
+                if (currentIndex > 0) {
+                    e.preventDefault();
+                    currentIndex--;
+                    if (currentIndex < 0) currentIndex = items.length - 1;
+                    setActive(items);
+                }
+                return;
+            }
+
+            if (e.key === "Enter") {
+                if (currentIndex > -1) {
+                    e.preventDefault();
+                    items[currentIndex].click();
+                }
+            }
+        }
+    });
 });

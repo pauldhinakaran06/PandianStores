@@ -76,6 +76,135 @@ namespace PandianStores.Reports
 
         public bool IsReusable => false;
 
+        //private string BuildBillESC(DataSet ds)
+        //{
+        //    DataTable shop = ds.Tables[0];
+        //    DataTable billH = ds.Tables[1];
+        //    DataTable items = ds.Tables[2];
+        //    DataTable gst = ds.Tables[3];
+
+        //    string BOLD_ON = "\x1B\x45\x01";
+        //    string BOLD_OFF = "\x1B\x45\x00";
+        //    string ALIGN_CENTER = "\x1B\x61\x01";
+        //    string ALIGN_LEFT = "\x1B\x61\x00";
+        //    string CUT = "\x1D\x56\x00";
+        //    string FEED_5_LINES = "\x1B\x64\x05";
+
+        //    int lineWidth = 48;   // 80mm = 48 chars, 58mm = 32 chars
+
+        //    StringBuilder b = new StringBuilder();
+
+        //    // Helper: Left-Right alignment
+        //    string LeftRight(string left, string right)
+        //    {
+        //        int spaces = lineWidth - (left.Length + right.Length);
+        //        if (spaces < 1) spaces = 1;
+        //        return left + new string(' ', spaces) + right;
+        //    }
+
+        //    // Header
+        //    b.Append(ALIGN_CENTER + BOLD_ON);
+        //    b.AppendLine(shop.Rows[0]["ShopName"].ToString());
+        //    b.Append(BOLD_OFF + ALIGN_CENTER);
+        //    b.AppendLine(shop.Rows[0]["Address1"].ToString());
+        //    b.AppendLine(shop.Rows[0]["Address2"].ToString());
+        //    b.AppendLine("Phone: " + shop.Rows[0]["Phone"]);
+        //    b.AppendLine("GSTIN: " + shop.Rows[0]["GSTIN"]);
+        //    b.AppendLine(new string('-', lineWidth));
+
+        //    // BILL NO — BillType
+        //    b.Append(BOLD_ON + ALIGN_LEFT);
+        //    b.AppendLine(LeftRight(
+        //        "BILL NO: " + billH.Rows[0]["BillNo"].ToString(),
+        //        billH.Rows[0]["BillType"].ToString()
+        //    ));
+        //    b.Append(BOLD_OFF);
+
+        //    // Date and Time
+        //    DateTime dt = Convert.ToDateTime(billH.Rows[0]["BillDate"]);
+
+        //    // Counter — Date
+        //    b.AppendLine(LeftRight(
+        //        "Counter: " + billH.Rows[0]["CounterNo"],
+        //        dt.ToString("dd/MM/yyyy")
+        //    ));
+
+        //    // Cashier — Time
+        //    b.AppendLine(LeftRight(
+        //        "Cashier: " + billH.Rows[0]["Cashier"],
+        //        dt.ToString("hh:mm tt")
+        //    ));
+
+        //    b.AppendLine(new string('-', lineWidth));
+
+        //    // ITEM header
+        //    b.Append(BOLD_ON);
+        //    b.AppendLine("ITEM".PadRight(30) + "QTY".PadLeft(3)+ "RATE".PadLeft(6) + "AMT".PadLeft(8));
+        //    b.Append(BOLD_OFF);
+
+        //    // Items
+        //    foreach (DataRow r in items.Rows)
+        //    {
+        //        string item = r["ItemName"].ToString();
+        //        string qty = r["Qty"].ToString();
+        //        string rate = r["Rate"].ToString();
+        //        decimal amt = Convert.ToDecimal(rate) * Convert.ToDecimal(qty);
+
+        //        // Auto wrap item name
+        //        while (item.Length > 30)
+        //        {
+        //            b.AppendLine(item.Substring(0, 30));
+        //            item = item.Substring(30);
+        //        }
+
+        //        b.AppendLine(
+        //            item.PadRight(30) +
+        //            qty.PadLeft(3) + " " +
+        //            rate.PadLeft(6) +
+        //            amt.ToString("0.00").PadLeft(8)
+        //        );
+        //    }
+
+        //    b.AppendLine(new string('-', lineWidth));
+
+        //    // Subtotal
+        //    decimal subtotal = Convert.ToDecimal(billH.Rows[0]["TotalAmount"]);
+        //    b.AppendLine(LeftRight("Subtotal:", subtotal.ToString("0.00")));
+
+        //    // GST list
+        //    foreach (DataRow r in gst.Rows)
+        //    {
+        //        b.AppendLine(LeftRight(
+        //            r["GSTName"] + ":",
+        //            Convert.ToDecimal(r["GSTAmount"]).ToString("0.00")
+        //        ));
+        //    }
+
+        //    b.AppendLine(new string('-', lineWidth));
+
+        //    // Total
+        //    b.Append(BOLD_ON);
+        //    b.AppendLine(LeftRight(
+        //        "TOTAL:",
+        //        Convert.ToDecimal(billH.Rows[0]["FinalTotal"]).ToString("0.00")
+        //    ));
+        //    b.Append(BOLD_OFF);
+
+        //    b.AppendLine(new string('-', lineWidth));
+
+        //    // Footer
+        //    b.Append(ALIGN_CENTER + BOLD_ON);
+        //    b.AppendLine("Thank you! Visit again");
+        //    b.AppendLine("No exchange after 7 days");
+        //    b.AppendLine("GST Invoice");
+
+        //    // Feed extra lines and cut
+        //    b.Append(FEED_5_LINES);
+        //    b.Append(CUT);
+
+        //    return b.ToString();
+        //}
+
         private string BuildBillESC(DataSet ds)
         {
             DataTable shop = ds.Tables[0];
@@ -90,11 +219,11 @@ namespace PandianStores.Reports
             string CUT = "\x1D\x56\x00";
             string FEED_5_LINES = "\x1B\x64\x05";
 
-            int lineWidth = 48;   // 80mm = 48 chars, 58mm = 32 chars
+            int lineWidth = 48; // 80mm
 
             StringBuilder b = new StringBuilder();
 
-            // Helper: Left-Right alignment
+            // ---------- Helpers ----------
             string LeftRight(string left, string right)
             {
                 int spaces = lineWidth - (left.Length + right.Length);
@@ -102,34 +231,39 @@ namespace PandianStores.Reports
                 return left + new string(' ', spaces) + right;
             }
 
-            // Header
+            string GSTRow(string gstCol, string sgst, string cgst, string total)
+            {
+                return gstCol.PadRight(18)
+                     + sgst.PadLeft(10)
+                     + cgst.PadLeft(10)
+                     + total.PadLeft(10);
+            }
+
+            // ---------- HEADER ----------
             b.Append(ALIGN_CENTER + BOLD_ON);
             b.AppendLine(shop.Rows[0]["ShopName"].ToString());
-            b.Append(BOLD_OFF + ALIGN_CENTER);
+            b.Append(BOLD_OFF);
             b.AppendLine(shop.Rows[0]["Address1"].ToString());
             b.AppendLine(shop.Rows[0]["Address2"].ToString());
             b.AppendLine("Phone: " + shop.Rows[0]["Phone"]);
             b.AppendLine("GSTIN: " + shop.Rows[0]["GSTIN"]);
             b.AppendLine(new string('-', lineWidth));
 
-            // BILL NO — BillType
+            // Bill No / Type
             b.Append(BOLD_ON + ALIGN_LEFT);
             b.AppendLine(LeftRight(
-                "BILL NO: " + billH.Rows[0]["BillNo"].ToString(),
+                "BILL NO: " + billH.Rows[0]["BillNo"],
                 billH.Rows[0]["BillType"].ToString()
             ));
             b.Append(BOLD_OFF);
 
-            // Date and Time
             DateTime dt = Convert.ToDateTime(billH.Rows[0]["BillDate"]);
 
-            // Counter — Date
             b.AppendLine(LeftRight(
                 "Counter: " + billH.Rows[0]["CounterNo"],
                 dt.ToString("dd/MM/yyyy")
             ));
 
-            // Cashier — Time
             b.AppendLine(LeftRight(
                 "Cashier: " + billH.Rows[0]["Cashier"],
                 dt.ToString("hh:mm tt")
@@ -137,20 +271,22 @@ namespace PandianStores.Reports
 
             b.AppendLine(new string('-', lineWidth));
 
-            // ITEM header
+            // ---------- ITEMS ----------
             b.Append(BOLD_ON);
-            b.AppendLine("ITEM".PadRight(30) + "QTY".PadLeft(3)+ "RATE".PadLeft(6) + "AMT".PadLeft(8));
+            b.AppendLine("ITEM".PadRight(30) + "QTY".PadLeft(3) + "RATE".PadLeft(6) + "AMT".PadLeft(8));
             b.Append(BOLD_OFF);
 
-            // Items
+            int totalQty = 0;
+
             foreach (DataRow r in items.Rows)
             {
                 string item = r["ItemName"].ToString();
-                string qty = r["Qty"].ToString();
-                string rate = r["Rate"].ToString();
-                decimal amt = Convert.ToDecimal(rate) * Convert.ToDecimal(qty);
+                int qty = Convert.ToInt32(r["Qty"]);
+                decimal rate = Convert.ToDecimal(r["Rate"]);
+                decimal amt = qty * rate;
 
-                // Auto wrap item name
+                totalQty += qty;
+
                 while (item.Length > 30)
                 {
                     b.AppendLine(item.Substring(0, 30));
@@ -159,45 +295,83 @@ namespace PandianStores.Reports
 
                 b.AppendLine(
                     item.PadRight(30) +
-                    qty.PadLeft(3) + " " +
-                    rate.PadLeft(6) +
+                    qty.ToString().PadLeft(3) + " " +
+                    rate.ToString("0.00").PadLeft(6) +
                     amt.ToString("0.00").PadLeft(8)
                 );
             }
 
             b.AppendLine(new string('-', lineWidth));
 
-            // Subtotal
-            decimal subtotal = Convert.ToDecimal(billH.Rows[0]["TotalAmount"]);
-            b.AppendLine(LeftRight("Subtotal:", subtotal.ToString("0.00")));
+            // ---------- TOTALS ----------
+            decimal subTotal = Convert.ToDecimal(billH.Rows[0]["TotalAmount"]);
+            decimal finalTotal = Convert.ToDecimal(billH.Rows[0]["FinalTotal"]);
 
-            // GST list
-            foreach (DataRow r in gst.Rows)
-            {
-                b.AppendLine(LeftRight(
-                    r["GSTName"] + ":",
-                    Convert.ToDecimal(r["GSTAmount"]).ToString("0.00")
-                ));
-            }
+            //b.AppendLine(LeftRight("Item Count:", totalQty.ToString()));
+            //b.AppendLine(LeftRight("Subtotal:", subTotal.ToString("0.00")));
+            b.AppendLine(
+            LeftRight(
+                "Item Count: " + totalQty,
+                "Subtotal: " + subTotal.ToString("0.00")
+            )
+            );
 
             b.AppendLine(new string('-', lineWidth));
 
-            // Total
+            // ---------- GST RATE SUMMARY ----------
             b.Append(BOLD_ON);
-            b.AppendLine(LeftRight(
-                "TOTAL:",
-                Convert.ToDecimal(billH.Rows[0]["FinalTotal"]).ToString("0.00")
-            ));
+            b.AppendLine("GST RATE SUMMARY");
+            b.Append(BOLD_OFF);
+
+            b.AppendLine(
+                "GST% (IT)".PadRight(18) +
+                "SGST".PadLeft(10) +
+                "CGST".PadLeft(10) +
+                "TOTAL".PadLeft(10)
+            );
+
+            b.AppendLine(new string('-', lineWidth));
+
+            decimal grandTotalGST = 0;
+
+            foreach (DataRow r in gst.Rows)
+            {
+                decimal gstPercent = Convert.ToDecimal(r["GSTPercent"]);
+                int itemCount = Convert.ToInt32(r["ItemCount"]);
+                decimal totalGST = Convert.ToDecimal(r["GSTAmount"]);
+
+                decimal sgst = totalGST / 2;
+                decimal cgst = totalGST / 2;
+
+                grandTotalGST += totalGST;
+
+                b.AppendLine(
+                    GSTRow(
+                        $"{gstPercent}% ({itemCount})",
+                        sgst.ToString("0.00"),
+                        cgst.ToString("0.00"),
+                        totalGST.ToString("0.00")
+                    )
+                );
+            }
+
+            b.AppendLine(new string('-', lineWidth));
+            b.AppendLine(LeftRight("Total GST:", grandTotalGST.ToString("0.00")));
+            b.AppendLine(new string('-', lineWidth));
+
+            // ---------- FINAL TOTAL ----------
+            b.Append(BOLD_ON);
+            b.AppendLine(LeftRight("TOTAL:", finalTotal.ToString("0.00")));
             b.Append(BOLD_OFF);
 
             b.AppendLine(new string('-', lineWidth));
 
-            // Footer
+            // ---------- FOOTER ----------
+            b.Append(ALIGN_CENTER + BOLD_ON);
             b.AppendLine("Thank you! Visit again");
             b.AppendLine("No exchange after 7 days");
             b.AppendLine("GST Invoice");
 
-            // Feed extra lines and cut
             b.Append(FEED_5_LINES);
             b.Append(CUT);
 

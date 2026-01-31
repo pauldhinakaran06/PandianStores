@@ -12,6 +12,7 @@
     <script src="../Scripts/jquery.jqgrid.min.js"></script>
     <script src="../Scripts/html2pdf.js"></script>
     <link rel="stylesheet" href="../css/DashBoard.css">
+    <link rel="stylesheet" href="../css/MasterData.css">
     <link rel="stylesheet" href="../css/customalert.css">
     <script src="../js/Common_URL.js"></script>
     <script src="../js/common.js"></script>
@@ -53,6 +54,7 @@
         }
         .dash-content .title {
             left: 14%;
+            width: 70%;
         }
         #grid {
             background-color: whitesmoke;
@@ -61,6 +63,32 @@
         #productsgrid{
             width:100% !important;
         }
+        .customer-wrapper {
+            position: relative; /* anchor */
+            width: 20%;
+            /*left:4%;*/
+        }
+
+        .autocomplete-items {
+            position: absolute;
+            top: 100%; /* directly below input */
+            left: 7px; /* align with input */
+            width: 93%; /* same as input */
+            background: #fff;
+            border: 1px solid #ccc;
+            z-index: 9999;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .autocomplete-item {
+            padding: 6px 10px;
+            cursor: pointer;
+        }
+
+            .autocomplete-item:hover {
+                background-color: #f2f2f2;
+            }
     </style>
 </head>
 <body>
@@ -92,18 +120,34 @@
                 
             </div>
             <div class="search-box" style="position: relative;width: 100%;display:flex;align-items: center;">
-                
+
                 <h4 style="background-color: aquamarine; display: flex; justify-content: center; height: 35px; align-items: center; width: 13%;">Customer Information</h4>
-                <div class="form-group" style="width: 20%; position: relative; left: 2%;">
+                <!--<div class="form-group" style="width: 20%; position: relative; left: 2%;">
                     <label class="form-label" for="customerName">Customer Name:</label>
-                    <input type="text" id="customerName" class="form-input" style="width: 58%; height: 23px;" autocomplete="off">
+                    <input type="text" id="customerName" class="form-input autocomplete-input" data-listname="customer-list" onkeyup="getCustomerList(event, 'Edit');" onkeydown="if(event.key==='Enter'){event.preventDefault();}" style="width: 58%; height: 23px;" autocomplete="off">
+                </div>-->
+                <!--<div class="form-group" style="width: 20%; position: relative; left: 4%;">
+        <label class="form-label" for="phoneNumber">Phone Number:</label>
+        <input type="text" id="phoneNumber" class="form-input autocomplete-input" data-listname="customer-list" onkeyup="getCustomerList(event,'Edit');" onkeydown="if(event.key==='Enter'){event.preventDefault();}" style="width: 65%; height: 23px;" autocomplete="off">
+        <div id="customer-list" class="customerlist autocomplete-items"></div>
+    </div>-->
+                <div class="floating-group" title="Enter Customer Name">
+                    <input id="customerName" class="autocomplete-input" data-listname="customer-list" name="customerName" onkeyup="getCustomerList(event,'Edit');" placeholder=" " style="margin-bottom: 3px !important; padding: 5px 10px !important; " autocomplete="off">
+                    <label class="floating-label" for="customerName">Customer Name</label>
                 </div>
-                <div class="form-group" style="width: 20%; position: relative; left: 4%;">
+                <div class="floating-group" title="Enter Phone Number">
+                    <input id="phoneNumber" class="autocomplete-input" data-listname="customer-list" name="phoneNumber" onkeyup="getCustomerList(event,'Edit');" placeholder=" " style=" margin-bottom: 3px !important; padding: 5px 10px !important;" autocomplete="off">
+                    <label class="floating-label" for="phoneNumber">Phone Number</label>
+                    <div id="customer-list" style="display:none;" class="customerlist autocomplete-items"></div>
+
+                </div>
+                <!--<div class="form-group customer-wrapper">
                     <label class="form-label" for="phoneNumber">Phone Number:</label>
-                    <input type="text" id="phoneNumber" class="form-input" style="width: 65%; height: 23px;" autocomplete="off">
-                </div>
+                    <input type="text" id="phoneNumber" class="form-input autocomplete-input" style="width: 58%;height: 23px;" data-listname="customer-list" onkeyup="getCustomerList(event,'Edit');" onkeydown="if(event.key==='Enter'){event.preventDefault();}" autocomplete="off">
+                    <div id="customer-list" class="customerlist autocomplete-items"></div>
+                </div>-->
                 <div style="display: flex;position: absolute;right: 0px;">
-                    <h1>Total : ₹&nbsp; </h1><h1 id="totalBillDiv">0.00</h1>
+                    <h1>Grand Total : ₹&nbsp; </h1><h1 id="totalBillDiv">0.00</h1>
                 </div>
             </div>
 
@@ -170,7 +214,7 @@
                 <span id="balanceAmount">0.00</span>
             </div>
             <div class="form-group" style="padding: 10px 0px 10px 0px;">
-                <label class="form-label" for="totalAmount">Total Amount (₹):</label>
+                <label class="form-label" for="totalAmount">Total Taxable Amount (₹):</label>
                 <span id="totalAmount"></span>
             </div>
             <div class="form-group" style="padding: 0px 0px 10px 0px;">
