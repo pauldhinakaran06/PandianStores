@@ -1,4 +1,4 @@
-﻿var products = [], editreload = 'N', glbtype = "", editCategoryId = null, editBrandId = null;
+﻿var products = [], editreload = 'N', glbtype = "", editCategoryId = null, editBrandId = null,editcatname='',editbrandname='',editcatactivests='',editbrandactivests='';
 $(document).ready(function () {
     if (sessionStorage.getItem('UserID') == '' || sessionStorage.getItem('UserID') == null) {
         window.location.href = 'Login.html';
@@ -63,6 +63,7 @@ function AddData(Type) {
             var datarow = '<tr><td>' + catcount + '</td><td>' + item_name + '</td><td><a href="javascript:void(0);" class="bi bi-pencil-square catedit" data-id=' + catcount + ' title="Edit"></a></td></tr>';
             $('#Categorydatarow').append(datarow);
             $('#txtaddCategory').val('');
+            scrollTableToLastRow('catscroll');
             $('#txtaddCategory').focus();
         }
     }
@@ -340,8 +341,12 @@ function btncancel() {
     $("#AddProductpopup").css('display', 'none');
     $("#AddCategorypopup").css('display', 'none');
     $("#AddBrandpopup").css('display', 'none');
+    $("#Editpopup").css('display', 'none');
     $('.boxes').css('display', 'flex');
     count = 0;
+    $('#editCategory').val('');
+    $('#editbrand').val('');
+    
     $('#txtCategory').val('');
     $('#txtdata').val('');
     $('#txtBarcode').val('');
@@ -365,17 +370,49 @@ function btnconfirm(type) {
             $("#txtaddCategory").focus();
             return -1;
         }
+        else if ($("#Addcat").text() == 'Update') {
+            alert('Update Selected Category..');
+            return -1;
+        }
         else {
             var jdata = {
                 str_PageName: 'MasterData',
-                str_param: 'CatInsert^' + JSON.stringify(tablevaluetojson('tblcategory')) + '^^^ ' + $('#txtaddCategory').val() + '^' + sessionStorage.getItem('UserID')
+                str_param: 'CatInsert^' + JSON.stringify(tablevaluetojson('tblcategory')) + '^^^' + $('#txtaddCategory').val() + '^' + sessionStorage.getItem('UserID')
             }
         }
     }
-    else if (type == 'AddBrand') {
+    else if (type == 'editCategory') {
+        var catId = $('#editCategory').attr('data-id');
+        var isActive = $('#chk_' + catId).is(':checked') ? 1 : 0;
         var jdata = {
             str_PageName: 'MasterData',
-            str_param: 'BrandInsert^' + JSON.stringify(tablevaluetojson('tblBrand')) + '^^^^' + sessionStorage.getItem('UserID')
+            str_param: 'CatUpdate^^' + catId + '^^' + $('#editCategory').val() + '$' + isActive + '^' + sessionStorage.getItem('UserID')
+        }
+    }
+    else if (type == 'AddBrand') {
+        if (Brandcount == 0) {
+            alert('Add Any Brand..');
+            $("#txtbrandCategory").val('');
+            $("#txtbrandCategory").focus();
+            return -1;
+        }
+        else if ($("#AddBrand").text() == 'Update') {
+            alert('Update Selected Brand..');
+            return -1;
+        }
+        else {
+            var jdata = {
+                str_PageName: 'MasterData',
+                str_param: 'BrandInsert^' + JSON.stringify(tablevaluetojson('tblBrand')) + '^^^^' + sessionStorage.getItem('UserID')
+            }
+        }
+    }
+    else if (type == 'editbrand') {
+        var catId = $('#editCategory').attr('data-id');
+        var isActive = $('#chk_' + catId).is(':checked') ? 1 : 0;
+        var jdata = {
+            str_PageName: 'MasterData',
+            str_param: 'BrandUpdate^^' + catId + '^' + $('#editbrand').attr('data-id') + '^' + $('#editbrand').val() + '$' + isActive + '^' + sessionStorage.getItem('UserID')
         }
     }
     else if (type == "Addproduct") {
@@ -384,58 +421,84 @@ function btnconfirm(type) {
 
         if ($('#txtCategory').attr('data-id') == undefined || $('#txtCategory').val() == '') {
             error = true;
-            $('.span-error').text('Please Enter Category');
+             alert('Please Enter Category');
             $('#txtCategory').focus();
             $('#txtCategory').css('border-color', 'red');
             return;
         }
         else if ($('#txtBrand').attr('data-id') == undefined || $('#txtBrand').val() == '') {
             error = true;
-            $('.span-error').text('Please Enter Brand');
+             alert('Please Enter Brand');
             $('#txtBrand').focus();
             $('#txtBrand').css('border-color', 'red');
             return;
         }
         else if ($('#txtBarcode').val() == '') {
             error = true;
-            $('.span-error').text('Please Enter Barcode');
+             alert('Please Enter Barcode');
             $('#txtBarcode').focus();
             $('#txtBarcode').css('border-color', 'red');
             return;
         }
         else if ($('#txtProductName').val() == '') {
             error = true;
-            $('.span-error').text('Please Enter Product Name');
+             alert('Please Enter Product Name');
             $('#txtProductName').focus();
             $('#txtProductName').css('border-color', 'red');
             return;
         }
         else if ($('#txtbuyprice').val() == '') {
             error = true;
-            $('.span-error').text('Please Enter BuyPrice');
+             alert('Please Enter BuyPrice');
             $('#txtbuyprice').focus();
             $('#txtbuyprice').css('border-color', 'red');
             return;
         }
         else if ($('#txtmrp').val() == '') {
             error = true;
-            $('.span-error').text('Please Enter MRP Rate');
+             alert('Please Enter MRP Rate');
             $('#txtmrp').focus();
             $('#txtmrp').css('border-color', 'red');
             return;
         }
         else if ($('#txtsellprice').val() == '') {
             error = true;
-            $('.span-error').text('Please Enter SellPrice');
+             alert('Please Enter SellPrice');
             $('#txtsellprice').focus();
             $('#txtsellprice').css('border-color', 'red');
             return;
         }
+        else if ($('#txtsellprice').val() < $('#txtbuyprice').val()) {
+            error = true;
+            alert('Sell price must be greater than Buy price');
+            $('#txtsellprice').focus();
+            $('#txtsellprice').css('border-color', 'red');
+            return;
+        }
+        else if ($('#txtsellprice').val() < $('#txtbuyprice').val() || $('#txtsellprice').val() > $('#txtmrp').val()) {
+            error = true;
+            alert('Sell price must be greater than Buy price and less than or equal to MRP');
+            $('#txtsellprice').focus();
+            $('#txtsellprice').css('border-color', 'red');
+            return;
+        }
+        else if ($('#txtsellprice').val() > $('#txtmrp').val()) {
+            alert('Sell price should not be greater than MRP price');
+            $('#txtsellprice').focus();
+            return false;
+        }
         else if ($('#txtquantity').val() == '') {
             error = true;
-            $('.span-error').text('Please Enter Quantity');
+             alert('Please Enter Quantity');
             $('#txtquantity').focus();
             $('#txtquantity').css('border-color', 'red');
+            return;
+        }
+        else if (document.getElementById("ddlGST").value == '') {
+            error = true;
+             alert('Please Select GST');
+            $('#ddlGST').focus();
+            $('#ddlGST').css('border-color', 'red');
             return;
         }
         else {
@@ -446,7 +509,7 @@ function btnconfirm(type) {
                 MRPPrice: $('#txtmrp').val(),
                 SellPrice: $('#txtsellprice').val(),
                 Quantity: $('#txtquantity').val(),
-                GST: $('#txtGST').val()
+                GST: document.getElementById("ddlGST").value //$('#txtEditGST').val()
 
             }];
             var jdata = {
@@ -456,20 +519,108 @@ function btnconfirm(type) {
         }
     }
     else if (type == 'EditProduct') {
-        const jsonObject = [{
-            Barcode: $('#txtEditBarcode').val(),
-            ProductName: $('#txtEditProductName').val(),
-            BuyPrice: $('#txtEditbuyprice').val(),
-            MRPPrice: $('#txtEditmrp').val(),
-            SellPrice: $('#txtEditsellprice').val(),
-            Quantity: $('#txtEditquantity').val(),
-            ProductID: $('#txtEditProductid').val(),
-            GST: document.getElementById("ddlEditGST").value //$('#txtEditGST').val()
+        $('.span-error').text('')
+        $('.product').css('border-color', '');
 
-        }];
-        var jdata = {
-            str_PageName: 'MasterData',
-            str_param: 'ProductUpdate^' + JSON.stringify(jsonObject) + '^' + $('#txtEditCategory').attr('data-id') + '^' + $('#txtEditBrand').attr('data-id') + '^^' + sessionStorage.getItem('UserID')
+        if ($('#txtEditCategory').attr('data-id') == undefined || $('#txtEditCategory').val() == '') {
+            error = true;
+             alert('Please Enter Category');
+            $('#txtEditCategory').focus();
+            $('#txtEditCategory').css('border-color', 'red');
+            return;
+        }
+        else if ($('#txtEditBrand').attr('data-id') == undefined || $('#txtEditBrand').val() == '') {
+            error = true;
+             alert('Please Enter Brand');
+            $('#txtEditBrand').focus();
+            $('#txtEditBrand').css('border-color', 'red');
+            return;
+        }
+        else if ($('#txtEditBarcode').val() == '') {
+            error = true;
+             alert('Please Enter Barcode');
+            $('#txtEditBarcode').focus();
+            $('#txtEditBarcode').css('border-color', 'red');
+            return;
+        }
+        else if ($('#txtEditProductName').val() == '') {
+            error = true;
+             alert('Please Enter Product Name');
+            $('#txtEditProductName').focus();
+            $('#txtEditProductName').css('border-color', 'red');
+            return;
+        }
+        else if ($('#txtEditbuyprice').val() == '') {
+            error = true;
+             alert('Please Enter BuyPrice');
+            $('#txtEditbuyprice').focus();
+            $('#txtEditbuyprice').css('border-color', 'red');
+            return;
+        }
+        else if ($('#txtEditmrp').val() == '') {
+            error = true;
+             alert('Please Enter MRP Rate');
+            $('#txtEditmrp').focus();
+            $('#txtEditmrp').css('border-color', 'red');
+            return;
+        }
+        else if ($('#txtEditsellprice').val() == '') {
+            error = true;
+            alert('Please Enter SellPrice');
+            $('#txtEditsellprice').focus();
+            $('#txtEditsellprice').css('border-color', 'red');
+            return;
+        }
+        else if ($('#txtEditsellprice').val() < $('#txtEditbuyprice').val()) {
+            error = true;
+            alert('Sell price must be greater than Buy price');
+            $('#txtEditsellprice').focus();
+            $('#txtEditsellprice').css('border-color', 'red');
+            return;
+        }
+        else if ($('#txtEditsellprice').val() < $('#txtEditbuyprice').val() || $('#txtEditsellprice').val() > $('#txtEditmrp').val()) {
+            error = true;
+            alert('Sell price must be greater than Buy price and less than or equal to MRP');
+            $('#txtEditsellprice').focus();
+            $('#txtEditsellprice').css('border-color', 'red');
+            return;
+        }
+        else if ($('#txtEditsellprice').val() > $('#txtEditmrp').val()) {
+            alert('Sell price should not be greater than MRP price');
+            $('#txtEditsellprice').focus();
+            return false;
+        }
+        else if ($('#txtEditquantity').val() == '') {
+            error = true;
+             alert('Please Enter Quantity');
+            $('#txtEditquantity').focus();
+            $('#txtEditquantity').css('border-color', 'red');
+            return;
+        }
+        else if (document.getElementById("ddlEditGST").value == '') {
+            error = true;
+             alert('Please Select GST');
+            $('#ddlEditGST').focus();
+            $('#ddlEditGST').css('border-color', 'red');
+            return;
+        }
+        else {
+            const jsonObject = [{
+                Barcode: $('#txtEditBarcode').val(),
+                ProductName: $('#txtEditProductName').val(),
+                BuyPrice: $('#txtEditbuyprice').val(),
+                MRPPrice: $('#txtEditmrp').val(),
+                SellPrice: $('#txtEditsellprice').val(),
+                Quantity: $('#txtEditquantity').val(),
+                ProductID: $('#txtEditProductid').val(),
+                GST: document.getElementById("ddlEditGST").value, //$('#txtEditGST').val()
+                IsActive: $('#chkEditproduct').is(':checked') ? 1 : 0
+
+            }];
+            var jdata = {
+                str_PageName: 'MasterData',
+                str_param: 'ProductUpdate^' + JSON.stringify(jsonObject) + '^' + $('#txtEditCategory').attr('data-id') + '^' + $('#txtEditBrand').attr('data-id') + '^^' + sessionStorage.getItem('UserID')
+            }
         }
     }
     if (error == false) {
@@ -501,7 +652,7 @@ function confirmsuccess(data) {
                 btnClear(glbtype);
                 btncancel();
             }
-            if (glbtype == 'AddCategory' || glbtype == 'AddBrand') {
+            if (glbtype == 'AddCategory' || glbtype == 'AddBrand' || glbtype == 'editCategory' || glbtype =='editbrand') {
                 getData('Categorydiv');
                 getData('Branddiv');
                 alert(data.Table[0].InsertedCount + ' Data Inserted Successfully.', 'success');
@@ -553,7 +704,8 @@ function GetProduct(data) {
     const drpProductsCategory = document.getElementById('ProductsCategory');
     const drpProductsBrand = document.getElementById('ProductsBrand');
     const uniqueProductsCategory = [...new Set(products.map(item => item.Cat_name))];
-
+    drpProductsCategory.innerHTML = '<option value="">Select Product Category</option>';
+    drpProductsBrand.innerHTML = '<option value="">Select Product Brand</option>';
     uniqueProductsCategory.forEach(Category => {
         const option = document.createElement('option');
         option.value = Category; // Set the value attribute
@@ -573,14 +725,27 @@ function GetProduct(data) {
             { name: 'Barcode', label: 'Barcode', width: 7, editable: false, hidden: true },
             { name: 'GSTRate', label: 'GST', width: 7, editable: false, hidden: true },
             {
+                name: "ProdIsActive", label: "Status", width: 4, align: "center",
+                formatter: function (cellValue) {
+                    //return cellValue == 1 ? "Active" : "Inactive";
+                    if (cellValue == 1) {
+                        return '<div style="display: inline-block;margin-left: 15px;"><img title="Active" src="../images/active.png" style="width: 85%;" ></span></div>';
+                    } else {
+                        return '<div style="display: inline-block;margin-left: 15px;"><img title="Inactive" src="../images/inactive.png" style="width: 85%;" ></span></div>';
+                    }
+                }
+            },
+            {
                 name: 'Action',
                 index: 'Action',
                 width: 5,
                 sortable: false,
                 formatter: function (cellValue, options, rowObject) {
-                    return `<a href="javascript:void(0);" class="bi bi-pencil-square edit-icon" data-id="${rowObject.id}" title="Edit"></a>&nbsp&nbsp|&nbsp&nbsp<a href="javascript:void(0);" class="bi bi-printer Print-icon" data-id="${rowObject.id}" title="Print Barcode"></a>`;
+                    //return //`<a href="javascript:void(0);" class="bi bi-pencil-square edit-icon" data-id="${rowObject.id}" title="Edit"></a>&nbsp&nbsp|&nbsp&nbsp`
+                    return `<a href="javascript:void(0);" class="bi bi-printer Print-icon" data-id="${rowObject.id}" title="Print Barcode"></a>`;
                 }
-            }
+            },
+            { name: 'IsActive', label: 'IsActive', hidden: true, align: 'center', width: 15 }
         ],
         datatype: 'local',
         data: products,
@@ -608,6 +773,14 @@ function GetProduct(data) {
 
                 $grid.closest(".ui-jqgrid-bdiv").append(emptyHtml);
             }
+        },
+        onSelectRow: function (rowId) {
+
+            if (!rowId) return;
+
+            const rowData = $("#productsgrid").jqGrid("getRowData", rowId);
+
+            GetEditProductDetails(rowData, 'editProduct');
         }
 
     });
@@ -695,9 +868,9 @@ function GetProduct(data) {
             drpProductsBrand.appendChild(option); // Append the option to the dropdown
         });
     });
-    $(document).off('click', '.edit-icon').on('click', '.edit-icon', function () {
+    function GetEditProductDetails(rowData,type) {
 
-        var rowId = $(this).data('id');
+        //var rowId = $(this).data('id');
         const popup = document.getElementById("EditProductpopup");
         const computedStyle = window.getComputedStyle(popup);
         const displayValue = computedStyle.display;
@@ -707,7 +880,7 @@ function GetProduct(data) {
         else {
             $("#EditProductpopup").css('display', 'flex');
         }
-        var rowData = $("#productsgrid").jqGrid('getRowData', rowId);
+        //var rowData = $("#productsgrid").jqGrid('getRowData', rowId);
         $.each(products, function (index, row) {
             if (row.Product_id == rowData.Product_id) {
 
@@ -723,7 +896,12 @@ function GetProduct(data) {
                 $('#txtEditbuyprice').val(row.BuyPrice);
                 $('#txtEditmrp').val(row.MRP_Rate);
                 $('#txtEditsellprice').val(row.SellPrice);
-                $('#txtEditquantity').val(row.Quantity)
+                $('#txtEditquantity').val(row.Quantity);
+                if (row.ProdIsActive == 1) {
+                    document.getElementById("chkEditproduct").checked = true;
+                } else {
+                    document.getElementById("chkEditproduct").checked = false;
+                }
                 document.getElementById("ddlEditGST").value = row.GSTRate
 
 
@@ -732,7 +910,7 @@ function GetProduct(data) {
             }
 
         });
-    });
+    }
 
     $(document).off('click', '.delete-icon').on('click', '.delete-icon', function () {
         var rowId = $(this).data('id');
@@ -764,6 +942,9 @@ function closeHeader(event) {
     }
     else if (event == 'labelPopup') {
         $("#labelPopup").css('display', 'none');
+    }
+    else if (event == 'Editpopup') {
+        $("#Editpopup").css('display', 'none');
     }
 }
 
@@ -803,6 +984,7 @@ function openpopup(type) {
 }
 let labelcount;
 $(document).off('click', '.Print-icon').on('click', '.Print-icon', function () {
+    document.getElementById("labelCount").value = 1;
     document.getElementById('Labelconfirm').setAttribute('data-id', $(this).data('id'));
     document.getElementById("labelPopup").style.display = "block";
 });
@@ -822,8 +1004,8 @@ function confirmLabel(obj) {
 
     if (labelcount && labelcount > 0) {
 
-        var rowId = $(obj).data('id');
-        var rowData = $("#productsgrid").jqGrid('getRowData', rowId);
+        var labelrowId = $(obj).attr('data-id');
+        var rowData = $("#productsgrid").jqGrid('getRowData', labelrowId);
 
         var jdata = {
             str_PageName: 'PrintBill',
@@ -895,14 +1077,26 @@ function Getcategory(data) {
     $("#Categorygrid").jqGrid({
         colModel: [
             { name: 'Cat_id', label: 'Category_id', align: 'center', width: 12, editable: false },
-            { name: 'Cat_name', label: 'Category', align: 'center', width: 50 },
+            { name: 'Cat_name', label: 'Category', align: 'center', width: 40 },
             { name: 'BrandCount', label: 'No. of Brands', align: 'center', width: 15 },
-            { name: 'ProductCount', label: 'No. of Products', align: 'center', width: 15 }
+            { name: 'ProductCount', label: 'No. of Products', align: 'center', width: 15 },
+            {
+                name: "IsActive", label: "Status", width: 10, align: "center",
+                formatter: function (cellValue) {
+                    //return cellValue == 1 ? "Active" : "Inactive";
+                    if (cellValue == 1) {
+                        return '<div style="display: inline-block;margin-left: 20px;"><img title="Active" src="../images/active.png" style="width: 50%;" ></span></div>';
+                    } else {
+                        return '<div style="display: inline-block;margin-left: 20px;"><img title="Inactive" src="../images/inactive.png" style="width: 50%;" ></span></div>';
+                    }
+                }
+            },
+            { name: 'IsActive', label: 'IsActive', hidden:true, align: 'center', width: 15 }
         ],
         datatype: 'local',
         data: products,
         width: 750,
-        height: 300,
+        height: 330,
         treeGrid: false,
         viewrecords: true,
         pager: "#Categorypager",
@@ -914,6 +1108,10 @@ function Getcategory(data) {
             if (rd.Quantity <= 20) {
                 return { "style": "background-color: #FFCCCC !important;" };
             }
+            if (rd.IsActive == 0) {
+                return { "style": "background-color: #f9f9f9 " };
+            }
+            
         },
         gridComplete: function () {
             var $grid = $("#Categorygrid");
@@ -925,6 +1123,14 @@ function Getcategory(data) {
 
                 $grid.closest(".ui-jqgrid-bdiv").append(emptyHtml);
             }
+        },
+        onSelectRow: function (rowId) {
+
+            if (!rowId) return;
+
+            const rowData = $("#Categorygrid").jqGrid("getRowData", rowId);
+
+            GetEditPopupDetails(rowData,'editCategory');
         }
 
     });
@@ -977,7 +1183,7 @@ function GetBrand(data) {
     const drpBrandCategory = document.getElementById('BrandCategory');
     //$('#BrandCategory').empty();
     const uniqueBrandCategory = [...new Set(Brands.map(item => item.Cat_name))];
-
+    drpBrandCategory.innerHTML = '<option value="">Select Product Category</option>';
     uniqueBrandCategory.forEach(Category => {
         const option = document.createElement('option');
         option.value = Category;
@@ -990,10 +1196,22 @@ function GetBrand(data) {
     $("#Brandgrid").jqGrid({
         colModel: [
             { name: 'Brand_ID', label: 'Brand_ID', align: 'center', width: 7, editable: false },
-            { name: 'Cat_ID', label: 'Category ID', align: 'center', width: 15 },
-            { name: 'Cat_name', label: 'Category Name', align: 'center', width: 15 },
-            { name: 'Brand_Name', label: 'Brand Name', align: 'center', width: 15 },
-            { name: 'ProductCount', label: 'No. of Products', align: 'center', width: 15 }
+            { name: 'Cat_ID', label: 'Category ID', align: 'center', width: 7 },
+            { name: 'Cat_name', label: 'Category Name', align: 'center', width: 18 },
+            { name: 'Brand_Name', label: 'Brand Name', align: 'center', width: 18 },
+            { name: 'ProductCount', label: 'No. of Products', align: 'center', width: 10 },
+            {
+                name: "IsActive", label: "Status", width: 8, align: "center",
+                formatter: function (cellValue) {
+                    //return cellValue == 1 ? "Active" : "Inactive";
+                    if (cellValue == 1) {
+                        return '<div style="display: inline-block;margin-left: 35px;"><img title="Active" src="../images/active.png" style="width: 50%;" ></span></div>';
+                    } else {
+                        return '<div style="display: inline-block;margin-left: 35px;"><img title="Inactive" src="../images/inactive.png" style="width: 50%;" ></span></div>';
+                    }
+                }
+            },
+            { name: 'IsActive', label: 'IsActive', hidden: true, align: 'center', width: 15 }
         ],
         datatype: 'local',
         data: Brands,
@@ -1021,6 +1239,14 @@ function GetBrand(data) {
 
                 $grid.closest(".ui-jqgrid-bdiv").append(emptyHtml);
             }
+        },
+        onSelectRow: function (rowId) {
+
+            if (!rowId) return;
+
+            const rowData = $("#Brandgrid").jqGrid("getRowData", rowId);
+
+            GetEditPopupDetails(rowData, 'editbrand');
         }
 
     });
@@ -1223,20 +1449,26 @@ function bindGSTDropdown(data) {
         option.value = item.rate;
         option.text = item.rate + " %";
         ddl.appendChild(option);
+        
+    });
+    MasterGST.forEach(item => {
+        const option = document.createElement("option");
+        option.value = item.rate;
+        option.text = item.rate + " %";
         ddl1.appendChild(option);
     });
 }
 
-document.getElementById("ddlGST").addEventListener("change", function () {
-    const sellInput = document.getElementById("txtsellprice");
-    sellInput.readOnly = !this.value;
-    updateSellPrice('Add');
-});
-document.getElementById("ddlEditGST").addEventListener("change", function () {
-    const sellInput = document.getElementById("txtEditsellprice");
-    sellInput.readOnly = !this.value;
-    updateSellPrice('Edit');
-});
+//document.getElementById("ddlGST").addEventListener("change", function () {
+//    const sellInput = document.getElementById("txtsellprice");
+//    sellInput.readOnly = !this.value;
+//    updateSellPrice('Add');
+//});
+//document.getElementById("ddlEditGST").addEventListener("change", function () {
+//    const sellInput = document.getElementById("txtEditsellprice");
+//    sellInput.readOnly = !this.value;
+//    updateSellPrice('Edit');
+//});
 function updateSellPrice(type) {
     var mrpInput = '', gstSelect = '', sellInput = '';
     if (type == 'Edit') {
@@ -1301,3 +1533,45 @@ document.querySelectorAll(".price").forEach(input => {
     });
 
 });
+
+function scrollTableToLastRow(id) {
+    const container = document.getElementById(id);
+    container.scrollTo({
+        top: container.scrollHeight,
+        behavior: 'smooth'
+    });
+}
+function GetEditPopupDetails(rowdata, Type) {
+    var checked = rowdata.IsActive == 1 ? 'checked' : '';
+    var content = ``
+    if (Type == "editCategory") {
+        $('#editpopupname').text('Category Edit');
+        content += `<div><div class="gradient-box p-5 rounded-2xl" style="padding-bottom: 0px;"><div class="row"><div class="floating-group cat brand" title="Enter Category">
+                  <input type="text" id="editCategory" placeholder=" " data-id="${rowdata.Cat_id}" value="${rowdata.Cat_name?.trim() || ''}" onkeydown="if(event.key==='Enter'){event.preventDefault();btnconfirm('${Type}');}">
+                  <label class="floating-label" for="editCategory">Category<span style="color:red;">*</span></label></div>
+                  <div class="floating-group cat brand" title="Enter Category"><label class="switch" style="top: 4px;"> <input type="checkbox" id="chk_${rowdata.Cat_id}" style="width:10%;"${checked}>
+                  <span class="slider round"></span></label>
+                  <button type="button" class="common-btn" style=" width: 80px; height: 28px;top: -2px;" id="editconfirm" onclick="btnconfirm('${Type}')">Confirm</button>
+                  </div></div></div></div>`
+    }
+    else if (Type == "editbrand") {
+        $('#editpopupname').text('Brand Edit');
+        content += `<div><div class="gradient-box p-5 rounded-2xl" style="padding-bottom: 0px;"><div class="row" style="grid-template-columns: repeat(4, 1fr);"><div class="floating-group cat brand" title="Enter Category">
+                  <input type="text" id="editCategory" placeholder=" " disabled data-id="${rowdata.Cat_ID}" value="${rowdata.Cat_name?.trim() || ''}" onkeydown="if(event.key==='Enter'){event.preventDefault();btnconfirm('${Type}');}">
+                  <label class="floating-label" for="editCategory">Category<span style="color:red;">*</span></label></div>
+                  <div class="floating-group brand" title="Enter Brand">
+                  <input type="text" id="editbrand" placeholder=" " data-id="${rowdata.Brand_ID}" value="${rowdata.Brand_Name?.trim() || ''}" onkeydown="if(event.key==='Enter'){event.preventDefault();btnconfirm('${Type}');}">
+                  <label class="floating-label" for="editbrand">Brand<span style="color:red;">*</span></label></div>
+                  <div class="floating-group cat brand" title="Enter Category"><label class="switch" style="top: 8px;"> <input type="checkbox" id="chk_${rowdata.Cat_ID}" style="width:10%;"${checked}>
+                  <span class="slider round"></span></label></div>
+                  <button type="button" class="common-btn" style=" width: 80px; height: 28px;top: -3px;" id="editconfirm" onclick="btnconfirm('${Type}')">Confirm</button>
+                  </div></div></div>`
+                  
+    }
+    $('#editpopdet').empty();
+    $('#editpopdet').append(content);
+
+    $('#Editpopup').css('display','flex');
+    //$('.Editpopup').css('height', '17%');
+    //$('.Editpopup').css('width', Type === 'editCategory' ? '30%' : '41%');
+}

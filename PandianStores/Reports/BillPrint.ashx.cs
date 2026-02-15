@@ -457,7 +457,7 @@ namespace PandianStores.Reports
                 int middlePriceX = 300 + labelWidth - textWidth;
                 int rightPriceX = 580 + labelWidth - textWidth;
                 bool isLong = product.Length > 15;
-                string productFont = isLong ? "1" : "2";
+                string productFont = isLong ? "2" : "2";
 
                 string producttrim;
 
@@ -490,23 +490,24 @@ namespace PandianStores.Reports
                 for (int repeat = 0; repeat < labelCount; repeat++)
                 {
                     zpl +=
-                    $"A20,30,0,3,1,1,N,\"{shop}\"\n" +
-                    $"B35,60,0,1,2,3,40,N,\"{barcode}\"\n" +
-                    $"A20,120,0,{productFont},1,1,N,\"{producttrim}\"\n" +
-                    $"A{leftPriceX},145,0,3,1,1,N,\"Rs.{price}\"\n" +
+                    $"A27,5,0,2,1,1,N,\"{shop}\"\n" +
+                    $"B27,43,0,1,2,3,40,N,\"{barcode}\"\n" +
+                    $"A27,103,0,{productFont},1,1,N,\"{producttrim}\"\n" +
+                    $"A{leftPriceX},140,0,3,1,1,N,\"Rs.{price}\"\n" +
 
-                    $"A300,30,0,3,1,1,N,\"{shop}\"\n" +
-                    $"B315,60,0,1,2,3,40,N,\"{barcode}\"\n" +
-                    $"A300,120,0,{productFont},1,1,N,\"{producttrim}\"\n" +
-                    $"A{middlePriceX},145,0,3,1,1,N,\"Rs.{price}\"\n" +
+                    $"A307,5,0,2,1,1,N,\"{shop}\"\n" +
+                    $"B307,43,0,1,2,3,40,N,\"{barcode}\"\n" +
+                    $"A307,103,0,{productFont},1,1,N,\"{producttrim}\"\n" +
+                    $"A{middlePriceX},140,0,3,1,1,N,\"Rs.{price}\"\n" +
 
-                    $"A580,30,0,3,1,1,N,\"{shop}\"\n" +
-                    $"B595,60,0,1,2,3,40,N,\"{barcode}\"\n" +
-                    $"A580,120,0,{productFont},1,1,N,\"{producttrim}\"\n" +
-                    $"A{rightPriceX},145,0,3,1,1,N,\"Rs.{price}\"\n" +
+                    $"A587,5,0,2,1,1,N,\"{shop}\"\n" +
+                    $"B587,43,0,1,2,3,40,N,\"{barcode}\"\n" +
+                    $"A587,103,0,{productFont},1,1,N,\"{producttrim}\"\n" +
+                    $"A{rightPriceX},140,0,3,1,1,N,\"Rs.{price}\"\n" +
 
                     "P1\n";
                 }
+                // Initial ZPL setup - only once
 
             }
 

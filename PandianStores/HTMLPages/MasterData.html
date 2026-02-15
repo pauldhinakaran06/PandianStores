@@ -228,14 +228,19 @@
                 <div class="text" style="width: 100%;display:flex;">
                     Inventory Details
                 </div>
-                <marquee direction="left" height="50px" style="width: 60%;padding: 0px;position: relative;left:0px;">
+                <!--<marquee direction="left" height="50px" style="width: 60%;padding: 0px;position: relative;left:0px;">
                     This is a sample scrolling text that has scrolls in the upper direction.
-                </marquee>
+                </marquee>-->
                 <!--<div class="search-box" style="margin: 0 !important;display:flex;">
             <button class="commonconfirm-btn" onclick="openpopup('AddCategory')">Add Category</button>
             <button class="commonconfirm-btn" onclick="openpopup('AddBrand')">Add Brand</button>
             <button class="commonconfirm-btn" onclick="openpopup('AddProduct')">Add Product</button>
         </div>-->
+            </div>
+            <div class="container" style=" position: fixed; top: 0px; right: 0px; padding: 10px;">
+                <div style="display: flex;justify-content: end;font-size: 1.4vw;font-weight: bold;"><span id="AllUserId"></span></div>
+                <div id="AllDatetime" style="display: flex; justify-content: end; font-size: 1.4vw;"></div>
+
             </div>
             <div class="inventorymenu-items" style="display: flex; align-items: center; justify-content: space-between;">
                 <ul class="inventorylinks" style="display:flex;">
@@ -322,14 +327,14 @@
                 <table id="productsgrid"></table>
                 <div id="productspager"></div>
             </div>
-           
+
             <div id="AddCategorypopup" class="modal">
                 <div class="card AddCategorypopup" id="AddCategorypopup">
                     <button class="billclose-btn" style=" top: 18px;" onclick="closeHeader('AddCategory')">X</button>
-                    <h3 style="background-color: aquamarine; display: flex; justify-content: center; margin-bottom: 10px; ">Add Category Detail</h3>
+                    <h3 style="background-color: aquamarine; display: flex; justify-content: center; ">Add Category Detail</h3>
                     <div id="Ledger" style=" width:100%;">
                         <div>
-                            <div class="gradient-box p-5 rounded-2xl">
+                            <div class="gradient-box p-5 rounded-2xl" style="padding-bottom: 0px;">
                                 <div class="row">
                                     <div class="floating-group" title="Enter Category">
                                         <input type="text" id="txtaddCategory" placeholder=" " onkeydown="if(event.key==='Enter'){event.preventDefault();AddData('AddCategory');}">
@@ -341,18 +346,20 @@
                                     </div>
                                 </div>
                             </div>
-                            <table id="tblcategory">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>category</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="Categorydatarow">
-                                    <tr><td colspan="9" class="text-center">No records found</td></tr>
-                                </tbody>
-                            </table>
+                            <div class="table-scroll" id="catscroll">
+                                <table id="tblcategory">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>category</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="Categorydatarow">
+                                        <tr><td colspan="9" class="text-center">No records found</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
                             <div class="floating-group right-corner">
                                 <button type="button" class="common-btn" id="Clearcat" style=" width: 80px; height: 28px;" onclick="btnClear('AddCategory');">Clear All</button>
                                 <button type="button" class="common-btn" style=" width: 80px; height: 28px;" id="addcategoryconfirm" onclick="btnconfirm('AddCategory')">Confirm</button>
@@ -367,7 +374,7 @@
                     <h3 style="background-color: aquamarine; display: flex; justify-content: center; margin-bottom: 10px; ">Add Brand Detail</h3>
                     <div id="Ledger" style=" width:100%;">
                         <div>
-                            <div class="gradient-box p-5 rounded-2xl">
+                            <div class="gradient-box p-5 rounded-2xl" style="padding-bottom: 0px;">
                                 <div class="row">
                                     <div class="floating-group" title="Select Category">
                                         <input id="txtbrandCategory" class="autocomplete-input" data-listname="brandCategory-list" name="txtbrandCategory" onkeyup="getCategoryList(event,'Brand');" placeholder=" " style=" margin-bottom: 3px !important;" autocomplete="off">
@@ -385,7 +392,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="divtblBrand">
+                            <div id="divtblBrand" class="table-scroll">
                                 <table id="tblBrand">
                                     <thead>
                                         <tr>
@@ -410,7 +417,7 @@
                 </div>
             </div>
             <div id="AddProductpopup" class="modal">
-                <div class="card AddProductpopup" id="AddProductpopup">
+                <div class="card AddProductpopup" id="AddProductpopup" style="height: 300px;">
                     <button class="billclose-btn" style=" top: 18px;" onclick="closeHeader('AddProduct')">X</button>
                     <h3 style="background-color: aquamarine; display: flex; justify-content: center; margin-bottom: 10px; ">Add Product Detail</h3>
                     <div id="Ledger" style=" width:100%;">
@@ -440,11 +447,6 @@
                                     <div class="floating-group" title="Product Name">
                                         <input type="text" class="product" id="txtProductName" placeholder=" ">
                                         <label class="floating-label" for="txtProductName">Product Name<span style="color:red;">*</span></label>
-                                        
-                                    </div>
-                                    <div class="floating-group" title="Buy Price">
-                                        <input type="text" class="product price" id="txtbuyprice" placeholder=" ">
-                                        <label class="floating-label" for="txtbuyprice">Buy Price<span style="color:red;">*</span></label>
 
                                     </div>
                                     <div class="floating-group" title="MRP Price">
@@ -452,6 +454,12 @@
                                         <label class="floating-label" for="txtmrp">MRP Price<span style="color:red;">*</span></label>
 
                                     </div>
+                                    <div class="floating-group" title="Buy Price">
+                                        <input type="text" class="product price" id="txtbuyprice" placeholder=" ">
+                                        <label class="floating-label" for="txtbuyprice">Buy Price<span style="color:red;">*</span></label>
+
+                                    </div>
+
                                 </div>
                                 <div class="row">
                                     <div class="floating-group" title="Selling Price">
@@ -466,7 +474,7 @@
                                     </div>
                                     <div class="floating-group" title="GST%">
                                         <!--<input type="text" class="product" id="txtGST" placeholder=" ">
-                                        <label class="floating-label" for="txtGST">GST%<span style="color:red;">*</span></label>-->
+                                <label class="floating-label" for="txtGST">GST%<span style="color:red;">*</span></label>-->
                                         <select class="product" id="ddlGST" style="width: 95%;left: 6px;position: relative;text-align: center;height: 25px;top: 6px;">
                                             <option value="">Select GST%</option>
                                         </select>
@@ -482,7 +490,7 @@
                             <button class="editproductconfirm-btn" id="addproductconfirm" style="left: 100%;" onclick="btnconfirm('Addproduct')">Confirm</button>
                         </div>-->
                                 <!--<div class="floating-group" style="top: -12px;">
-                            <button type="button" class="common-btn" id="Addcat" style=" width: 80px; height: 28px;" onclick="AddData('AddCategory')">ADD</button>-->
+                        <button type="button" class="common-btn" id="Addcat" style=" width: 80px; height: 28px;" onclick="AddData('AddCategory')">ADD</button>-->
                                 <!--<button type="button" class="common-btn" id="Clearcat" style=" width: 80px; height: 28px;" onclick="btnClear('AddCategory');">Clear</button>-->
                                 <!--</div>
                         </div>-->
@@ -490,17 +498,17 @@
 
                             <div class="floating-group right-corner">
                                 <span class="span-error"></span>
-                                <button type="button" class="common-btn" id="Clearcat" style=" width: 80px; height: 28px;" onclick="btnClear('Addproduct');">Clear All</button>
-                                <button type="button" class="common-btn" style=" width: 80px; height: 28px;" id="addcategoryconfirm" onclick="btnconfirm('Addproduct')">Confirm</button>
+                                <button type="button" class="common-btn" id="Clearcat" style="top: -9px; width: 80px; height: 28px;" onclick="btnClear('Addproduct');">Clear All</button>
+                                <button type="button" class="common-btn" style="top: -9px; width: 80px; height: 28px;" id="addcategoryconfirm" onclick="btnconfirm('Addproduct')">Confirm</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div id="EditProductpopup" class="modal">
-                <div class="card EditProductpopup" id="EditProductpopup">
+                <div class="card EditProductpopup" id="EditProductpopup" style="height: 300px;">
                     <button class="billclose-btn" style=" top: 18px;" onclick="closeHeader('EditProduct')">X</button>
-                    <h3 style="background-color: aquamarine; display: flex; justify-content: center; margin-bottom: 10px; ">Add Product Detail</h3>
+                    <h3 style="background-color: aquamarine; display: flex; justify-content: center; margin-bottom: 10px; ">Edit Product Detail</h3>
                     <div id="Ledger" style=" width:100%;">
                         <div>
                             <div class="gradient-box p-5 rounded-2xl">
@@ -530,14 +538,14 @@
                                         <label class="floating-label" for="txtEditProductName">Product Name<span style="color:red;">*</span></label>
                                         <input type="text" id="txtEditProductid" hidden />
                                     </div>
-                                    <div class="floating-group" title="Buy Price">
-                                        <input type="text" class="product" id="txtEditbuyprice" placeholder=" ">
-                                        <label class="floating-label" for="txtEditbuyprice">Buy Price<span style="color:red;">*</span></label>
-
-                                    </div>
                                     <div class="floating-group" title="MRP Price">
                                         <input type="text" id="txtEditmrp" placeholder=" ">
                                         <label class="floating-label" for="txtEditmrp">MRP Price<span style="color:red;">*</span></label>
+
+                                    </div>
+                                    <div class="floating-group" title="Buy Price">
+                                        <input type="text" class="product" id="txtEditbuyprice" placeholder=" ">
+                                        <label class="floating-label" for="txtEditbuyprice">Buy Price<span style="color:red;">*</span></label>
 
                                     </div>
                                 </div>
@@ -554,7 +562,7 @@
                                     </div>
                                     <div class="floating-group" title="GST%">
                                         <!--<input type="text" class="product" id="txtEditGST" placeholder=" ">
-                                        <label class="floating-label" for="txtEditGST">GST%<span style="color:red;">*</span></label>-->
+                                <label class="floating-label" for="txtEditGST">GST%<span style="color:red;">*</span></label>-->
                                         <select class="product" id="ddlEditGST" style="width: 95%;left: 6px;position: relative;text-align: center;height: 25px;top: 6px;">
                                             <option value="">Select GST%</option>
                                         </select>
@@ -569,21 +577,37 @@
                             <button class="editproductconfirm-btn" id="addproductconfirm" style="left: 100%;" onclick="btnconfirm('Addproduct')">Confirm</button>
                         </div>-->
                                 <!--<div class="floating-group" style="top: -12px;">
-                            <button type="button" class="common-btn" id="Addcat" style=" width: 80px; height: 28px;" onclick="AddData('AddCategory')">ADD</button>-->
+                        <button type="button" class="common-btn" id="Addcat" style=" width: 80px; height: 28px;" onclick="AddData('AddCategory')">ADD</button>-->
                                 <!--<button type="button" class="common-btn" id="Clearcat" style=" width: 80px; height: 28px;" onclick="btnClear('AddCategory');">Clear</button>-->
                                 <!--</div>
                         </div>-->
                             </div>
+                            <div class="row">
 
-                            <div class="floating-group right-corner">
-                                <span class="span-error"></span>
-                                <button type="button" class="common-btn" id="EditClearcat" style=" width: 80px; height: 28px;" onclick="btnClear('EditProduct');">Clear All</button>
-                                <button type="button" class="common-btn" style=" width: 80px; height: 28px;" id="Editcategoryconfirm" onclick="btnconfirm('EditProduct')">Confirm</button>
+                                <div class="floating-group right-corner">
+                                    <span class="span-error"></span>
+                                    <label class="switch">
+                                        <input type="checkbox" id="chkEditproduct" style="width:10%;">
+                                        <span class="slider round"></span>
+                                    </label>
+                                    <!--<button type="button" class="common-btn" id="EditClearcat" style="top: -9px; width: 80px; height: 28px;" onclick="btnClear('EditProduct');">Clear All</button>-->
+                                    <button type="button" class="common-btn" style="top: -9px; width: 80px; height: 28px;" id="Editcategoryconfirm" onclick="btnconfirm('EditProduct')">Confirm</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <div id="Editpopup" class="modal">
+                <div class="card Editpopup" id="Editpopup">
+                    <button class="billclose-btn" style=" top: 18px;" onclick="closeHeader('Editpopup')">X</button>
+                    <h3 style="background-color: aquamarine; display: flex; justify-content: center;" id="editpopupname">Edit Popup</h3>
+                    <div id="editpopdet" style=" width:100%;">
+
+                    </div>
+                </div>
+            </div>
+
             <div class="popup-overlay" id="labelPopup">
                 <div class="popup-container" style="top: 40%; left: 50%; transform: translate(-50%, -50%); width: 25%; height: 15%;">
                     <h2 style="text-align: center; background: aquamarine; font-size: 16px; font-weight: bold; margin-top: 0px; margin-bottom: 14px; ">

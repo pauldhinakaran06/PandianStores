@@ -110,12 +110,12 @@
             <div class="title">
                 <i class="bi bi-credit-card" style="background-color: #ffffff; color: black;"></i>
                 <span class="text">Billing</span>
-                <marquee width="40%" direction="left" height="50px" style="width: 31%;padding: 14px;position: relative;left: 11px;">
+                <!--<marquee width="40%" direction="left" height="50px" style="width: 31%;padding: 14px;position: relative;left: 11px;">
                     This is a sample scrolling text that has scrolls in the upper direction.
-                </marquee>
+                </marquee>-->
             </div>
             <div class="container" style=" position: fixed; top: 0px; right: 0px; padding: 10px;">
-                <div style="display: flex;justify-content: end;font-size: 1.4vw;font-weight: bold;"><span>SAM</span></div>
+                <div style="display: flex;justify-content: end;font-size: 1.4vw;font-weight: bold;"><span id="UserId"></span></div>
                 <div id="Datetime" style="display: flex; justify-content: end; font-size: 1.4vw;"></div>
                 
             </div>
@@ -136,7 +136,7 @@
                     <label class="floating-label" for="customerName">Customer Name</label>
                 </div>
                 <div class="floating-group" title="Enter Phone Number">
-                    <input id="phoneNumber" class="autocomplete-input" data-listname="customer-list" name="phoneNumber" onkeyup="getCustomerList(event,'Edit');" placeholder=" " style=" margin-bottom: 3px !important; padding: 5px 10px !important;" autocomplete="off">
+                    <input id="phoneNumber" maxlength="10" class="autocomplete-input" data-listname="customer-list" name="phoneNumber" onkeyup="getCustomerList(event,'Edit');" placeholder=" " style=" margin-bottom: 3px !important; padding: 5px 10px !important;" autocomplete="off">
                     <label class="floating-label" for="phoneNumber">Phone Number</label>
                     <div id="customer-list" style="display:none;" class="customerlist autocomplete-items"></div>
 

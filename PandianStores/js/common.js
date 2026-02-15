@@ -34,8 +34,23 @@ if (document.title != "Biilling") {
         }
     };
     xhr.send();
-}
+    $("#AllUserId").text(sessionStorage.getItem('UserID'));
+    updateALLPAGETime();
+    setInterval(updateALLPAGETime, 1000);
 
+}
+function updateALLPAGETime() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const date = `${year}-${month}-${day}`;
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const time = `${hours}:${minutes}:${seconds}`;
+    document.getElementById('AllDatetime').textContent = `${date} ${time}`;
+}
 document.querySelectorAll('input').forEach(function (input) {
     input.setAttribute('autocomplete', 'off');
 });
@@ -77,7 +92,14 @@ function sidemenu() {
     BillingPage.addEventListener("click", function (event) {
         event.preventDefault();
         sessionStorage.setItem("UserID", sessionStorage.getItem("UserID"));
-        window.open(url, "_blank");
+        //window.open(url, "_blank");
+         var width = window.screen.width;
+    var height = window.screen.height;
+		window.open(
+        url,
+        "_blank",
+        `width=${width},height=${height},top=0,left=0,resizable=yes,scrollbars=yes,toolbar=no,menubar=no,location=no,status=no`
+    );
     });
     const channel = new BroadcastChannel('auth_channel');
 
@@ -111,6 +133,17 @@ $(document).ready(function () {
             item.classList.add("active");
         }
     });
+
+
+    if (sessionStorage.getItem("UserRole") === 'Admin') {
+            document.querySelectorAll('.admin-only')
+        //.forEach(el => el.style.setProperty('display', 'block', 'important'));
+                .forEach(el => { el.classList.remove('admin-only');
+                    el.classList.add('isadmin');
+                });
+        }
+    
+ 
     //setInterval(function () {
     //    if (sessionStorage.getItem("UserID") == "" || sessionStorage.getItem("UserID") == null) {
     //        if (confirm("Unauthorized")) {
@@ -227,3 +260,21 @@ window.addEventListener("storage", function (e) {
         signout();
     }
 });
+
+
+function toProperCase(text) {
+    return text
+        .toLowerCase()
+        .replace(/\b\w/g, function (char) {
+            return char.toUpperCase();
+        });
+}
+$(document).on("blur", ".form-group input[type='text'],.floating-group input[type='text']", function () {
+    $(this).val(toProperCase($(this).val()));
+});
+$(document).on("keyup", ".form-group input[type='text'],.floating-group input[type='text']", function () {
+    let cursorPos = this.selectionStart;
+    $(this).val(toProperCase($(this).val()));
+    this.setSelectionRange(cursorPos, cursorPos);
+});
+

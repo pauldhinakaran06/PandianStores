@@ -282,6 +282,14 @@ function openLedgerpopup() {
     //getDealerList();
     $("#LedgerModal").css('display', 'flex');
     document.body.classList.add("no-scroll");
+    $('#dealerMobno').on('input', function () {
+        this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
+    });
+    $('#dealerMobno').on('keypress', function (e) {
+        if (this.value.length === 0 && !/[6-9]/.test(e.key)) {
+            e.preventDefault();
+        }
+    });
     document.getElementById('DealerGroup').focus();
     getProductList();
 }
@@ -459,6 +467,10 @@ function confirmledger() {
     }
     else if (Amount == "") {
         alert("Enter Amount.", 'failure');
+        return false;
+    }
+    else if (document.getElementById("addledger").innerText == "Update") {
+        alert("Update Selected Details.", 'failure');
         return false;
     }
     let xml = `<Records>\n`;

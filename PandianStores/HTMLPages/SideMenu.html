@@ -5,6 +5,12 @@
     .menu-item.active {
         color: var(--primary-color);
     }
+    .admin-only {
+        display: none !important;
+    }
+    .isadmin {
+        display: flex !important;
+    }
 </style>
 <div class="logo-name">
     <div class="logo-image">
@@ -16,7 +22,7 @@
 <div class="menu-items">
     <ul class="nav-links" >
         <li>
-            <a href="DashBoard.html" id="dashboard" class="menu-item">
+            <a href="DashBoard.html" id="dashboard" class="menu-item admin-only">
                 <!--<i class="bi bi-grid"></i>-->
                 <img src="../Icons/Gif/dashboard.gif" class="menu-gif" alt="Dahsboard" />
                 <span class="link-name">Dahsboard</span>
@@ -44,7 +50,7 @@
             </a>
         </li>
         <li>
-            <a href="Ledger.html" class="menu-item" >
+            <a href="Ledger.html" id="leadgermenu" class="menu-item admin-only" >
                 <!--<i class="bi bi-credit-card"></i>-->
                     <img src="../Icons/Gif/book.gif"  class="menu-gif" alt="Ledger" />
                 <span class="link-name">Ledger</span>

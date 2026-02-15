@@ -52,7 +52,7 @@ function dashboardpageloadsuccess(data) {
             //li.innerHTML = `<span style="font-size: small;">${p.Product_id} | ${p.ProductName}</span><span style="font-size: small;" class="${p.Quantity < 10 ? 'text-red-600 font-bold' : 'text-green-600'}">${(p.Quantity ?? 0)} left</span>`;
             const qty = p.Quantity ?? 0;
 
-            li.innerHTML = `<span style="font-size: small;">${p.Product_id} | ${p.ProductName}</span><span style="font-size: small;"class="${qty === 0 ? 'text-red-600 font-bold blink' : qty < 5 ? 'text-red-600 font-bold blink' : qty < 10 ? 'text-red-600 font-bold' : 'text-green-600'}">${qty === 0 ? 'Out of stock' : `${qty} left`}</span>`;
+            li.innerHTML = `<span style="font-size: small;">${p.Product_id} | ${p.ProductName}</span><span style="font-size: small;"class="${qty < 20 ? 'text-red-600 font-bold blink' : 'text-green-600'}">${qty === 0 ? 'Out of stock' : `${qty} left`}</span>`;
             list.appendChild(li);
         });
     }

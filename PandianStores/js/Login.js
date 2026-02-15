@@ -38,7 +38,11 @@ function Loginsuccess(data) {
             window.location.href = 'DashBoard.html';
         }
         else {
-            window.location.href = 'Billing.html';
+
+            //document.getElementById('dashboard').style('display', 'none');
+            //document.getElementById('leadgermenu').style('display', 'none');
+
+            window.location.href = 'MasterData.html';
         }
     }
     else {

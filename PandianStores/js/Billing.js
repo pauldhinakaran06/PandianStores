@@ -6,6 +6,16 @@ var hasdatachanged = false;
 var hasitemquantityisactive = false;
 
 $(function () {
+
+    $('#phoneNumber').on('input', function () {
+        this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
+    });
+    $('#phoneNumber').on('keypress', function (e) {
+        if (this.value.length === 0 && !/[6-9]/.test(e.key)) {
+            e.preventDefault();
+        }
+    });
+    $("#UserId").text(sessionStorage.getItem('UserID'));
     const channel = new BroadcastChannel('auth_channel');
     window.addEventListener('beforeunload', function (event) {
         if (!hasConfirmed || !hasdatachanged) {
@@ -263,7 +273,7 @@ function updateTotalPrice() {
 
     let totalTaxable = 0;
     let totalGST = 0;
-
+    let totalQty = 0;
     grid.jqGrid('getDataIDs').forEach(function (rowId) {
 
         // 🔹 Get RAW row data (NOT getCell)
@@ -286,6 +296,7 @@ function updateTotalPrice() {
 
         totalTaxable += taxableAmount;
         totalGST += gstAmount;
+        totalQty += parseInt(rowData.ItemQuantity) || 0;
     });
 
     let totalBill = totalTaxable + totalGST;
@@ -297,7 +308,7 @@ function updateTotalPrice() {
     $("#totalGSTAmount").text(totalGST.toFixed(2));
     $("#totalBillAmount").text(totalBill.toFixed(2));
     let totalRecords = grid.jqGrid('getGridParam', 'records');
-    $("#pager_right").html('<h3>Total Items: ' + totalRecords + '</h3>');
+    $("#pager_right").html('<h3>Total Items: ' + totalRecords + ' | Total QTY: ' + totalQty +'</h3>');
 }
 
 function getItemList() {
@@ -334,6 +345,7 @@ document.addEventListener('keydown', function (event) {
         //$("#totalAmount").text(totalAmount); 
         //$("#total_Amount").text(totalAmount);
         //finalpopupclear()
+        $('#CashAmount').val('');
         var grid = $("#grid");
         var rowCount = grid.jqGrid('getGridParam', 'records');
 
@@ -444,17 +456,21 @@ function getproduct(event) {
 
                 var gridData = $("#grid").jqGrid('getGridParam', 'data');
                 var contains = '', rowIndex = '';
-                var containsrowID = '', proceed = 'N';
+                var containsrowID = '', proceed = 'N', prodactive='N';
                 const colModel = $("#grid").jqGrid('getGridParam', 'colModel');
                 const colIndex = colModel.findIndex(c => c.name === 'ItemQuantity');
 
                 $.each(products, function (index, row) {
                     if (row.ProductName === rowData.ProductName) {
                         proceed = row.Quantity > 0 ? 'Y' : 'N';
+                        prodactive = row.ProdIsActive == 1 ? 'Y' : 'N';
                         return false;
                     }
                 });
-                if (proceed == 'Y') {
+                if (prodactive == 'N') {
+                    proceed = 'N';                    
+                }
+                if (proceed == 'Y' && prodactive == 'Y') {
                     $.each(gridData, function (index, row) {
                         if (row.ItemName == rowData.ProductName) {
                             containsrowID = row;
@@ -503,7 +519,12 @@ function getproduct(event) {
                     }, 0);
                 }
                 else {
-                    alert('Out of Stock!!.. Current Quantity: 0');
+                    if (prodactive == 'N') {
+                        alert('Product Inactive!!..');
+                    }
+                    else {
+                        alert('Out of Stock!!.. Current Quantity: 0');
+                    }
                 }
                 $('#Productsearch').val('');
                 $("#popup").css('display', 'none');
@@ -725,10 +746,12 @@ function updateTime() {
     if ($('#saleType').val() == 'cash') {
         $('#cashamtdiv').css('display', '');
         $('#balamtdiv').css('display', '');
+        $('#CashAmount').val('');
     }
     else {
         $('#cashamtdiv').css('display', 'none');
         $('#balamtdiv').css('display', 'none');
+        $('#CashAmount').val('');
     }
 }
 
@@ -762,6 +785,12 @@ function bindbarcodedata(data) {
 
     // Check stock in products
     var productdata = products.find(p => p.ProductName === rowData.ProductName);
+
+    if (productdata.ProdIsActive == 0) {
+        alert('Product is Inactive!!..', 'failure');
+        return;
+    }
+
     if (!productdata || productdata.Quantity <= 0) {
         alert('Out of Stock!!..', 'failure');
         return;
@@ -1096,6 +1125,10 @@ function BillSuccess(data) {
 function calculateBalance() {
     let cash = parseFloat(document.getElementById("CashAmount").value) || 0;
     let total = parseFloat(document.getElementById("totalBillAmount").innerText) || 0;
+    if (cash == 0) {
+        document.getElementById("balanceAmount").innerText = 0;
+        return;
+    }
     let balance = cash - total;
     document.getElementById("balanceAmount").innerText = balance.toFixed(2);
 }

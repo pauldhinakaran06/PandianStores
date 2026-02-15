@@ -103,32 +103,40 @@ nav.close ~ .dashboard {
 }
 
 .modal.AddCategorypopup .popup-container .billclose-btn:hover, .modal.AddBrandpopup .popup-container .billclose-btn:hover,
-.modal.AddProductpopup .popup-container .billclose-btn:hover, .modal.EditProductpopup .popup-container .billclose-btn:hover {
+.modal.AddProductpopup .popup-container .billclose-btn:hover, .modal.EditProductpopup .popup-container .billclose-btn:hover, .modal.Editpopup .popup-container .billclose-btn:hover {
     border: ridge;
 }
 
-.AddCategorypopup, .AddBrandpopup, .AddProductpopup, .EditProductpopup {
+.AddCategorypopup, .AddBrandpopup, .AddProductpopup, .EditProductpopup, .Editpopup {
     background: white;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    overflow-y: auto;
-    max-height: 80%;
-    position: absolute;
-    height: 38%;
+    /*overflow-y: auto;*/
+    /*max-height: 50%;
+    position: relative;
+    height: auto;*/
+    position: relative;
+    height: 450px;
+    overflow: hidden;
+    top: 15%;
+}
+.Editpopup {
+    width: 630px;
+    height: 120px;
 }
 
-.AddCategorypopup, .AddBrandpopup, .AddProductpopup, .EditProductpopup {
-    overflow: auto;
+    .AddCategorypopup, .AddBrandpopup, .AddProductpopup, .EditProductpopup, .Editpopup {
+        /*overflow: auto;
     scrollbar-width: thin;
-    scrollbar-color: darkgrey transparent;
-}
+    scrollbar-color: darkgrey transparent;*/
+    }
 
-    .AddCategorypopup::-webkit-scrollbar, .AddBrandpopup::-webkit-scrollbar, .AddProductpopup::-webkit-scrollbar, .EditProductpopup::-webkit-scrollbar {
+    .AddCategorypopup::-webkit-scrollbar, .AddBrandpopup::-webkit-scrollbar, .AddProductpopup::-webkit-scrollbar, .EditProductpopup::-webkit-scrollbar, .Editpopup::-webkit-scrollbar {
         width: 6px;
     }
 
-    .AddCategorypopup::-webkit-scrollbar-thumb, .AddBrandpopup::-webkit-scrollbar-thumb, .AddProductpopup::-webkit-scrollbar-thumb, .EditProductpopup::-webkit-scrollbar-thumb {
+    .AddCategorypopup::-webkit-scrollbar-thumb, .AddBrandpopup::-webkit-scrollbar-thumb, .AddProductpopup::-webkit-scrollbar-thumb, .EditProductpopup::-webkit-scrollbar-thumb, .Editpopup::-webkit-scrollbar-thumb {
         background: darkgrey;
     }
 
@@ -228,7 +236,7 @@ input[type="radio"]:checked + label {
     right: 15px;
     display: flex;
     gap: 10px;
-    bottom: 26px;
+    /*bottom: 26px;*/
 }
 
 .Left-corner {
@@ -469,3 +477,84 @@ input[type="radio"]:checked + label {
 .info-tooltip:hover .tooltip-content {
     display: block;
 }
+.table-scroll {
+    max-height: 250px;
+    height: 250px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    overflow: auto;
+    scrollbar-width: thin;
+    scrollbar-color: darkgrey transparent;
+}
+
+#tblcategory, #tblBrand {
+    width: 100%;
+    border-collapse: collapse;
+    top: 15px;
+    position: relative;
+}
+
+    /* Optional: sticky table header */
+    #tblcategory thead th, #tblBrand thead th {
+        position: sticky;
+        top: 0px;
+        background: #f5f5f5;
+        z-index: 2;
+        border: 1px solid #ddd;
+    }
+    #tblcategory tbody td, #tblBrand tbody td {
+        z-index: 2;
+        border: 1px solid #ddd;
+    }
+
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+}
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: red;
+    transition: .4s;
+}
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 16px;
+        width: 16px;
+        left: 2px;
+        bottom: 2px;
+        background-color: white;
+        transition: .4s;
+    }
+
+input:checked + .slider {
+    background-color: #4CAF50;
+}
+
+    input:checked + .slider:before {
+        transform: translateX(20px);
+    }
+
+.slider.round {
+    border-radius: 20px;
+}
+
+    .slider.round:before {
+        border-radius: 50%;
+    }
