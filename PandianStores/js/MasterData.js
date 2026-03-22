@@ -1,7 +1,15 @@
-﻿var products = [], editreload = 'N', glbtype = "", editCategoryId = null, editBrandId = null,editcatname='',editbrandname='',editcatactivests='',editbrandactivests='';
+﻿var products = [], editreload = 'N', glbtype = "", editCategoryId = null, editBrandId = null, editcatname = '', editbrandname = '', editcatactivests = '', editbrandactivests = '';
 $(document).ready(function () {
     if (sessionStorage.getItem('UserID') == '' || sessionStorage.getItem('UserID') == null) {
         window.location.href = 'Login.html';
+    }
+    if (sessionStorage.getItem("UserRole") === 'Admin') {
+        document.querySelectorAll('.admin-only')
+            //.forEach(el => el.style.setProperty('display', 'block', 'important'));
+            .forEach(el => {
+                el.classList.remove('admin-only');
+                el.classList.add('isadmin');
+            });
     }
     getData('MasterGST');
     $('.boxes').css('display', 'none');
@@ -346,7 +354,7 @@ function btncancel() {
     count = 0;
     $('#editCategory').val('');
     $('#editbrand').val('');
-    
+
     $('#txtCategory').val('');
     $('#txtdata').val('');
     $('#txtBarcode').val('');
@@ -421,82 +429,82 @@ function btnconfirm(type) {
 
         if ($('#txtCategory').attr('data-id') == undefined || $('#txtCategory').val() == '') {
             error = true;
-             alert('Please Enter Category');
+            alert('Please Enter Category');
             $('#txtCategory').focus();
             $('#txtCategory').css('border-color', 'red');
             return;
         }
         else if ($('#txtBrand').attr('data-id') == undefined || $('#txtBrand').val() == '') {
             error = true;
-             alert('Please Enter Brand');
+            alert('Please Enter Brand');
             $('#txtBrand').focus();
             $('#txtBrand').css('border-color', 'red');
             return;
         }
         else if ($('#txtBarcode').val() == '') {
             error = true;
-             alert('Please Enter Barcode');
+            alert('Please Enter Barcode');
             $('#txtBarcode').focus();
             $('#txtBarcode').css('border-color', 'red');
             return;
         }
         else if ($('#txtProductName').val() == '') {
             error = true;
-             alert('Please Enter Product Name');
+            alert('Please Enter Product Name');
             $('#txtProductName').focus();
             $('#txtProductName').css('border-color', 'red');
             return;
         }
         else if ($('#txtbuyprice').val() == '') {
             error = true;
-             alert('Please Enter BuyPrice');
+            alert('Please Enter BuyPrice');
             $('#txtbuyprice').focus();
             $('#txtbuyprice').css('border-color', 'red');
             return;
         }
         else if ($('#txtmrp').val() == '') {
             error = true;
-             alert('Please Enter MRP Rate');
+            alert('Please Enter MRP Rate');
             $('#txtmrp').focus();
             $('#txtmrp').css('border-color', 'red');
             return;
         }
         else if ($('#txtsellprice').val() == '') {
             error = true;
-             alert('Please Enter SellPrice');
+            alert('Please Enter SellPrice');
             $('#txtsellprice').focus();
             $('#txtsellprice').css('border-color', 'red');
             return;
         }
-        else if ($('#txtsellprice').val() < $('#txtbuyprice').val()) {
-            error = true;
-            alert('Sell price must be greater than Buy price');
-            $('#txtsellprice').focus();
-            $('#txtsellprice').css('border-color', 'red');
-            return;
-        }
-        else if ($('#txtsellprice').val() < $('#txtbuyprice').val() || $('#txtsellprice').val() > $('#txtmrp').val()) {
-            error = true;
-            alert('Sell price must be greater than Buy price and less than or equal to MRP');
-            $('#txtsellprice').focus();
-            $('#txtsellprice').css('border-color', 'red');
-            return;
-        }
-        else if ($('#txtsellprice').val() > $('#txtmrp').val()) {
-            alert('Sell price should not be greater than MRP price');
-            $('#txtsellprice').focus();
-            return false;
-        }
+        // else if ($('#txtsellprice').val() < $('#txtbuyprice').val()) {
+            // error = true;
+            // alert('Sell price must be greater than Buy price');
+            // $('#txtsellprice').focus();
+            // $('#txtsellprice').css('border-color', 'red');
+            // return;
+        // }
+        // else if ($('#txtsellprice').val() < $('#txtbuyprice').val() || $('#txtsellprice').val() > $('#txtmrp').val()) {
+            // error = true;
+            // alert('Sell price must be greater than Buy price and less than or equal to MRP');
+            // $('#txtsellprice').focus();
+            // $('#txtsellprice').css('border-color', 'red');
+            // return;
+        // }
+        // else if ($('#txtsellprice').val() > $('#txtmrp').val()) {
+            // alert('Sell price should not be greater than MRP price');
+            // $('#txtsellprice').focus();
+            // return false;
+        // }
         else if ($('#txtquantity').val() == '') {
             error = true;
-             alert('Please Enter Quantity');
+            alert('Please Enter Quantity');
             $('#txtquantity').focus();
             $('#txtquantity').css('border-color', 'red');
             return;
         }
         else if (document.getElementById("ddlGST").value == '') {
             error = true;
-             alert('Please Select GST');
+            alert('Please Select GST');
             $('#ddlGST').focus();
             $('#ddlGST').css('border-color', 'red');
             return;
@@ -524,42 +532,42 @@ function btnconfirm(type) {
 
         if ($('#txtEditCategory').attr('data-id') == undefined || $('#txtEditCategory').val() == '') {
             error = true;
-             alert('Please Enter Category');
+            alert('Please Enter Category');
             $('#txtEditCategory').focus();
             $('#txtEditCategory').css('border-color', 'red');
             return;
         }
         else if ($('#txtEditBrand').attr('data-id') == undefined || $('#txtEditBrand').val() == '') {
             error = true;
-             alert('Please Enter Brand');
+            alert('Please Enter Brand');
             $('#txtEditBrand').focus();
             $('#txtEditBrand').css('border-color', 'red');
             return;
         }
         else if ($('#txtEditBarcode').val() == '') {
             error = true;
-             alert('Please Enter Barcode');
+            alert('Please Enter Barcode');
             $('#txtEditBarcode').focus();
             $('#txtEditBarcode').css('border-color', 'red');
             return;
         }
         else if ($('#txtEditProductName').val() == '') {
             error = true;
-             alert('Please Enter Product Name');
+            alert('Please Enter Product Name');
             $('#txtEditProductName').focus();
             $('#txtEditProductName').css('border-color', 'red');
             return;
         }
         else if ($('#txtEditbuyprice').val() == '') {
             error = true;
-             alert('Please Enter BuyPrice');
+            alert('Please Enter BuyPrice');
             $('#txtEditbuyprice').focus();
             $('#txtEditbuyprice').css('border-color', 'red');
             return;
         }
         else if ($('#txtEditmrp').val() == '') {
             error = true;
-             alert('Please Enter MRP Rate');
+            alert('Please Enter MRP Rate');
             $('#txtEditmrp').focus();
             $('#txtEditmrp').css('border-color', 'red');
             return;
@@ -571,35 +579,35 @@ function btnconfirm(type) {
             $('#txtEditsellprice').css('border-color', 'red');
             return;
         }
-        else if ($('#txtEditsellprice').val() < $('#txtEditbuyprice').val()) {
-            error = true;
-            alert('Sell price must be greater than Buy price');
-            $('#txtEditsellprice').focus();
-            $('#txtEditsellprice').css('border-color', 'red');
-            return;
-        }
-        else if ($('#txtEditsellprice').val() < $('#txtEditbuyprice').val() || $('#txtEditsellprice').val() > $('#txtEditmrp').val()) {
-            error = true;
-            alert('Sell price must be greater than Buy price and less than or equal to MRP');
-            $('#txtEditsellprice').focus();
-            $('#txtEditsellprice').css('border-color', 'red');
-            return;
-        }
-        else if ($('#txtEditsellprice').val() > $('#txtEditmrp').val()) {
-            alert('Sell price should not be greater than MRP price');
-            $('#txtEditsellprice').focus();
-            return false;
-        }
+        // else if ($('#txtEditsellprice').val() < $('#txtEditbuyprice').val()) {
+            // error = true;
+            // alert('Sell price must be greater than Buy price');
+            // $('#txtEditsellprice').focus();
+            // $('#txtEditsellprice').css('border-color', 'red');
+            // return;
+        // }
+        // else if ($('#txtEditsellprice').val() < $('#txtEditbuyprice').val() || $('#txtEditsellprice').val() > $('#txtEditmrp').val()) {
+            // error = true;
+            // alert('Sell price must be greater than Buy price and less than or equal to MRP');
+            // $('#txtEditsellprice').focus();
+            // $('#txtEditsellprice').css('border-color', 'red');
+            // return;
+        // }
+        // else if ($('#txtEditsellprice').val() > $('#txtEditmrp').val()) {
+            // alert('Sell price should not be greater than MRP price');
+            // $('#txtEditsellprice').focus();
+            // return false;
+        // }
         else if ($('#txtEditquantity').val() == '') {
             error = true;
-             alert('Please Enter Quantity');
+            alert('Please Enter Quantity');
             $('#txtEditquantity').focus();
             $('#txtEditquantity').css('border-color', 'red');
             return;
         }
         else if (document.getElementById("ddlEditGST").value == '') {
             error = true;
-             alert('Please Select GST');
+            alert('Please Select GST');
             $('#ddlEditGST').focus();
             $('#ddlEditGST').css('border-color', 'red');
             return;
@@ -652,7 +660,7 @@ function confirmsuccess(data) {
                 btnClear(glbtype);
                 btncancel();
             }
-            if (glbtype == 'AddCategory' || glbtype == 'AddBrand' || glbtype == 'editCategory' || glbtype =='editbrand') {
+            if (glbtype == 'AddCategory' || glbtype == 'AddBrand' || glbtype == 'editCategory' || glbtype == 'editbrand') {
                 getData('Categorydiv');
                 getData('Branddiv');
                 alert(data.Table[0].InsertedCount + ' Data Inserted Successfully.', 'success');
@@ -722,6 +730,7 @@ function GetProduct(data) {
             { name: 'MRP_Rate', label: 'MRP_Rate', width: 7, formatter: 'currency', editable: false },
             { name: 'SellPrice', label: 'SellPrice', width: 5, formatter: 'currency', editable: false },
             { name: 'Quantity', label: 'Quantity', width: 7, editable: false },
+            { name: 'TotalSoldQty', label: 'Sold Quantity', width: 7, editable: false },
             { name: 'Barcode', label: 'Barcode', width: 7, editable: false, hidden: true },
             { name: 'GSTRate', label: 'GST', width: 7, editable: false, hidden: true },
             {
@@ -745,7 +754,8 @@ function GetProduct(data) {
                     return `<a href="javascript:void(0);" class="bi bi-printer Print-icon" data-id="${rowObject.id}" title="Print Barcode"></a>`;
                 }
             },
-            { name: 'IsActive', label: 'IsActive', hidden: true, align: 'center', width: 15 }
+            { name: 'IsActive', label: 'IsActive', hidden: true, align: 'center', width: 15 },
+            { name: 'DisplayOrder', label: 'DisplayOrder', hidden: true, align: 'center', width: 15 }
         ],
         datatype: 'local',
         data: products,
@@ -755,8 +765,7 @@ function GetProduct(data) {
         viewrecords: true,
         pager: "#productspager",
         rowNum: 20,
-        sortname: 'Quantity',
-        sortorder: 'asc',
+        
         loadonce: false,
         rowattr: function (rd) {
             if (rd.Quantity <= 20) {
@@ -786,38 +795,57 @@ function GetProduct(data) {
     });
 
     const productsearchtxt = document.getElementById('Productsearch');
-
     productsearchtxt.addEventListener('input', function () {
-        const searchValue = productsearchtxt.value.trim();
-        if (searchValue === '') {
-            $("#productsgrid").jqGrid('setGridParam', {
-                search: false,
-                postData: { filters: "" }
-            }).trigger("reloadGrid");
-            return;
-        }
 
         $("#productsgrid").jqGrid('setGridParam', {
+            data: products,
             postData: {
                 filters: JSON.stringify({
-                    groupOp: "OR", // or "OR" if you want to match any condition
+                    groupOp: "OR",
                     rules: [
-                        { field: "ProductName", op: "cn", data: searchValue },
-                        { field: "Barcode", op: "cn", data: searchValue },
-                        { field: "Cat_name", op: "cn", data: searchValue },
-                        { field: "Brand_Name", op: "cn", data: searchValue }
+                         { field: "ProductName", op: "cn", data: productsearchtxt.value },
+                        { field: "Barcode", op: "cn", data: productsearchtxt.value },
+                        { field: "Cat_name", op: "cn", data: productsearchtxt.value },
+                        { field: "Brand_Name", op: "cn", data: productsearchtxt.value }
                     ]
                 })
             },
             search: true,
         }).trigger("reloadGrid");
-        //setTimeout(() => {
-        //    productsearchtxt.value = '';
-        //    productsearchtxt.focus(); // Optional: ready for next scan
-        //}, 100);
+
     });
+    // productsearchtxt.addEventListener('input', function () {
+        // const searchValue = productsearchtxt.value.trim();
+        // if (searchValue === '') {
+            // $("#productsgrid").jqGrid('setGridParam', {
+                // search: false,
+                // postData: { filters: "" }
+            // }).trigger("reloadGrid");
+            // return;
+        // }
+
+        // $("#productsgrid").jqGrid('setGridParam', {
+            // postData: {
+                // filters: JSON.stringify({
+                    // groupOp: "OR", // or "OR" if you want to match any condition
+                    // rules: [
+                        // { field: "ProductName", op: "cn", data: searchValue },
+                        // { field: "Barcode", op: "cn", data: searchValue },
+                        // { field: "Cat_name", op: "cn", data: searchValue },
+                        // { field: "Brand_Name", op: "cn", data: searchValue }
+                    // ]
+                // })
+            // },
+            // search: true,
+        // }).trigger("reloadGrid");
+        // //setTimeout(() => {
+        // //    productsearchtxt.value = '';
+        // //    productsearchtxt.focus(); // Optional: ready for next scan
+        // //}, 100);
+    // });
     drpProductsBrand.addEventListener('change', function (event) {
         $("#productsgrid").jqGrid('setGridParam', {
+			 data: products,
             postData: {
                 filters: JSON.stringify({
                     groupOp: "AND",
@@ -841,6 +869,7 @@ function GetProduct(data) {
     });
     drpProductsCategory.addEventListener('change', function (event) {
         $("#productsgrid").jqGrid('setGridParam', {
+			 data: products,
             postData: {
                 filters: JSON.stringify({
                     groupOp: "AND",
@@ -868,7 +897,7 @@ function GetProduct(data) {
             drpProductsBrand.appendChild(option); // Append the option to the dropdown
         });
     });
-    function GetEditProductDetails(rowData,type) {
+    function GetEditProductDetails(rowData, type) {
 
         //var rowId = $(this).data('id');
         const popup = document.getElementById("EditProductpopup");
@@ -1091,7 +1120,7 @@ function Getcategory(data) {
                     }
                 }
             },
-            { name: 'IsActive', label: 'IsActive', hidden:true, align: 'center', width: 15 }
+            { name: 'IsActive', label: 'IsActive', hidden: true, align: 'center', width: 15 }
         ],
         datatype: 'local',
         data: products,
@@ -1111,7 +1140,7 @@ function Getcategory(data) {
             if (rd.IsActive == 0) {
                 return { "style": "background-color: #f9f9f9 " };
             }
-            
+
         },
         gridComplete: function () {
             var $grid = $("#Categorygrid");
@@ -1130,7 +1159,7 @@ function Getcategory(data) {
 
             const rowData = $("#Categorygrid").jqGrid("getRowData", rowId);
 
-            GetEditPopupDetails(rowData,'editCategory');
+            GetEditPopupDetails(rowData, 'editCategory');
         }
 
     });
@@ -1449,7 +1478,7 @@ function bindGSTDropdown(data) {
         option.value = item.rate;
         option.text = item.rate + " %";
         ddl.appendChild(option);
-        
+
     });
     MasterGST.forEach(item => {
         const option = document.createElement("option");
@@ -1566,12 +1595,12 @@ function GetEditPopupDetails(rowdata, Type) {
                   <span class="slider round"></span></label></div>
                   <button type="button" class="common-btn" style=" width: 80px; height: 28px;top: -3px;" id="editconfirm" onclick="btnconfirm('${Type}')">Confirm</button>
                   </div></div></div>`
-                  
+
     }
     $('#editpopdet').empty();
     $('#editpopdet').append(content);
 
-    $('#Editpopup').css('display','flex');
+    $('#Editpopup').css('display', 'flex');
     //$('.Editpopup').css('height', '17%');
     //$('.Editpopup').css('width', Type === 'editCategory' ? '30%' : '41%');
 }

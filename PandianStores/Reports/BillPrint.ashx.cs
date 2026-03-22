@@ -417,9 +417,10 @@ namespace PandianStores.Reports
                 return left + new string(' ', spaces) + right;
             }
 
-            string FormatItemLine(string name, int gstrate, int qty, decimal rate, decimal amt)
+            string FormatItemLine(int sno, string name, int gstrate, int qty, decimal rate, decimal amt)
             {
-                return name.PadRight(24)
+                return sno.ToString().PadRight(2) + " "
+                    + name.PadRight(22)
                     + gstrate.ToString().PadLeft(4) + " "
                     + qty.ToString().PadLeft(3) + " "
                     + rate.ToString("0.00").PadLeft(6)
@@ -461,7 +462,8 @@ namespace PandianStores.Reports
 
             // ================= ITEMS =================
             b.Append(BOLD_ON);
-            b.AppendLine("ITEM".PadRight(24) +
+            b.AppendLine("S. ".PadRight(2) +
+                         "ITEM".PadRight(22) +
                          "GST".PadLeft(4) + " " +
                          "QTY".PadLeft(3) + " " +
                          "RATE".PadLeft(6) +
@@ -471,7 +473,7 @@ namespace PandianStores.Reports
             b.AppendLine(Line());
 
             int totalQty = 0;
-
+            int serialNo = 1;
             foreach (DataRow r in items.Rows)
             {
                 string item = Convert.ToString(r["ItemName"]).Replace("(", "").Replace(")", "");
@@ -481,31 +483,38 @@ namespace PandianStores.Reports
                 decimal amt = qty * rate;
 
                 totalQty += qty;
-
+                if (item.Length > 22)
+                {
+                    item = item.Substring(0, 20) + "..";
+                }
                 // Wrap long item names neatly
-                if (item.Length > 24)
-                {
-                    string firstLine = item.Substring(0, 24);
-                    string remaining = item.Substring(24);
+                //if (item.Length > 22)
+                //{
+                //    string firstLine = item.Substring(0, 22);
+                //    string remaining = item.Substring(22);
 
-                    b.AppendLine(FormatItemLine(firstLine, gstrate, qty, rate, amt));
+                //    // b.AppendLine(FormatItemLine(firstLine, gstrate, qty, rate, amt));
+                //    b.AppendLine(FormatItemLine(serialNo, firstLine, gstrate, qty, rate, amt));
+                //    serialNo++;
 
-                    while (remaining.Length > 0)
-                    {
-                        string part = remaining.Length > 24
-                            ? remaining.Substring(0, 24)
-                            : remaining;
+                //    while (remaining.Length > 0)
+                //    {
+                //        string part = remaining.Length > 22
+                //            ? remaining.Substring(0, 22)
+                //            : remaining;
 
-                        b.AppendLine(part);
-                        remaining = remaining.Length > 24
-                            ? remaining.Substring(24)
-                            : "";
-                    }
-                }
-                else
-                {
-                    b.AppendLine(FormatItemLine(item, gstrate, qty, rate, amt));
-                }
+                //        b.AppendLine("    "+ part);
+                //        remaining = remaining.Length > 22
+                //            ? remaining.Substring(22)
+                //            : "";
+                //    }
+                //}
+                //else
+                //{
+                // b.AppendLine(FormatItemLine(item, gstrate, qty, rate, amt));
+                b.AppendLine(FormatItemLine(serialNo, item, gstrate, qty, rate, amt));
+                serialNo++;
+                //}
             }
 
             b.AppendLine(Line());
@@ -541,8 +550,8 @@ namespace PandianStores.Reports
                 decimal gstPercent = Convert.ToDecimal(r["GSTPercent"]);
                 int itemAmt = Convert.ToInt32(r["TaxableAmount"]);
                 int itemCount = Convert.ToInt32(r["ItemCount"]);
-                decimal totalGST = Convert.ToDecimal(r["GSTAmount"]); 
-                decimal totalwithGST = Convert.ToDecimal(r["TotalWithGST"]); 
+                decimal totalGST = Convert.ToDecimal(r["GSTAmount"]);
+                decimal totalwithGST = Convert.ToDecimal(r["TotalWithGST"]);
 
                 decimal sgst = totalGST / 2;
                 decimal cgst = totalGST / 2;
@@ -689,7 +698,7 @@ namespace PandianStores.Reports
                     "R0,0\n" +
                     "T2\n" +
                     "q840\n" +
-                    "Q176,4\n" +
+                    "Q176,1\n" +
                     "D10\n" +
                     "S2\n";
 
@@ -709,10 +718,12 @@ namespace PandianStores.Reports
                     $"A587,5,0,2,1,1,N,\"{shop}\"\n" +
                     $"B587,43,0,1,2,3,40,N,\"{barcode}\"\n" +
                     $"A587,103,0,{productFont},1,1,N,\"{producttrim}\"\n" +
-                    $"A{rightPriceX},140,0,3,1,1,N,\"Rs.{price}\"\n" +
+                    $"A{rightPriceX},140,0,3,1,1,N,\"Rs.{price}\"\n";
 
-                    "P1\n";
+                    //"P1\n";
+                    
                 }
+                zpl += $"P{labelCount}\n";
                 // Initial ZPL setup - only once
 
             }

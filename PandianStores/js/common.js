@@ -3,6 +3,26 @@
 
         signout();
     }
+	const currentPage = location.pathname.split("/").pop();
+
+document.querySelectorAll(".menu-item").forEach(item => {
+    const href = item.getAttribute("href");
+    if (href === currentPage) {
+        item.classList.add("active");
+    }
+	else{
+		item.classList.remove("active");
+	}
+});
+    if (sessionStorage.getItem("UserRole") === 'Admin') {
+        document.querySelectorAll('.admin-only')
+            //.forEach(el => el.style.setProperty('display', 'block', 'important'));
+            .forEach(el => {
+                el.classList.remove('admin-only');
+                el.classList.add('isadmin');
+            });
+    }
+
 }, 10);
 function signout() {
     if (document.title != "Biilling") {
@@ -93,13 +113,13 @@ function sidemenu() {
         event.preventDefault();
         sessionStorage.setItem("UserID", sessionStorage.getItem("UserID"));
         //window.open(url, "_blank");
-         var width = window.screen.width;
-    var height = window.screen.height;
-		window.open(
-        url,
-        "_blank",
-        `width=${width},height=${height},top=0,left=0,resizable=yes,scrollbars=yes,toolbar=no,menubar=no,location=no,status=no`
-    );
+        var width = window.screen.width;
+        var height = window.screen.height;
+        window.open(
+            url,
+            "_blank",
+            `width=${width},height=${height},top=0,left=0,resizable=yes,scrollbars=yes,toolbar=no,menubar=no,location=no,status=no`
+        );
     });
     const channel = new BroadcastChannel('auth_channel');
 
@@ -136,14 +156,15 @@ $(document).ready(function () {
 
 
     if (sessionStorage.getItem("UserRole") === 'Admin') {
-            document.querySelectorAll('.admin-only')
-        //.forEach(el => el.style.setProperty('display', 'block', 'important'));
-                .forEach(el => { el.classList.remove('admin-only');
-                    el.classList.add('isadmin');
-                });
-        }
-    
- 
+        document.querySelectorAll('.admin-only')
+            //.forEach(el => el.style.setProperty('display', 'block', 'important'));
+            .forEach(el => {
+                el.classList.remove('admin-only');
+                el.classList.add('isadmin');
+            });
+    }
+
+
     //setInterval(function () {
     //    if (sessionStorage.getItem("UserID") == "" || sessionStorage.getItem("UserID") == null) {
     //        if (confirm("Unauthorized")) {

@@ -12,23 +12,40 @@
     <!----===== Iconscout CSS ===== -->
     <link rel="stylesheet" href="../Icons/font/bootstrap-icons.css">
 
-     <title>Dashboard</title>
-<script src="../Scripts/Tailwind.js"></script>
-  <script src="../Scripts/chart.js"></script>
-  <style>
-    body { background-color: #eef1ff; }
-    .sidebar { background-color: #ffffff; }
-    .card { background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-radius: 20px; }
-    .gradient-box { background: linear-gradient(130deg, black,aquamarine); }
-      section.dashboard {
-          overflow-x: hidden; /* no horizontal scroll */
-          box-sizing: border-box;
-      }
-      .ui-jqgrid-jquery-ui.ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr > td {
-          height: 44px;
-      }
+    <title>Dashboard</title>
+    <link rel="manifest" href="~/manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="../images/logo11.PNG">
+    <meta name="theme-color" content="#000000">
+    <script src="../Scripts/Tailwind.js"></script>
+    <script src="../Scripts/chart.js"></script>
+    <style>
+        body {
+            background-color: #eef1ff;
+        }
 
-  </style>
+        .sidebar {
+            background-color: #ffffff;
+        }
+
+        .card {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-radius: 20px;
+        }
+
+        .gradient-box {
+            background: linear-gradient(130deg, black,aquamarine);
+        }
+
+        section.dashboard {
+            overflow-x: hidden; /* no horizontal scroll */
+            box-sizing: border-box;
+        }
+
+        .ui-jqgrid-jquery-ui.ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr > td {
+            height: 44px;
+        }
+    </style>
 </head>
 <body class="flex min-h-screen text-gray-700">
     <nav id="Master">
@@ -50,6 +67,9 @@
                     <div class="text-xl" style="display: flex;"><img src="../Icons/Gif/salesummary.gif" class="menu-gif" style="left: 0px;" alt="totalsales" />Sales Summary</div>
                     <div class="flex justify-between mt-3">
                         <div>
+                            <div class="text-xl opacity-75">Today</div>
+                            <div class="text-2xl mt-4 font-bold" id="TotalsaleDay">₹ 0</div>
+                        </div> <div>
                             <div class="text-xl opacity-75">This Week</div>
                             <div class="text-2xl mt-4 font-bold" id="TotalsaleWeek">₹ 0</div>
                         </div>

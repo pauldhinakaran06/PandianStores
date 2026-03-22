@@ -3,6 +3,9 @@
 <head>
     <meta charset="utf-8" />
     <title>Biilling</title>
+    <link rel="manifest" href="~/manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="../images/logo11.PNG">
+    <meta name="theme-color" content="#000000">
     <!--<script src="LoadJs.js"></script>-->
     <!--<script src="https://cdn.socket.io/4.1.3/socket.io.min.js"></script>-->
     <link rel="stylesheet" href="../css/all.css">
@@ -18,6 +21,42 @@
     <script src="../js/common.js"></script>
     <script src="../js/Billing.js"></script>
     <style>
+	.barcode-popup{
+    position: fixed;
+    top: 20%;
+    left: 30%;
+    width: 40%;
+    background: white;
+    border: 2px solid #444;
+    z-index: 9999;
+    box-shadow: 0 0 10px rgba(0,0,0,0.4);
+}
+
+.barcode-table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:16px;
+}
+
+.barcode-table th{
+    background:#2c3e50;
+    color:white;
+    padding:8px;
+}
+
+.barcode-table td{
+    padding:8px;
+    border-bottom:1px solid #ddd;
+}
+
+.barcode-row-active{
+    background:#3498db;
+    color:white;
+}
+	#grid tr.glow-row td {
+    background-color: red !important;
+    transition: background-color 0.5s ease;
+}
         @media print {
             body {
                 margin: 0;
@@ -52,17 +91,21 @@
                 font-weight: bold;
             }
         }
+
         .dash-content .title {
             left: 14%;
             width: 70%;
         }
+
         #grid {
             background-color: whitesmoke;
             background-size: cover; /* or 'contain' / 'auto' */
         }
-        #productsgrid{
-            width:100% !important;
+
+        #productsgrid {
+            width: 100% !important;
         }
+
         .customer-wrapper {
             position: relative; /* anchor */
             width: 20%;
@@ -89,6 +132,49 @@
             .autocomplete-item:hover {
                 background-color: #f2f2f2;
             }
+			.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+  top: 20px;
+}
+
+.switch input {
+  display: none;
+}
+
+<!-- .slider { -->
+  <!-- position: absolute; -->
+  <!-- cursor: pointer; -->
+  <!-- background-color: #ccc; -->
+  <!-- border-radius: 30px; -->
+  <!-- top: 0; -->
+  <!-- left: 0; -->
+  <!-- right: 0; -->
+  <!-- bottom: 0; -->
+  <!-- transition: .4s; -->
+<!-- } -->
+
+<!-- .slider:before { -->
+  <!-- position: absolute; -->
+  <!-- content: ""; -->
+  <!-- height: 15px; -->
+  <!-- width: 15px; -->
+  <!-- left: 1px; -->
+  <!-- bottom: 3px; -->
+  <!-- background-color: white; -->
+  <!-- border-radius: 50%; -->
+  <!-- transition: .4s; -->
+<!-- } -->
+
+.finalpopup.input:checked + .slider {
+  background-color: #4CAF50;
+}
+
+.finalpopup.input:checked + .slider:before {
+  transform: translateX(30px);
+}
     </style>
 </head>
 <body>
@@ -96,20 +182,25 @@
     </nav>
 
     <section id="section" class="" style="width:auto;height:auto;">
-        <nav>
+        <nav style='width:20% !important;'>
             <div class="logo-name">
                 <div class="logo-image">
                     <img src="../images/logo.png" alt="">
                 </div>
                 <!--<i class="uil uil-bars sidebar-toggle"></i>-->
-                <p>Pandian Departmental Stores</p>
+                <p>Pandian Department Stores</p>
             </div>
         </nav>
         <div class="overview dash-content">
 
-            <div class="title">
-                <i class="bi bi-credit-card" style="background-color: #ffffff; color: black;"></i>
-                <span class="text">Billing</span>
+            <div class="title" style='left:17% !important;'>
+                <!-- <i class="bi bi-credit-card" style="background-color: #ffffff; color: black;"></i> -->
+                <!-- <span class="text">Billing</span> -->
+				 <a href="#" id="newBillingPage" class="menu-item" style="text-decoration: none;" title="New Billing">
+                <!--<i class="bi bi-credit-card"></i>-->
+                <img src="../Icons/Gif/bill.gif" class="menu-gif" alt="Billing" />
+                <span class="link-name" style="color: black;font-size: 20px;">Billing</span>
+            </a>
                 <!--<marquee width="40%" direction="left" height="50px" style="width: 31%;padding: 14px;position: relative;left: 11px;">
                     This is a sample scrolling text that has scrolls in the upper direction.
                 </marquee>-->
@@ -200,14 +291,16 @@
 
                 <label class="form-label" for="saleType" style="width: 40%;">Sale Type:</label>
                 <select id="saleType" name="saleType" class="form-input" tabindex="0" autofocus>
-                    <option value="cash" selected>Cash</option>
-                    <option value="gpay">GPay</option>
-                    <option value="debitCard">Debit Card</option>
+                    <option value="Cash" selected>Cash</option>
+                    <option value="Gpay">GPay</option>
+                    <option value="DebitCard">Debit Card</option>
+                    <option value="Credit">Credit</option>
                 </select>
+				
             </div>
             <div class="form-group" style="padding: 10px 0px 10px 0px;" id="cashamtdiv">
                 <label class="form-label" for="Cashamount">Cash Amount (₹):</label>
-                <input type="text" id="CashAmount" style="padding: 4px; width: 50%;"  oninput="calculateBalance()" />
+                <input type="text" id="CashAmount" style="padding: 4px; width: 50%;" autocomplete="off"  oninput="calculateBalance()" />
             </div>
             <div class="form-group" style="padding: 0px 0px 10px 0px;" id="balamtdiv">
                 <label class="form-label" for="balanceAmount">Balance (₹):</label>
@@ -225,7 +318,15 @@
                 <label class="form-label" for="totalBillAmount">Total Bill Amount (₹):</label>
                 <span id="totalBillAmount"></span>
             </div>
+			<div class="form-group" style="padding: 0px 0px 10px 0px;justify-content: flex-end;">
+			<label class="switch">
+			  <input type="checkbox" id="toggleYN" checked onchange="setYN()">
+			  <span class="slider"></span>
+			</label>
+			<input type="hidden" id="valueYN" value="Y">
             <button class="finalprintbtn" onclick="BillingProcess();">Print</button>
+			 
+			</div>
         </div>
         <div style="display:none;">
             <div id="printableArea">
@@ -335,13 +436,24 @@
                 <button class="billclose-btn" onclick="closeHeader('productlist')">X</button>
             </h2>
             <label for="Productsearch">Search :  </label>
-            <input type="text" id="Productsearch" style=" width: 55%; text-align: center;" placeholder="Search by Product Name" />
+            <input type="text" id="Productsearch" style=" width: 55%; text-align: center;" autocomplete="off" placeholder="Search by Product Name" />
             <button class="refreshbtn" onclick="getproduct('productrefresh');"><i class="bi bi-arrow-clockwise"></i></button>
             <table id="productsgrid"></table>
             <div id="productspager"></div>
         </div>
     </div>
-
+<div id="barcodePopup" class="barcode-popup" style="display:none;">
+    <table id="barcodeTable" class="barcode-table">
+        <thead>
+            <tr>
+                <th style="width:50%">Product</th>
+                <th style="width:25%">MRP</th>
+                <th style="width:25%">Sell</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
     <div class="alert hide">
         <span class="bi bi-exclamation-circle"></span>
         <span id="alertMessage" class="msg"></span>

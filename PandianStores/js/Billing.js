@@ -15,6 +15,7 @@ $(function () {
             e.preventDefault();
         }
     });
+	
     $("#UserId").text(sessionStorage.getItem('UserID'));
     const channel = new BroadcastChannel('auth_channel');
     window.addEventListener('beforeunload', function (event) {
@@ -32,12 +33,30 @@ $(function () {
 
     getItemList()
     updateTime();
+	
     setInterval(updateTime, 1000);
     /*setInterval(updateTotalPrice, 1000);*/
     setInterval(getItemList, 12000);
-
+	$("#pager_right").html('<h5>No records to view</h5>');
     resizeJqGrid();
+	 var newBillingPage = document.getElementById("newBillingPage");
 
+    var url = "Billing.html";
+    var data = {
+        UserID: sessionStorage.getItem("UserID")
+    };
+    newBillingPage.addEventListener("click", function (event) {
+        event.preventDefault();
+        sessionStorage.setItem("UserID", sessionStorage.getItem("UserID"));
+        //window.open(url, "_blank");
+        var width = window.screen.width;
+        var height = window.screen.height;
+        window.open(
+            url,
+            "_blank",
+            `width=${width},height=${height},top=0,left=0,resizable=yes,scrollbars=yes,toolbar=no,menubar=no,location=no,status=no`
+        );
+    });
     function calculateTotal(rowId) {
         var grid = $("#grid");
         var price = parseFloat(grid.jqGrid('getCell', rowId, 'ItemSellPrice')) || 0;
@@ -134,7 +153,8 @@ $(function () {
             { name: 'ItemTotal', label: 'Item Total', width: 80, formatter: 'currency', formatoptions: { decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "" }, editable: false, sortable: false },
             { name: 'GSTRateAmount', label: 'GST Total', width: 80, editable: false, hidden: true, sortable: false },
             { name: 'Quantity', label: 'Quantity', width: 80, editable: false, hidden: true, sortable: false },
-            { name: 'ProductID', label: 'ProductID', width: 80, editable: false, hidden: true, sortable: false }
+            { name: 'ProductID', label: 'ProductID', width: 80, editable: false, hidden: true, sortable: false },
+            { name: 'Barcode', label: 'Barcode', width: 80, editable: false, hidden: true, sortable: false }
         ],
         datatype: 'local',
         data: [], // Initialize with no data
@@ -159,6 +179,38 @@ $(function () {
                 $('input[name="ItemQuantity"]').focus().select();
             }, 0);
         },
+		gridComplete: function () {
+
+		 var grid = $("#grid");
+		var ids = grid.jqGrid('getDataIDs');
+
+		if (ids.length > 0) {
+
+			var lastRowId = ids[ids.length - 1];
+
+			// Select last row
+			//grid.jqGrid('setSelection', lastRowId, true);
+
+			var row = $("#" + lastRowId);
+
+			// Scroll to last row
+			var container = grid.closest(".ui-jqgrid-bdiv");
+			container.animate({
+				scrollTop: row.position().top
+			}, 300);
+
+			// Remove old glow
+			grid.find("tr").removeClass("glow-row");
+
+			// Add glow
+			row.addClass("glow-row");
+
+			// Auto remove after 2 seconds
+			setTimeout(function () {
+				row.removeClass("glow-row");
+			}, 1000);
+		}
+	}
 
 
     });
@@ -277,29 +329,54 @@ function updateTotalPrice() {
     grid.jqGrid('getDataIDs').forEach(function (rowId) {
 
         // 🔹 Get RAW row data (NOT getCell)
-        let rowData = grid.jqGrid('getRowData', rowId);
+        // let rowData = grid.jqGrid('getRowData', rowId);
 
-        let sellPrice = parseFloat(rowData.ItemSellPrice) || 0; // 19.05 stays 19.05
-        let qty = parseInt(rowData.ItemQuantity) || 0;
-        let gstRate = parseFloat(rowData.GSTRate) || 0;
+        // let sellPrice = parseFloat(rowData.ItemSellPrice) || 0; // 19.05 stays 19.05
+        // let qty = parseInt(rowData.ItemQuantity) || 0;
+        // let gstRate = parseFloat(rowData.GSTRate) || 0;
 
-        let basePrice = sellPrice / (1 + gstRate / 100);
-        let gstPerUnit = sellPrice - basePrice;
+        // let basePrice = sellPrice / (1 + gstRate / 100);
+        // let gstPerUnit = sellPrice - basePrice;
 
-        let taxableAmount = basePrice * qty;
-        let gstAmount = gstPerUnit * qty;
-        let lineTotal = sellPrice * qty;
+        // let taxableAmount = basePrice * qty;
+        // let gstAmount = gstPerUnit * qty;
+        // let lineTotal = sellPrice * qty;
 
-        // ✅ ONLY update totals
-        grid.jqGrid('setCell', rowId, 'GSTRateAmount', gstAmount.toFixed(2));
-        grid.jqGrid('setCell', rowId, 'ItemTotal', lineTotal.toFixed(2));
+        // // ✅ ONLY update totals
+        // grid.jqGrid('setCell', rowId, 'GSTRateAmount', gstAmount.toFixed(2));
+        // grid.jqGrid('setCell', rowId, 'ItemTotal', lineTotal.toFixed(2));
 
-        totalTaxable += taxableAmount;
-        totalGST += gstAmount;
-        totalQty += parseInt(rowData.ItemQuantity) || 0;
+        // totalTaxable += taxableAmount;
+        // totalGST += gstAmount;
+        // totalQty += parseInt(rowData.ItemQuantity) || 0;
+		
+		let rowData = grid.jqGrid('getRowData', rowId);
+
+		let sellPrice = parseFloat(rowData.ItemSellPrice) || 0;
+		let qty = parseInt(rowData.ItemQuantity) || 0;
+		let gstRate = parseFloat(rowData.GSTRate) || 0;
+
+		let basePrice = sellPrice / (1 + gstRate / 100);
+		basePrice = parseFloat(basePrice.toFixed(2));
+
+		let gstPerUnit = sellPrice - basePrice;
+		gstPerUnit = parseFloat(gstPerUnit.toFixed(2));
+
+		let taxableAmount = parseFloat((basePrice * qty).toFixed(2));
+		let gstAmount = parseFloat((gstPerUnit * qty).toFixed(2));
+		let lineTotal = parseFloat((sellPrice * qty).toFixed(2));
+
+		grid.jqGrid('setCell', rowId, 'GSTRateAmount', gstAmount.toFixed(2));
+		grid.jqGrid('setCell', rowId, 'ItemTotal', lineTotal.toFixed(2));
+
+		totalTaxable += taxableAmount;
+		totalGST += gstAmount;
+		totalQty += qty;
     });
 
     let totalBill = totalTaxable + totalGST;
+	totalBill = parseFloat(totalBill.toFixed(2));
+	totalBill = customRound(totalBill.toFixed(2));
 
     $("#totaldiv").html(totalTaxable.toFixed(2));
     $("#totalGSTDiv").html(totalGST.toFixed(2));
@@ -310,7 +387,18 @@ function updateTotalPrice() {
     let totalRecords = grid.jqGrid('getGridParam', 'records');
     $("#pager_right").html('<h3>Total Items: ' + totalRecords + ' | Total QTY: ' + totalQty +'</h3>');
 }
+function customRound(amount) {
+    amount = parseFloat(amount);
 
+    let integerPart = Math.floor(amount);
+    let decimalPart = amount - integerPart;
+
+    if (decimalPart > 0.49) {
+        return integerPart + 1;
+    } else {
+        return integerPart;
+    }
+}
 function getItemList() {
     var jdata = {
         str_PageName: 'MasterData',
@@ -345,7 +433,7 @@ document.addEventListener('keydown', function (event) {
         //$("#totalAmount").text(totalAmount); 
         //$("#total_Amount").text(totalAmount);
         //finalpopupclear()
-        $('#CashAmount').val('');
+        // $('#CashAmount').val('');
         var grid = $("#grid");
         var rowCount = grid.jqGrid('getGridParam', 'records');
 
@@ -356,20 +444,31 @@ document.addEventListener('keydown', function (event) {
         var customerJson = getCustomerJson();
         if (customerJson === null) {
             if (!confirm('Customer details not entered. Do you want to proceed?')) {
-                $('#customerName').focus();
+                // $('#customerName').focus();
                 return;
             }
             customerJson = '';
         }
         const finalpopup = document.getElementById("myModal");
         const finaldisplayValue = window.getComputedStyle(finalpopup).display;
+		document.getElementById("valueYN").value = "Y"
+		document.getElementById("toggleYN").checked = true;
         if (finaldisplayValue == 'flex') {
+			$('#saleType').val('Cash');
+			$("#CashAmount").val('');
+			$("#CashAmount").focus();
             $("#myModal").css('display', 'none');
-            $("#myModal").removeClass('open');
+            $("#myModal").removeClass('open');		
+			
         }
         else {
+			
             $("#myModal").css('display', 'flex');
             $("#myModal").addClass('open');
+			$('#saleType').val('Cash');
+			$("#CashAmount").val('');
+			$("#CashAmount").focus();
+			
             //document.getElementById('customerName').focus();
         }
         event.preventDefault();
@@ -393,22 +492,22 @@ document.addEventListener('keydown', function (event) {
             return;
         }
     }
-    if (event.target.matches('input[id$="CashAmount"]')) {
+    // if (event.target.matches('input[id$="CashAmount"]')) {
 
-    }
-    else if (event.key == '2' && event.code == 'Numpad2' && document.getElementById("myModal").style.display == 'flex') {
+    // }
+    // else if (event.key == '2' && event.code == 'Numpad2' && document.getElementById("myModal").style.display == 'flex') {
 
-        document.getElementById("saleType").value = "gpay";
-        event.preventDefault();
-    }
-    else if (event.key == '1' && event.code == 'Numpad1' && document.getElementById("myModal").style.display == 'flex') {
-        document.getElementById("saleType").value = "cash";
-        event.preventDefault();
-    }
-    else if (event.key == '3' && event.code == 'Numpad3' && document.getElementById("myModal").style.display == 'flex') {
-        document.getElementById("saleType").value = "debitCard";
-        event.preventDefault();
-    }
+        // document.getElementById("saleType").value = "Gpay";
+        // event.preventDefault();
+    // }
+    // else if (event.key == '1' && event.code == 'Numpad1' && document.getElementById("myModal").style.display == 'flex') {
+        // document.getElementById("saleType").value = "Cash";
+        // event.preventDefault();
+    // }
+    // else if (event.key == '3' && event.code == 'Numpad3' && document.getElementById("myModal").style.display == 'flex') {
+        // document.getElementById("saleType").value = "DebitCard";
+        // event.preventDefault();
+    // }
     if (event.target.matches('input[id$="_quantity"]')) {
 
     }
@@ -443,8 +542,9 @@ function getproduct(event) {
             height: 285,
             treeGrid: false,
             viewrecords: true,
-
-            loadonce: false
+			rowNum: 500,
+			gridview: true,
+			loadonce: false
 
         });
 
@@ -531,34 +631,78 @@ function getproduct(event) {
                 $("#popup").removeClass('open');
                 $("#grid").jqGrid('saveCell', rowIndex, colIndex);
                 updateTotalPrice();
+				 setTimeout(() => {
+						var grid = $("#grid");
+						var ids = grid.jqGrid('getDataIDs');
+						var lastRowId = rowIndex;
+
+						var row = $("#" + lastRowId);
+
+						//grid.jqGrid('setSelection', lastRowId, true);
+
+						grid.closest(".ui-jqgrid-bdiv").animate({
+							scrollTop: row.position().top
+						}, 300);
+
+						row.addClass("glow-row");
+
+						setTimeout(function () {
+							row.removeClass("glow-row");
+						}, 1000);
+
+                    }, 0);
             }
         });
 
         const productsearchtxt = document.getElementById('Productsearch');
-        productsearchtxt.addEventListener('input', function () {
-            $("#productsgrid").jqGrid('setGridParam', {
-                postData: {
-                    filters: JSON.stringify({
-                        groupOp: "OR",
-                        rules: [
-                            {
-                                field: "ProductName",
-                                op: "cn",
-                                data: productsearchtxt.value
-                            },
-                            {
-                                field: "Product_id",
-                                op: "cn",
-                                data: $('#Productsearch').val()
-                            }
-                        ]
-                    })
-                },
-                search: true,
-            }).trigger("reloadGrid");
-        });
+        // productsearchtxt.addEventListener('input', function () {
+            // $("#productsgrid").jqGrid('setGridParam', {
+                // postData: {
+                    // filters: JSON.stringify({
+                        // groupOp: "OR",
+                        // rules: [
+                            // {
+                                // field: "ProductName",
+                                // op: "cn",
+                                // data: productsearchtxt.value
+                            // },
+                            // {
+                                // field: "Product_id",
+                                // op: "cn",
+                                // data: $('#Productsearch').val()
+                            // }
+                        // ]
+                    // })
+                // },
+                // search: true,
+            // }).trigger("reloadGrid");
+        // });
+		let searchTimer;
 
+	productsearchtxt.addEventListener('input', function () {
 
+		clearTimeout(searchTimer);
+
+		searchTimer = setTimeout(() => {
+
+			var search = this.value.toLowerCase();
+
+			var filteredProducts = products.filter(p =>
+				p.ProductName.toLowerCase().includes(search) ||
+				p.Product_id.toString().includes(search)
+			);
+
+			$("#productsgrid").jqGrid('clearGridData');
+			$("#productsgrid").jqGrid('setGridParam', { data: filteredProducts });
+			$("#productsgrid").trigger('reloadGrid');
+
+		}, 200);
+
+	});
+
+		$("#productsgrid").jqGrid('clearGridData');
+		$("#productsgrid").jqGrid('setGridParam', { data: products });
+		$("#productsgrid").trigger('reloadGrid');
         enableProductGridNavigation();
     }
 }
@@ -627,7 +771,7 @@ function GenerateInvoiceNumber() {
     hours = String(hours).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
     const seconds = String(now.getSeconds()).padStart(2, '0');
-    const dateTimeString = `${day}${month}${year}${hours}${minutes}`;
+    const dateTimeString = `${day}${month}${year}`;		//${hours}${minutes}
     let invoiceNumber = `${prefix}${dateTimeString}${InvoiceCount}`;
     //const newCaption = '<div style="display: flex;align - items: center;justify-content: space-between;"><h2>Items</h2><div style="display: flex; flex-direction: row; align-items: center;"> <h4>SubTotal : ₹&nbsp; </h4><h4 id="totaldiv"></h4>&nbsp;&nbsp;&nbsp;'
     //    +'<h4> GSTTotal : ₹&nbsp; </h4><h4 id="totalGSTDiv"></h4> &nbsp; &nbsp; &nbsp;<h4>Invoice No. &nbsp;&nbsp;</h4><h3 id="InvoiceNumber" >' + invoiceNumber +'&nbsp;&nbsp;</h3></div></div>'
@@ -664,7 +808,7 @@ function BillingProcess() {
     var customerJson = getCustomerJson();
     if (customerJson === null) {
         if (!confirm('Customer details not entered. Do you want to proceed?')) {
-            $('#customerName').focus();
+            // $('#customerName').focus();
             return;
         }
         customerJson = '';
@@ -743,15 +887,15 @@ function updateTime() {
     const time = `${hours}:${minutes}:${seconds}`;
     document.getElementById('Datetime').textContent = `${date} ${time}`;
 
-    if ($('#saleType').val() == 'cash') {
+    if ($('#saleType').val() == 'Cash') {
         $('#cashamtdiv').css('display', '');
         $('#balamtdiv').css('display', '');
-        $('#CashAmount').val('');
+       
     }
     else {
         $('#cashamtdiv').css('display', 'none');
         $('#balamtdiv').css('display', 'none');
-        $('#CashAmount').val('');
+       
     }
 }
 
@@ -777,63 +921,85 @@ function finalpopupclear() {
     $('#totalBillAmount').text('0.00');
 }
 
-function bindbarcodedata(data) {
-    hasdatachanged = true;
-    var rowData = data[0], rowIndex = '';
-    var grid = $("#grid");
-    var gridData = grid.jqGrid('getGridParam', 'data');
+// function bindbarcodedata(data) {
+    // hasdatachanged = true;
+    // var rowData = data[0], rowIndex = '';
+    // var grid = $("#grid");
+    // var gridData = grid.jqGrid('getGridParam', 'data');
 
-    // Check stock in products
-    var productdata = products.find(p => p.ProductName === rowData.ProductName);
+    // // Check stock in products
+    // var productdata = products.find(p => p.Barcode === rowData.Barcode);
 
-    if (productdata.ProdIsActive == 0) {
-        alert('Product is Inactive!!..', 'failure');
-        return;
-    }
+    // if (productdata.ProdIsActive == 0) {
+        // alert('Product is Inactive!!..', 'failure');
+        // return;
+    // }
 
-    if (!productdata || productdata.Quantity <= 0) {
-        alert('Out of Stock!!..', 'failure');
-        return;
-    }
+    // if (!productdata || productdata.Quantity <= 0) {
+        // alert('Out of Stock!!..', 'failure');
+        // return;
+    // }
 
-    // Check if the product already exists in the grid
-    var existingRow = gridData.find(row => row.ItemName === rowData.ProductName);
+    // // Check if the product already exists in the grid
+    // var existingRow = gridData.find(row => row.ItemName === rowData.ProductName);
 
-    const colIndex = grid.jqGrid('getGridParam', 'colModel').findIndex(c => c.name === 'ItemQuantity');
+    // const colIndex = grid.jqGrid('getGridParam', 'colModel').findIndex(c => c.name === 'ItemQuantity');
 
-    if (existingRow) {
-        // Check if adding one more exceeds stock
-        var currentQty = parseInt(existingRow.ItemQuantity) || 0;
+    // if (existingRow) {
+        // // Check if adding one more exceeds stock
+        // var currentQty = parseInt(existingRow.ItemQuantity) || 0;
 
-        if (currentQty < productdata.Quantity) {
-            rowIndex = existingRow.id;
-            currentQty += 1;
-            grid.jqGrid('setRowData', existingRow.id, { ItemQuantity: currentQty });
-            grid.jqGrid('editCell', existingRow.id, colIndex, true);
-        } else {
-            alert('Out of Stock!!..', 'failure');
-        }
-    } else {
-        // Generate a unique row id
-        var newRowId = ($("#grid").jqGrid('getGridParam', 'data').length + 1).toString(); //new Date().getTime(); // safer than length+1
-        rowIndex = newRowId;
-        var newRow = {
-            id: newRowId,
-            ItemName: rowData.ProductName,
-            ItemMrpPrice: rowData.MRP_Rate,
-            ItemSellPrice: rowData.SellPrice,
-            ItemQuantity: 1,
-            Quantity: rowData.Quantity,
-            GSTRate: rowData.GSTRate,
-            ProductID: rowData.Product_id
-        };
-        grid.jqGrid('addRowData', newRowId, newRow);
-        grid.jqGrid('editCell', newRowId, colIndex, true);
-    }
-    grid.jqGrid('saveCell', rowIndex, colIndex);
-    updateTotalPrice();
-}
+        // if (currentQty < productdata.Quantity) {
+            // rowIndex = existingRow.id;
+            // currentQty += 1;
+            // grid.jqGrid('setRowData', existingRow.id, { ItemQuantity: currentQty });
+            // grid.jqGrid('editCell', existingRow.id, colIndex, true);
+        // } else {
+            // alert('Out of Stock!!..', 'failure');
+        // }
+    // } else {
+        // // Generate a unique row id
+        // var newRowId = ($("#grid").jqGrid('getGridParam', 'data').length + 1).toString(); //new Date().getTime(); // safer than length+1
+        // rowIndex = newRowId;
+        // var newRow = {
+            // id: newRowId,
+            // ItemName: rowData.ProductName,
+            // ItemMrpPrice: rowData.MRP_Rate,
+            // ItemSellPrice: rowData.SellPrice,
+            // ItemQuantity: 1,
+            // Quantity: rowData.Quantity,
+            // GSTRate: rowData.GSTRate,
+            // ProductID: rowData.Product_id
+        // };
+        // grid.jqGrid('addRowData', newRowId, newRow);
+        // grid.jqGrid('editCell', newRowId, colIndex, true);
+    // }
+    // grid.jqGrid('saveCell', rowIndex, colIndex);
+	// setTimeout(function () {
+		// var grid = $("#grid");
+		// var ids = grid.jqGrid('getDataIDs');
+		// var lastRowId = rowIndex;
+	
+		// var row = $("#" + lastRowId);
+
+		// //grid.jqGrid('setSelection', lastRowId, true);
+
+		// grid.closest(".ui-jqgrid-bdiv").animate({
+			// scrollTop: row.position().top
+		// }, 300);
+
+		// row.addClass("glow-row");
+
+		// setTimeout(function () {
+			// row.removeClass("glow-row");
+		// }, 1000);
+
+
+	// }, 100);
+    // updateTotalPrice();
+// }
 $(document).ready(function () {
+	setGridHeightByScreenHeight();
     $("#barcodeinput").focus();
 
     setInterval(function () {
@@ -1061,13 +1227,15 @@ function BillSuccess(data) {
     ) {
 
         //if (data.Table2.length > 0) {
-
+        $("#pager_right").html('<h5>No records to view</h5>');
+		if(document.getElementById("valueYN").value == "Y"){
         var jdata = {
             str_PageName: 'PrintBill',
             str_param: 'BillPrint^' + data.Table[0].InvoiceId + '^' + sessionStorage.getItem('UserID')
         }
 
         PostServiceCall(jdata, FinalPrintBill);
+		}
         //for (var i = 0; i < data.Table2.length; i++) {
         //    tabledata += '<tr>'
         //        //+ '<td>' + data.Table2[i].Sno + '</td>'
@@ -1137,31 +1305,34 @@ function FinalPrintBill(billData) {
 }
 
 function GetProductList() {
+	debugger;
     getproduct('productlist');
     $('#Productsearch').val('');
     const popup = document.getElementById("popup");
     const computedStyle = window.getComputedStyle(popup);
     const displayValue = computedStyle.display;
-    $("#productsgrid").jqGrid('setGridParam', {
-        postData: {
-            filters: JSON.stringify({
-                groupOp: "OR",
-                rules: [
-                    {
-                        field: "ProductName",
-                        op: "cn",
-                        data: $('#Productsearch').val()
-                    },
-                    {
-                        field: "Product_id",
-                        op: "cn",
-                        data: $('#Productsearch').val()
-                    }
-                ]
-            })
-        },
-        search: true,
-    }).trigger("reloadGrid");
+    let searchTimer;
+	const productsearchtxt = document.getElementById('Productsearch');
+	 productsearchtxt.addEventListener('input', function () {
+
+		clearTimeout(searchTimer);
+
+		searchTimer = setTimeout(() => {
+
+			var search = this.value.toLowerCase();
+
+			var filteredProducts = products.filter(p =>
+				p.ProductName.toLowerCase().includes(search) ||
+				p.Product_id.toString().includes(search)
+			);
+
+			$("#productsgrid").jqGrid('clearGridData');
+			$("#productsgrid").jqGrid('setGridParam', { data: filteredProducts });
+			$("#productsgrid").trigger('reloadGrid');
+
+		}, 200);
+	 });
+
     if (displayValue == 'flex') {
         $("#popup").css('display', 'none');
         $("#popup").removeClass('open');
@@ -1183,7 +1354,7 @@ function resizeJqGrid() {
     var pagerHeight = $("#jqPager").outerHeight() || 0;
     var newHeight = windowHeight - gridTop - pagerHeight - 25;
     grid.jqGrid("setGridWidth", parentWidth, true);
-    grid.jqGrid("setGridHeight", newHeight);
+    //grid.jqGrid("setGridHeight", newHeight);
 }
 $(window).on("resize", function () {
     resizeJqGrid();
@@ -1319,3 +1490,174 @@ document.querySelectorAll(".autocomplete-input").forEach(input => {
         }
     });
 });
+
+function setGridHeightByScreenHeight() {
+
+    var windowHeight = $(window).height();   // total screen height
+    var gridTop = $("#grid").offset().top;   // distance from top to grid
+    var pagerHeight = $("#pager").outerHeight() || 0;
+
+    // calculate remaining height
+    var gridHeight = windowHeight - gridTop - pagerHeight - 10;
+
+    $("#grid").jqGrid('setGridHeight', gridHeight);
+}
+
+var popupProducts = [];
+var selectedIndex = 0;
+
+function showBarcodeProductPopup(products) {
+
+    popupProducts = products;
+    selectedIndex = 0;
+
+    var tbody = $("#barcodeTable tbody");
+    tbody.empty();
+
+    products.forEach(function(p, i){
+
+        var row = `
+        <tr data-index="${i}">
+            <td>${p.ProductName}</td>
+            <td>${p.MRP_Rate}</td>
+            <td>${p.SellPrice}</td>
+        </tr>`;
+
+        tbody.append(row);
+    });
+
+    highlightRow();
+    $("#barcodePopup").show();
+
+    $(document).on("keydown.barcode", handlePopupKeys);
+}
+function handlePopupKeys(e){
+
+    if(e.key === "ArrowDown"){
+        selectedIndex++;
+        if(selectedIndex >= popupProducts.length)
+            selectedIndex = popupProducts.length-1;
+
+        highlightRow();
+    }
+
+    if(e.key === "ArrowUp"){
+        selectedIndex--;
+        if(selectedIndex < 0)
+            selectedIndex = 0;
+
+        highlightRow();
+    }
+
+    if(e.key === "Enter"){
+        selectBarcodeProduct();
+    }
+
+    if(e.key === "Escape"){
+        closeBarcodePopup();
+    }
+}
+function highlightRow(){
+
+    $("#barcodeTable tbody tr").removeClass("barcode-row-active");
+
+    $("#barcodeTable tbody tr")
+        .eq(selectedIndex)
+        .addClass("barcode-row-active");
+}
+function selectBarcodeProduct(){
+
+    var product = popupProducts[selectedIndex];
+
+    closeBarcodePopup();
+
+    processProduct(product); // your existing grid bind logic
+}
+function closeBarcodePopup(){
+
+    $("#barcodePopup").hide();
+
+    $(document).off("keydown.barcode");
+}
+function bindbarcodedata(data){
+
+    if(data.length > 1){
+        showBarcodeProductPopup(data);
+        return;
+    }
+
+    processProduct(data[0]);
+}
+
+function processProduct(rowData) {
+
+    hasdatachanged = true;
+    var rowIndex = '';
+    var grid = $("#grid");
+    var gridData = grid.jqGrid('getGridParam', 'data');
+
+    var productdata = products.find(p => p.Barcode === rowData.Barcode);
+
+    if (productdata.ProdIsActive == 0) {
+        alert('Product is Inactive!!..', 'failure');
+        return;
+    }
+
+    if (!productdata || productdata.Quantity <= 0) {
+        alert('Out of Stock!!..', 'failure');
+        return;
+    }
+
+    var existingRow = gridData.find(row => row.ItemName === rowData.ProductName);
+
+    const colIndex = grid.jqGrid('getGridParam', 'colModel')
+        .findIndex(c => c.name === 'ItemQuantity');
+
+    if (existingRow) {
+
+        var currentQty = parseInt(existingRow.ItemQuantity) || 0;
+
+        if (currentQty < productdata.Quantity) {
+
+            rowIndex = existingRow.id;
+            currentQty += 1;
+
+            grid.jqGrid('setRowData', existingRow.id, {
+                ItemQuantity: currentQty
+            });
+
+            grid.jqGrid('editCell', existingRow.id, colIndex, true);
+
+        } else {
+            alert('Out of Stock!!..', 'failure');
+        }
+
+    } else {
+
+        var newRowId = ($("#grid").jqGrid('getGridParam', 'data').length + 1).toString();
+
+        rowIndex = newRowId;
+
+        var newRow = {
+            id: newRowId,
+            ItemName: rowData.ProductName,
+            ItemMrpPrice: rowData.MRP_Rate,
+            ItemSellPrice: rowData.SellPrice,
+            ItemQuantity: 1,
+            Quantity: rowData.Quantity,
+            GSTRate: rowData.GSTRate,
+            ProductID: rowData.Product_id
+        };
+
+        grid.jqGrid('addRowData', newRowId, newRow);
+        grid.jqGrid('editCell', newRowId, colIndex, true);
+    }
+
+    grid.jqGrid('saveCell', rowIndex, colIndex);
+
+    updateTotalPrice();
+}
+function setYN() {
+    document.getElementById("valueYN").value =
+        document.getElementById("toggleYN").checked ? "Y" : "N";
+}

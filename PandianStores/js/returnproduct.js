@@ -98,6 +98,27 @@ function getproduct(data) {
         }).trigger("reloadGrid");
 
     });
+	const returnBillsearchmobilenotxt = document.getElementById('returnBillsearchmobileno');
+    returnBillsearchmobilenotxt.addEventListener('input', function () {
+
+        $("#returnbillgrid").jqGrid('setGridParam', {
+            data: products,
+            postData: {
+                filters: JSON.stringify({
+                    groupOp: "AND",
+                    rules: [
+                        {
+                            field: "CustMobNo",
+                            op: "cn",
+                            data: returnBillsearchmobilenotxt.value
+                        }
+                    ]
+                })
+            },
+            search: true,
+        }).trigger("reloadGrid");
+
+    });
     const returnBillsearchDatetxt = document.getElementById('returnBillsearchDate');
     returnBillsearchDatetxt.addEventListener('input', function () {
         if (returnBillsearchDatetxt.value) {
@@ -144,8 +165,20 @@ function getproduct(data) {
         $("#myModal").css('display', displayValue === 'flex' ? 'none' : 'flex');
 
         var rowData = $("#returnbillgrid").jqGrid('getRowData', rowId);
-
+		document.getElementById("valueYN").value = "Y"
+		document.getElementById("toggleYN").checked = true;
         $("#itemInvoice_NO").html(rowData.InvNo);
+		
+		if(sessionStorage.getItem('UserRole')=="Admin"){
+			$("#customerName").removeAttr('disabled');
+			$("#phoneNumber").removeAttr('disabled');
+			$("#paymentterms").removeAttr('disabled');
+			$("#adminEditconfirm").css('display','flex');
+		}
+		else{
+			
+		}
+			
 
         var jdata = {
             str_PageName: 'ReturnData',
@@ -211,7 +244,8 @@ function getBilledproducts(data) {
     billedproducts[0].Total_Amount
     $('#totaldiv').html(billedproducts[0].Total_Amount.toFixed(2));
     $('#itemInvoice_Pk_Id').html(billedproducts[0].Invoice_Pk_Id);
-    $('#paymentterms').html(billedproducts[0].Payment_Terms);
+    // $('#paymentterms').html(billedproducts[0].Payment_Terms);
+    $('#paymentterms').val(billedproducts[0].Payment_Terms);
     $("#returnproductgrid").jqGrid('clearGridData');
     $("#returnproductgrid").jqGrid('setGridParam', {
         data: billedproducts
@@ -269,7 +303,7 @@ function getBilledproducts(data) {
                     }
 
                     var disableMinus = currentReturn <= minQty;
-                    var disablePlus = currentReturn >= maxQty;
+                    var disablePlus = currentReturn >= availableQty;
 
                     return `<div style="display:flex;justify-content: space-between;cursor: default;">
                     <button style="cursor: pointer;" class="decrement" ${disableMinus ? 'disabled title="Already returned minimum qty"' : 'title="Decrease return qty"'}
@@ -322,16 +356,17 @@ function getBilledproducts(data) {
         multiselect: true,
         multiSort: true,
         loadonce: false,
-        sortname: "ItemSNo",
-        sortorder: "asc",
+        // sortname: "ItemSNo",
+        // sortorder: "asc",
         pager: "#returnproductpager",
         rowNum: 10,
 
         gridComplete: function () {
 
             $('#returnproductgrid td[aria-describedby="returnproductgrid_Qty"]').removeAttr('title');
-            $('#custName').text(billedproducts[0].Customer_Name == "" ? "NA" : billedproducts[0].Customer_Name);
-            $('#custph').text(billedproducts[0].Customer_Mobile_Number == "" ? "NA" : billedproducts[0].Customer_Mobile_Number);
+            $('#customerName').val(billedproducts[0].Customer_Name == "" ? "NA" : billedproducts[0].Customer_Name).data('id',billedproducts[0].Customer_ID);
+			
+            $('#phoneNumber').val(billedproducts[0].Customer_Mobile_Number == "" ? "NA" : billedproducts[0].Customer_Mobile_Number);
             $(this).find("tr.jqgrow").click(function (e) {
                 // Stop jqGrid from selecting the row when it's clicked
                 e.stopPropagation();
@@ -421,7 +456,7 @@ function updateQuantity(rowId, newQty, itemQty) {
     var returntotal = rowData.SellPrice * newQty
 
     $("#returnproductgrid").jqGrid('setCell', rowId, 'return', newQty);
-    $("#returnproductgrid").jqGrid('setCell', rowId, 'Return_Total_Amount', returntotal);
+    $("#returnproductgrid").jqGrid('setCell', rowId, 'Return_Total_Amount', returntotal.toFixed(2));
     var selectedRowIds = $("#returnproductgrid").jqGrid('getGridParam', 'selarrrow');
     if (!selectedRowIds.includes(rowId)) {
         $("#returnproductgrid").jqGrid('setSelection', rowId);
@@ -436,7 +471,10 @@ function closeHeader(event) {
         $("#popup").css('display', 'none');
     }
     else if (event == 'finalpopup') {
+		editreload = 'Y';
+		getItemList();
         $("#myModal").css('display', 'none');
+		$('#customerName, #phoneNumber').val('');
     }
 }
 function isRowCheckboxChecked(rowId) {
@@ -530,13 +568,14 @@ function generatePDF(data) {
     console.log(data.PostServiceCallResult);
     var data = JSON.parse(data.PostServiceCallResult)
 
-
+	if(document.getElementById("valueYN").value == "Y"){
     var jdata = {
         str_PageName: 'PrintBill',
         str_param: 'BillPrint^' + $("#itemInvoice_NO").html() + '^' + sessionStorage.getItem('UserID')
     }
 
     PostServiceCall(jdata, returnFinalPrintBill);
+	}
     //var tabledata = ''
     //if (data.Table.length > 0) {
 
@@ -565,6 +604,7 @@ function generatePDF(data) {
     //html2pdf().from(content).set(options).save();
     $("#myModal").css('display', 'none');
     //finalpopupclear();
+	editreload = 'Y';
     getItemList();
     //location.reload();
 
@@ -582,4 +622,112 @@ $(document).off('click', '.Print-icon').on('click', '.Print-icon', function () {
 });
 function returnFinalPrintBill(billData) {
     SendToprint('Bill', billData, '');
+}
+
+function getCustomerList(data, type) {
+    if (data.key === "ArrowDown" || data.key === "ArrowUp" || data.key === "Enter") {
+        data.preventDefault();
+    }
+    else {
+        var searchvalue = $('#customerName').val() == '' ? $('#phoneNumber').val() : $('#customerName').val();
+        var jdata = {
+            str_PageName: 'MasterData',
+            str_param: 'GetCustomerlist^^^^' + searchvalue + '^' + sessionStorage.getItem('UserID')
+        }
+        if (searchvalue.length >= 1) {
+            PostServiceCall(jdata, Customersuccess);
+        }
+        else {
+            document.getElementById("customer-list").innerHTML = ''
+            document.getElementById("customer-list").style.display = "none";
+        }
+    }
+
+}
+function Customersuccess(data) {
+    const customers = JSON.parse(data.PostServiceCallResult).Table;
+    const customerList = document.getElementById("customer-list");
+
+    function showSuggestions(searchText) {
+
+        customerList.innerHTML = '';
+        customerList.style.display = 'none';
+
+        if (!searchText) return;
+
+        const search = searchText.toLowerCase();
+
+        customers.forEach(item => {
+
+            const nameMatch = item.Customer_Name?.toLowerCase().includes(search);
+            const mobileMatch = item.Customer_Mobile_Number?.toLowerCase().includes(search);
+
+            if (nameMatch || mobileMatch) {
+
+                const suggestionItem = document.createElement('div');
+                suggestionItem.classList.add('autocomplete-item');
+
+                suggestionItem.innerHTML = `
+                    <strong>${item.Customer_Name}</strong><br>
+                    <small>${item.Customer_Mobile_Number}</small>
+                `;
+
+                suggestionItem.addEventListener('click', function () {
+
+                    // ✅ Bind BOTH values
+                    $('#customerName').val(item.Customer_Name)
+                        .data('id', item.Customer_Pk_Id);
+
+                    $('#phoneNumber').val(item.Customer_Mobile_Number);
+
+                    customerList.style.display = 'none';
+                    customerList.innerHTML = '';
+                });
+
+                customerList.appendChild(suggestionItem);
+                customerList.style.display = 'block';
+            }
+        });
+    }
+
+    // 🔹 Bind to BOTH inputs
+    $('#customerName, #phoneNumber').on('input', function () {
+        showSuggestions(this.value);
+    });
+
+    // 🔹 Hide on outside click
+    $(document).on('click', function (e) {
+        if (!$(e.target).closest('#customerName, #phoneNumber, #customer-list').length) {
+            customerList.style.display = 'none';
+        }
+    });
+}
+
+function ReturnAdminConfirm(){
+	var jsonArray = [];
+	var jsonObject = {
+		CustomerFkID:$('#customerName').data('id'),
+		SaleType:$('#paymentterms').val()
+		};
+	jsonArray.push(jsonObject);
+	
+	var redata = JSON.stringify(jsonArray, null, 2).replace(/\n/g, '').replace(/\s{2,}/g, ' ').trim(); // Convert array to JSON string
+	var jdata = {
+		str_PageName: 'ReturnData',
+		str_param: 'ReturnAdminConfirm^' + $('#itemInvoice_Pk_Id').html() + '^' + sessionStorage.getItem('UserID') + '^' + redata
+	}
+
+	PostServiceCall(jdata, ReturnAdminConfirmSuccess);
+}
+function ReturnAdminConfirmSuccess(data){
+		var data = JSON.parse(data.PostServiceCallResult).Table
+		editreload = 'Y';
+		getItemList();
+		alert(data[0].MSG);
+		$("#myModal").css('display', 'none');	
+}
+
+function setYN() {
+    document.getElementById("valueYN").value =
+        document.getElementById("toggleYN").checked ? "Y" : "N";
 }

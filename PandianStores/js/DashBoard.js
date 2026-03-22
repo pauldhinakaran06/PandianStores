@@ -4,6 +4,18 @@ var productsQtydata = [], MonthlySale = [], saledetails = [], Billedproducts = [
 
 let chartInstance = null;
 function dashboardpageload() {
+    if (sessionStorage.getItem("UserRole") === 'Admin') {
+        document.querySelectorAll('.admin-only')
+            //.forEach(el => el.style.setProperty('display', 'block', 'important'));
+            .forEach(el => {
+                el.classList.remove('admin-only');
+                el.classList.add('isadmin');
+            });
+    }
+    else {
+        setTimeout(signout, 5000);
+    }
+
     var jdata = {
         str_PageName: 'DashboardData',
         str_param: 'GetpageloadDetails^' + sessionStorage.getItem('UserID')
@@ -30,6 +42,7 @@ function dashboardpageloadsuccess(data) {
     $("#TotalsaleYear").text('₹ ' + formatIndian(saledetails[0].Year_Sales));
     $("#TotalsaleWeek").text('₹ ' + formatIndian(saledetails[0].Week_Sales));
     $("#TotalsaleMonth").text('₹ ' + formatIndian(saledetails[0].Month_Sales));
+    $("#TotalsaleDay").text('₹ ' + formatIndian(saledetails[0].PerDay_Sales));
     $("#catcount").text(saledetails[0].Category_Count);
     $("#brandcount").text(saledetails[0].Brand_Count);
     $("#productcount").text(saledetails[0].Product_Count);

@@ -1,0 +1,15 @@
+{
+  "name": "Billing App",
+  "short_name": "Billing",
+  "start_url": "/Billing",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1976d2",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}

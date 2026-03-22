@@ -1,4 +1,9 @@
-﻿function loginclick() {
+﻿$(function () {
+
+    $('#txtUserName').focus();
+});
+
+function loginclick() {
 
     //var jdata = {};
     //jdata.str_Name = 'login';
@@ -44,6 +49,7 @@ function Loginsuccess(data) {
 
             window.location.href = 'MasterData.html';
         }
+
     }
     else {
         alert(data.Table[0].Msg);

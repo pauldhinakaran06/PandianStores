@@ -8,9 +8,9 @@
     <!----===== Iconscout CSS ===== -->
     <!--<link rel="stylesheet" href="../css/bootstrap.min.css">-->
 
-    <title>Return</title>
+    <title>Customer</title>
     <link rel="manifest" href="~/manifest.json">
-        <link rel="icon" type="image/png" sizes="192x192" href="../images/logo11.PNG">
+    <link rel="icon" type="image/png" sizes="192x192" href="../images/logo11.PNG">
     <meta name="theme-color" content="#000000">
     <style>
         .dash-content .boxes {
@@ -115,12 +115,12 @@
             position: absolute;
         }
 
-        #returnbillgrid .ui-state-hover {
+        #Customerbillgrid .ui-state-hover, #Customerproductpopup .ui-state-hover {
             background-color: #dcdcdc !important; /* Light gray background */
             cursor: pointer;
         }
 
-        #returnproductgrid .ui-state-hover {
+        #Customerproductgrid .ui-state-hover {
             background-color: #dcdcdc !important; /* Light gray background */
             cursor: pointer;
         }
@@ -139,11 +139,11 @@
             font-weight: bold;
         }
 
-        .ui-jqgrid-htable, #returnbillgrid {
+        .ui-jqgrid-htable, #Customerbillgrid {
             width: 100% !important;
         }
 
-        .ui-jqgrid-htable, #returnproductgrid {
+        .ui-jqgrid-htable, #Customerproductgrid {
             width: 100% !important;
         }
             /* Optional: Change hover color on the column headers */
@@ -151,17 +151,17 @@
                 background-color: #45a049; /* Lighter shade when hovered */
             }
 
-        #gbox_returnbillgrid td {
+        #gbox_Customerbillgrid td {
             font-weight: normal;
             font-size: 1.1vw;
             text-align: center;
         }
 
-        #gbox_returnproductgrid th {
+        #gbox_Customerproductgrid th, #gbox_Customergrid th {
             font-weight: bold;
         }
 
-        #gbox_returnbillgrid th {
+        #gbox_Customerbillgrid th {
             font-weight: bold;
         }
 
@@ -169,7 +169,7 @@
             color: #337ab7 !important;
         }
 
-        #gbox_returnproductgrid td {
+        #gbox_Customergrid td, #gbox_Customerproductgrid td, #gbox_Customerbillgrid td {
             font-weight: normal;
             font-size: 1.1vw;
             text-align: center;
@@ -204,11 +204,11 @@
             border: ridge;
         }
 
-        .modal.returnproductpopup .popup-container .billclose-btn:hover {
+        .modal.Customerproductpopup .popup-container .billclose-btn:hover {
             border: ridge;
         }
 
-        .returnproductpopup {
+        .Customerproductpopup {
             background: white;
             padding: 20px;
             border-radius: 10px;
@@ -249,7 +249,7 @@
             cursor: default !important;
         }
 
-        .returncheckout {
+        .Customercheckout {
             background-color: aquamarine;
             border: outset;
             display: flex;
@@ -260,34 +260,8 @@
             padding: 8px
         }
 
-            .returncheckout:hover {
+            .Customercheckout:hover {
                 border: ridge;
-            }
-			 .customer-wrapper {
-            position: relative; /* anchor */
-            width: 20%;
-            /*left:4%;*/
-        }
-
-        .autocomplete-items {
-            position: absolute;
-            top: 100%; /* directly below input */
-            left: 7px; /* align with input */
-            width: 93%; /* same as input */
-            background: #fff;
-            border: 1px solid #ccc;
-            z-index: 9999;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-
-        .autocomplete-item {
-            padding: 6px 10px;
-            cursor: pointer;
-        }
-
-            .autocomplete-item:hover {
-                background-color: #f2f2f2;
             }
     </style>
 </head>
@@ -297,132 +271,79 @@
     <section id="section" class="dashboard">
         <div class="overview dash-content">
             <div class="title">
-                <img src="../Icons/Gif/return.gif" class="menu-gif" alt="Return">
-                <span class="text">Return Products</span>
+                <img src="../Icons/Gif/Customer.gif" class="menu-gif" alt="Customer">
+                <span class="text">Customer Details</span>
             </div>
             <div class="container" style=" position: fixed; top: 0px; right: 0px; padding: 10px;">
                 <div style="display: flex;justify-content: end;font-size: 1.4vw;font-weight: bold;"><span id="AllUserId"></span></div>
                 <div id="AllDatetime" style="display: flex; justify-content: end; font-size: 1.4vw;"></div>
 
             </div>
-            <div id="returnbill" style=" width:100%;">
+            <div id="Customerbill" style=" width:100%;">
 
-                <label for="returnBillsearch" style="margin-left: 14px;">Invoice No.:  </label>
-                <input type="text" id="returnBillsearch" style=" width: 20%; text-align: center;" placeholder="Search by Invoice No." />
-                <label for="returnBillsearchDate" style="margin-left: 14px;">Date:  </label>
-                <input type="date" id="returnBillsearchDate" style=" width: 20%; text-align: center;" placeholder="Search by Date." />
-				 <label for="returnBillsearchmobileno" style="margin-left: 14px;">Mobile No:  </label>
-                <input type="text" maxlength="10" id="returnBillsearchmobileno" style=" width: 20%; text-align: center;" placeholder="Search by Mobile No." />
-                <table id="returnbillgrid"></table>
-                <div id="returnbillpager"></div>
+                <label for="CustomerBillsearch" style="margin-left: 14px;">Customer Search.:  </label>
+                <input type="text" id="CustomerBillsearch" style=" width: 20%; text-align: center;" placeholder="Search by Cutomer Mob.No,Name." />
+                <!--<label for="CustomerBillsearchDate" style="margin-left: 14px;">Date:  </label>
+        <input type="date" id="CustomerBillsearchDate" style=" width: 20%; text-align: center;" placeholder="Search by Date." />-->
+                <table id="Customergrid"></table>
+                <div id="Customerpager"></div>
             </div>
             <div id="myModal" class="modal">
-                <div class="returnproductpopup" id="returnproductpopup">
+                <div class="Customerproductpopup" id="Customerproductpopup">
                     <button class="billclose-btn" style=" top: 22px;" onclick="closeHeader('finalpopup')">X</button>
                     <h3 style="background-color: aquamarine; display: flex; justify-content: center; margin-bottom: 10px; ">Product Details</h3>
-                    <div id="returnproduct" style=" width:100%;">
+                    <div id="Customerproduct" style=" width:100%;">
                         <div>
                             <div style="display: flex;">
-                                <label for="returnproductsearch" style=" margin: 14px 14px 0px 0px;">Search :  </label>
-                                <input type="text" id="returnproductsearch" style="width: 25%; text-align: center; margin: 8px 14px 6px 0px; padding: 4px; " placeholder="Search by Product Barcode & Name." />
-                                <!-- <h5 style="font-size: 15px; margin: 14px 14px 0px 0px;">Customer Name : </h5><input id="custName" style="position: relative; margin: 14px 14px 0px 0px; width: auto; max-width: 12%; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;"></input> -->
-                                <!-- <h5 style="font-size: 15px; margin: 14px 14px 0px 0px;">Customer Ph.No : </h5><P id="custph" style="position: relative; width: 10%; margin: 14px 14px 0px 0px;"></P> -->
-							<div class="floating-group" title="Enter Customer Name">
-							
-								<input id="customerName" class="autocomplete-input" disabled data-listname="customer-list" name="customerName" onkeyup="getCustomerList(event,'Edit');" placeholder=" " style="margin-bottom: 3px !important; padding: 5px 10px !important; " autocomplete="off">
-								<label class="floating-label" for="customerName">Customer Name</label>
-							</div>&nbsp;&nbsp;
-							<div class="floating-group" title="Enter Phone Number">
-							
-								<input id="phoneNumber" maxlength="10" class="autocomplete-input" disabled data-listname="customer-list" name="phoneNumber" onkeyup="getCustomerList(event,'Edit');" placeholder=" " style=" margin-bottom: 3px !important; padding: 5px 10px !important;" autocomplete="off">
-								<label class="floating-label" for="phoneNumber">Phone Number</label>
-								<div id="customer-list" style="display:none;" class="customerlist autocomplete-items"></div>
-
-							</div>&nbsp;&nbsp;
-							 <div class="floating-group">
-
-								<label class="floating" for="saleType" style="width: 40%;">Sale Type:</label>
-								<select id="paymentterms" name="saleType"  tabindex="0" disabled autofocus>
-									<option value="Cash" selected>Cash</option>
-									<option value="Gpay">GPay</option>
-									<option value="DebitCard">Debit Card</option>
-									<option value="Credit">Credit</option>
-								</select>
-							</div>&nbsp;&nbsp;
-							<button class="returncheckout" id="adminEditconfirm" onclick="ReturnAdminConfirm();" style="display:none;top: 0px;height: 30px;" >Confirm</button>
+                                <label for="Customerproductsearch" style=" margin: 14px 14px 0px 0px;">Search :  </label>
+                                <input type="text" id="Customerproductsearch" style="width: 25%; text-align: center; margin: 8px 14px 6px 0px; padding: 4px; " placeholder="Search by Product Barcode & Name." />
+                                <h5 style="font-size: 15px; margin: 14px 14px 0px 0px;">Customer Name : </h5><P id="custName" style="position: relative; margin: 14px 14px 0px 0px; width: auto; max-width: 12%; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;"></P>
+                                <h5 style="font-size: 15px; margin: 14px 14px 0px 0px;">Customer Ph.No : </h5><P id="custph" style="position: relative; width: 10%; margin: 14px 14px 0px 0px;"></P>
                             </div>
-                            <div style="display: flex; right: 80px; top: 20px; position: absolute; ">
-							<!-- <h6>&nbsp;by&nbsp;</h6><h4 id="paymentterms"></h4> -->
-                                <h3>Total : </h3><h4 style="top: 2px;position: relative;">&nbsp;₹&nbsp;</h4><h4 id="totaldiv" style="top: 2px;position: relative;"></h4>
-                            </div>
+                            <!--<div style="display: flex; right: 80px; top: 20px; position: absolute; ">
+                                <h3>Total : </h3><h4 style="top: 2px;position: relative;">&nbsp;₹&nbsp;</h4><h4 id="totaldiv" style="top: 2px;position: relative;"></h4><h6>&nbsp;by&nbsp;</h6><h4 id="paymentterms"></h4>
+                            </div>-->
                         </div>
-
-                        <table id="returnproductgrid"></table>
-                        <div id="returnproductpager"></div>
+                        <table id="Customerbillgrid"></table>
+                        <div id="Customerbillpager"></div>
+                        <!--<table id="Customerproductgrid"></table>
+                <div id="Customerproductpager"></div>-->
                         <!--<div style="display: flex;">
                     <h3>Total : </h3><h4 style="margin-top: 23px;">&nbsp;₹&nbsp;</h4><h4 style="margin-top: 23px;" id="totaldiv"></h4><h6 style="margin-top: 26px;">&nbsp;by&nbsp;</h6><h4 style="margin-top: 23px;" id="paymentterms"></h4>
                 </div>-->
                         <h1 id="itemInvoice_Pk_Id" style="display:none"></h1>
                         <h1 id="itemInvoice_NO" style="display:none"></h1>
                     </div>
-					<div class="form-group" style="padding: 0px 0px 10px 0px;justify-content: flex-end;">
-					<label class="switch" style=" top: 25px;">
-					  <input type="checkbox" id="toggleYN" checked onchange="setYN()">
-					  <span class="slider" ></span>
-					</label>
-					<input type="hidden" id="valueYN" value="Y">
-                    <button class="returncheckout" onclick="returnconfirm();">Check Out</button>
-					</div>
-                    <div style="display:none;">
-                        <div id="printableArea">
-                            <div class="bill-header">
-                                <h2>Pandian Stores</h2>
-                                <p>Address Line 1, City, Zip Code</p>
-                                <p>Phone: (123) 456-7890</p>
-                                <p>Date: <span id="date"></span></p>
-                                <p>Bill No: <span id="bill-number"></span></p>
+                    <!--<button class="Customercheckout" onclick="Customerconfirm();">Check Out</button>-->
+                    
+                </div>
+            </div>
+            <div id="mycustbill" class="modal">
+                <div class="Customerproductpopup" id="returnproductpopup">
+                    <button class="billclose-btn" style=" top: 22px;" onclick="closeHeader('mycustbill')">X</button>
+                    <h3 style="background-color: aquamarine; display: flex; justify-content: center; margin-bottom: 10px; ">Product Details</h3>
+                    <div id="returnproduct" style=" width:100%;">
+                        <div>
+                            <div style="display: flex;">
+                                <label for="returnproductsearch" style=" margin: 14px 14px 0px 0px;">Search :  </label>
+                                <input type="text" id="returnproductsearch" style="width: 25%; text-align: center; margin: 8px 14px 6px 0px; padding: 4px; " placeholder="Search by Product Barcode & Name." />
+                                <h5 style="font-size: 15px; margin: 14px 14px 0px 0px;">Customer Name : </h5><P id="custName1" style="position: relative; margin: 14px 14px 0px 0px; width: auto; max-width: 12%; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;"></P>
+                                <h5 style="font-size: 15px; margin: 14px 14px 0px 0px;">Customer Ph.No : </h5><P id="custph1" style="position: relative; width: 10%; margin: 14px 14px 0px 0px;"></P>
                             </div>
-
-                            <table class="bill-table">
-                                <thead>
-                                    <tr>
-                                        <th>Item</th>
-                                        <th>Qty</th>
-                                        <th>Unit Price</th>
-                                        <th>Total</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="bill-items">
-                                    <!-- Item rows will be added here -->
-                                </tbody>
-                            </table>
-
-                            <table class="bill-summary">
-                                <tbody>
-                                    <tr>
-                                        <td>Subtotal:</td>
-                                        <td id="subtotal">0.00</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Discount (10%):</td>
-                                        <td id="discount">0.00</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Tax (10%):</td>
-                                        <td id="tax">0.00</td>
-                                    </tr>
-                                    <tr class="total">
-                                        <td>Total:</td>
-                                        <td id="total">0.00</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-                            <div class="bill-footer">
-                                <p class="footer-message">Thank you for shopping with us!</p>
+                            <div style="display: flex; right: 80px; top: 20px; position: absolute; ">
+                                <h3>Total : </h3><h4 style="top: 2px;position: relative;">&nbsp;₹&nbsp;</h4><h4 id="totaldiv" style="top: 2px;position: relative;"></h4><h6>&nbsp;by&nbsp;</h6><h4 id="paymentterms"></h4>
                             </div>
                         </div>
+
+                        <table id="Customerproductgrid"></table>
+                        <div id="Customerproductpager"></div>
+                        <!--<div style="display: flex;">
+                    <h3>Total : </h3><h4 style="margin-top: 23px;">&nbsp;₹&nbsp;</h4><h4 style="margin-top: 23px;" id="totaldiv"></h4><h6 style="margin-top: 26px;">&nbsp;by&nbsp;</h6><h4 style="margin-top: 23px;" id="paymentterms"></h4>
+                </div>-->
+                        <h1 id="itemInvoice_Pk_Id" style="display:none"></h1>
+                        <h1 id="itemInvoice_NO" style="display:none"></h1>
                     </div>
+                    <!--<button class="returncheckout" onclick="returnconfirm();">Check Out</button>-->
                 </div>
             </div>
         </div>
@@ -445,10 +366,8 @@
     <script src="../Scripts/jquery.jqgrid.min.js"></script>
     <script src="../Scripts/html2pdf.js"></script>
     <link rel="stylesheet" href="../css/DashBoard.css">
-    <link rel="stylesheet" href="../css/MasterData.css">
-	
     <script src="../js/Common_URL.js"></script>
     <script src="../js/common.js"></script>
-    <script src="../js/returnproduct.js"></script>
+    <script src="../js/Customerdetails.js"></script>
 </body>
 </html>

@@ -1,1 +1,1 @@
-﻿var serviceURL ="http://localhost:56622/PandianStoreService.svc/"
+﻿var serviceURL ="http://192.168.0.105/PandianDepartmentStoresService/PandianStoreService.svc/"
